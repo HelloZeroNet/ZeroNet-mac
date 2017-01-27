@@ -315,6 +315,7 @@ class ContentManager(object):
                 if back:
                     back["content_inner_path"] = content_inner_path
                     back["optional"] = False
+                    back["relative_path"] = "/".join(inner_path_parts)
                     return back
 
             # Check in optional files
@@ -323,6 +324,7 @@ class ContentManager(object):
                 if back:
                     back["content_inner_path"] = content_inner_path
                     back["optional"] = True
+                    back["relative_path"] = "/".join(inner_path_parts)
                     return back
 
             # Return the rules if user dir
@@ -491,7 +493,7 @@ class ContentManager(object):
 
     # Create and sign a content.json
     # Return: The new content if filewrite = False
-    def sign(self, inner_path="content.json", privatekey=None, filewrite=True, update_changed_files=False, extend=None):
+    def sign(self, inner_path="content.json", privatekey=None, filewrite=True, update_changed_files=False, extend=None, remove_missing_optional=False):
         if inner_path in self.contents:
             content = self.contents[inner_path]
             if self.contents[inner_path].get("cert_sign", False) is None and self.site.storage.isFile(inner_path):
@@ -522,6 +524,11 @@ class ContentManager(object):
         files_node, files_optional_node = self.hashFiles(
             helper.getDirname(inner_path), content.get("ignore"), content.get("optional")
         )
+
+        if not remove_missing_optional:
+            for file_inner_path, file_details in content.get("files_optional", {}).iteritems():
+                if file_inner_path not in files_optional_node:
+                    files_optional_node[file_inner_path] = file_details
 
         # Find changed files
         files_merged = files_node.copy()

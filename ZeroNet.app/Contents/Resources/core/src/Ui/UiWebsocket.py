@@ -287,7 +287,7 @@ class UiWebsocket(object):
         self.response(to, ret)
 
     # Sign content.json
-    def actionSiteSign(self, to, privatekey=None, inner_path="content.json", response_ok=True, update_changed_files=False):
+    def actionSiteSign(self, to, privatekey=None, inner_path="content.json", response_ok=True, update_changed_files=False, remove_missing_optional=False):
         self.log.debug("Signing: %s" % inner_path)
         site = self.site
         extend = {}  # Extended info for signing
@@ -320,7 +320,7 @@ class UiWebsocket(object):
         # Reload content.json, ignore errors to make it up-to-date
         site.content_manager.loadContent(inner_path, add_bad_files=False, force=True)
         # Sign using private key sent by user
-        signed = site.content_manager.sign(inner_path, privatekey, extend=extend, update_changed_files=update_changed_files)
+        signed = site.content_manager.sign(inner_path, privatekey, extend=extend, update_changed_files=update_changed_files, remove_missing_optional=remove_missing_optional)
         if not signed:
             self.cmd("notification", ["error", _["Content signing failed"]])
             self.response(to, {"error": "Site sign failed"})
@@ -468,6 +468,16 @@ class UiWebsocket(object):
             self.user.getAuthAddress(self.site.address) not in self.site.content_manager.getValidSigners(inner_path)
         ):
             return self.response(to, {"error": "Forbidden, you can only modify your own files"})
+
+        file_info = self.site.content_manager.getFileInfo(inner_path)
+        if file_info.get("optional"):
+            self.log.debug("Deleting optional file: %s" % inner_path)
+            relative_path = file_info["relative_path"]
+            content_json = self.site.storage.loadJson(file_info["content_inner_path"])
+            if relative_path in content_json.get("files_optional", {}):
+                del content_json["files_optional"][relative_path]
+                self.site.storage.writeJson(file_info["content_inner_path"], content_json)
+                self.site.content_manager.loadContent(file_info["content_inner_path"], add_bad_files=False, force=True)
 
         try:
             self.site.storage.delete(inner_path)

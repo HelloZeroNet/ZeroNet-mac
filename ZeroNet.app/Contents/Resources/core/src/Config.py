@@ -10,7 +10,7 @@ class Config(object):
 
     def __init__(self, argv):
         self.version = "0.5.1"
-        self.rev = 1838
+        self.rev = 1848
         self.argv = argv
         self.action = None
         self.config_file = "zeronet.conf"
@@ -106,6 +106,7 @@ class Config(object):
         action.add_argument('privatekey', help='Private key (default: ask on execute)', nargs='?')
         action.add_argument('--inner_path', help='File you want to sign (default: content.json)',
                             default="content.json", metavar="inner_path")
+        action.add_argument('--remove_missing_optional', help='Remove optional files that is not present in the directory', action='store_true')
         action.add_argument('--publish', help='Publish site after the signing', action='store_true')
 
         # SitePublish
