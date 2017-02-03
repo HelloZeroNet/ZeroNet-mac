@@ -4,9 +4,17 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Resources/ZeroNet.pkg</key>
+		<key>Resources/__boot__.py</key>
 		<data>
-		+bMvx0p5plPG8DfKvPZvYZHRDxs=
+		Un4CFCHiUrlJ43K6Oohr+HAHRmI=
+		</data>
+		<key>Resources/__error__.sh</key>
+		<data>
+		fzf8eX6FsEIwqfFNbPWD7Z+CeVU=
+		</data>
+		<key>Resources/boot.py</key>
+		<data>
+		aarNUM/udQ3Bx6gUliplnGve0HQ=
 		</data>
 		<key>Resources/core/.gitignore</key>
 		<data>
@@ -102,7 +110,7 @@
 		</data>
 		<key>Resources/core/plugins/Newsfeed/NewsfeedPlugin.py</key>
 		<data>
-		H+WSvaI/7hzAmTgvTKRoGkSYsSE=
+		TFW7dft3Nt/uQSEro8chA1gOYFE=
 		</data>
 		<key>Resources/core/plugins/Newsfeed/__init__.py</key>
 		<data>
@@ -482,7 +490,7 @@
 		</data>
 		<key>Resources/core/src/Config.py</key>
 		<data>
-		SudcV8w8Qa3+5m2ZYsNJxFTM0Qc=
+		/WwPLMLsiWntdPVMOBDZ1Gx3Lx0=
 		</data>
 		<key>Resources/core/src/Connection/Connection.py</key>
 		<data>
@@ -562,7 +570,7 @@
 		</data>
 		<key>Resources/core/src/Debug/DebugReloader.py</key>
 		<data>
-		OSg/iKj8TmkTw2viOqlJL6h4ffo=
+		gOGCILnN8Dr4pAtpi7SAX+9Ce9A=
 		</data>
 		<key>Resources/core/src/Debug/__init__.py</key>
 		<data>
@@ -602,7 +610,7 @@
 		</data>
 		<key>Resources/core/src/Site/Site.py</key>
 		<data>
-		YV+s6Bo9bbrz0U5r4Sp2u1feld4=
+		2hmcvpia7XSol4/sbXSzogNiA3o=
 		</data>
 		<key>Resources/core/src/Site/SiteManager.py</key>
 		<data>
@@ -794,7 +802,7 @@
 		</data>
 		<key>Resources/core/src/Ui/UiRequest.py</key>
 		<data>
-		lCKOz6r4Ohgk8fMIiKZPnvvo3Ms=
+		/vqXS/aLGi66fjALNW6idpbaiB8=
 		</data>
 		<key>Resources/core/src/Ui/UiServer.py</key>
 		<data>
@@ -802,7 +810,7 @@
 		</data>
 		<key>Resources/core/src/Ui/UiWebsocket.py</key>
 		<data>
-		OgMZuqjTpT6UDxAOc63Xbvkj3p0=
+		fcNzNAR2aQPYbyGxujO+8Qszpao=
 		</data>
 		<key>Resources/core/src/Ui/__init__.py</key>
 		<data>
@@ -1516,6 +1524,270 @@
 		<data>
 		UhHdx9r2wimMnbmOFuIbG+mV8+0=
 		</data>
+		<key>Resources/lib/python2.7/lib-dynload/MacOS.so</key>
+		<data>
+		Hlf5ONO3FESaDFWqcd8oiAr+4RQ=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/Nav.so</key>
+		<data>
+		egjKe+BnS9iXEaJYSN8r5U6tAeI=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_bisect.so</key>
+		<data>
+		ufQTImJiPWvsdmOVBkwlLx/9FyM=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_cn.so</key>
+		<data>
+		RrA4c+i3aIy1lg4C+ldaU/gn3RQ=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_hk.so</key>
+		<data>
+		rgFWDzJ4teDFPmlWCVrjmYM+EuU=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_iso2022.so</key>
+		<data>
+		QPmUHLWHOeGAUNkni9HPushGzBA=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_jp.so</key>
+		<data>
+		2Avn0IbqXWp6od9K6X1AHPZdQ+o=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_kr.so</key>
+		<data>
+		9pN97GInaOl3/yWcXS6XlYB7bQo=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_tw.so</key>
+		<data>
+		j8ZdcOEES0wXUCXjC3xysiv0IWs=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_collections.so</key>
+		<data>
+		+B7i9c8jKGm+Sw7IEojkcHfPA0w=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_csv.so</key>
+		<data>
+		NCdFbuDhiekXOjf/ZleNZwSILsE=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_ctypes.so</key>
+		<data>
+		5n3ZYHMN63ucZvDPEnQGMc1aNP0=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_curses.so</key>
+		<data>
+		754n7U0D3WEZk+KFnagSME5s+Pg=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_curses_panel.so</key>
+		<data>
+		Q2uDu3yO5P2SbIRJAdvO2YFr9Y8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_elementtree.so</key>
+		<data>
+		pJCP+2y5uoQEDFI8YDOdxnYZlYE=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_functools.so</key>
+		<data>
+		jRRPfjiRmsLV0qyt6Fn9qeyKk3o=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_hashlib.so</key>
+		<data>
+		VTNYRZ3iRiLgftHR44kO3HBwFqk=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_heapq.so</key>
+		<data>
+		dizfUV6Ms9r2RBKAhE23PsFTpYk=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_hotshot.so</key>
+		<data>
+		TG7NbfOjUx1VYv9bgNJkSKdUiO8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_io.so</key>
+		<data>
+		bC0IjniDRH2TB3xNCU3vrB598LI=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_json.so</key>
+		<data>
+		CtKtjJ6jR8AHOcuSpLw++EEvyiA=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_locale.so</key>
+		<data>
+		R00uYPfbEHI9XmwEdpg4TrnLZsY=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_lsprof.so</key>
+		<data>
+		Bg8/L46M6Q0UVaFGKjj84YtUGF4=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_multibytecodec.so</key>
+		<data>
+		3VKqx4qhtiSyxAgbXwK/WlPx5F4=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_multiprocessing.so</key>
+		<data>
+		M7PFlAxzmvwt3eePINy8IpaqGm0=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_random.so</key>
+		<data>
+		E/CiOa92QjPlirsSuxugO4kmPJI=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_scproxy.so</key>
+		<data>
+		nkSvkh4JjENHY7rcvr/bytMLTug=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_socket.so</key>
+		<data>
+		12lq0wp74CS5kRFL1hplrh7sZRQ=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_sqlite3.so</key>
+		<data>
+		CnXa7V9oTC6t4CIKsz0fqzVCbhE=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_ssl.so</key>
+		<data>
+		/6+uftuCoBjDZimAlOrJZfIKW5k=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/_struct.so</key>
+		<data>
+		LS+ZGtnY3I8yOYFwygFzz4qh+Rk=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/array.so</key>
+		<data>
+		iebSFsLoT0W5SSoy5Qls51l6oJo=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/audioop.so</key>
+		<data>
+		mu94GfzZMm4L1L8gTBL+Gt3hr1s=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/binascii.so</key>
+		<data>
+		wVjnqSw/cq5mV53QXjsjWJso67s=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/bz2.so</key>
+		<data>
+		08/eW2j9hsci7nhAMQE4b7/WUz8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/cPickle.so</key>
+		<data>
+		jFWy7Idnh38Z+eAzFvENzpcFQEY=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/cStringIO.so</key>
+		<data>
+		psAYbOvAw90rcMjREtm2Cj8xB1A=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/datetime.so</key>
+		<data>
+		djviVkdVfBW3mRNRN9DcMHOpfZ8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/dbm.so</key>
+		<data>
+		braGSI6Tzy64bMUI18a9eD9PeW8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/fcntl.so</key>
+		<data>
+		kkKv4qRCfqOUbhSba8lQsl/wOA8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/future_builtins.so</key>
+		<data>
+		bg+b4ThrFl7n4uxIRHwGjurDMTc=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/gestalt.so</key>
+		<data>
+		YU/hDPFoVAgjTCWBBvihhjF7FGU=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/gevent/_semaphore.so</key>
+		<data>
+		YiIz8KZVoufcS3jyGb2OkYKtVLQ=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/gevent/ares.so</key>
+		<data>
+		Trb5EjBRgOhAhyeIeZdvAeQrcF8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/gevent/libev/_corecffi.so</key>
+		<data>
+		xtJJiDLuNgrrrkFWZ6ZBt3x13+g=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/gevent/libev/corecext.so</key>
+		<data>
+		W3XnErv3M6LcciREgR1fGq6ARxY=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/greenlet.so</key>
+		<data>
+		ENIQ+SrV9/ZE6U3yuwNCbWWXzmc=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/grp.so</key>
+		<data>
+		1stmkZi9d9vXR5bbE4JxDxDSCk8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/itertools.so</key>
+		<data>
+		8btkPLcWEfsIhvSyWuDxrorzUCk=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/math.so</key>
+		<data>
+		N5Pl35QYkqfvKpNMmD/jSxdANQw=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/mmap.so</key>
+		<data>
+		o72JC2iJ/3FOOksnZmXPR9PvvOQ=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/msgpack/_packer.so</key>
+		<data>
+		VBq28Wqg7fCSorHj8a7FR96+4bU=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/msgpack/_unpacker.so</key>
+		<data>
+		75QGEkALo+aIB1viPqMtV+TbrTE=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/operator.so</key>
+		<data>
+		N2yF4gxi5Quf95qRm8lD/ynvNuc=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/parser.so</key>
+		<data>
+		GCYMtPSWY4FSM0+AHcXPLdvLbRM=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/pyexpat.so</key>
+		<data>
+		3r+XPbTWiO6UD3yVY8VN2eueNIw=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/resource.so</key>
+		<data>
+		4R0LvkxA3yIsAfLL7rA1pfyrd8c=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/select.so</key>
+		<data>
+		RqbaLOQ4+95fbNR5SPEcGXSqgCI=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/strop.so</key>
+		<data>
+		pqe4MNgObGpBabVpJ2Yz/dXL68s=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/termios.so</key>
+		<data>
+		imtBFZHqgR7hPpULf0WU2JiQ9x8=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/time.so</key>
+		<data>
+		MXpd97DkW0r2Kr1pGCC//KwdA9M=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/unicodedata.so</key>
+		<data>
+		Gi2w3tpVOADSjZMgcTGU7X1Pua4=
+		</data>
+		<key>Resources/lib/python2.7/lib-dynload/zlib.so</key>
+		<data>
+		D+G1syX2neKelHMUy5MRMloYRrE=
+		</data>
+		<key>Resources/lib/python2.7/site-packages.zip</key>
+		<data>
+		MO+Etq+9dJBzHQjoP5AnKTBbRzo=
+		</data>
+		<key>Resources/site.pyc</key>
+		<data>
+		67uI5Pvb/AHyc5m5MeDL+ygqvY4=
+		</data>
+		<key>Resources/site.pyo</key>
+		<data>
+		hA3ldAenrwkxaxKW6HT9iHJ6C6M=
+		</data>
 		<key>Resources/zeronet.icns</key>
 		<data>
 		CgZM6kody38h5YU2e/RIJHTGIAI=
@@ -1523,695 +1795,73 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>MacOS/.Python</key>
+		<key>Frameworks/Python.framework</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			kKPmUmDngyicJI9Fi+IUDFjwzgI=
+			YXyD2Celif3CfEJKKqVD+AzDQ2M=
 			</data>
 			<key>requirement</key>
-			<string>identifier "" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
+			<string>identifier "org.python.python" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
 		</dict>
-		<key>MacOS/MacOS.so</key>
+		<key>Frameworks/libncursesw.5.dylib</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			Miuv7jFJn4DTA5SyDdTQ5f8XTo4=
+			7XiJEE0hczEN5GISSEkVPp2bRJw=
 			</data>
 			<key>requirement</key>
-			<string>identifier MacOS and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
+			<string>identifier "libncursesw.5" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
 		</dict>
-		<key>MacOS/Nav.so</key>
+		<key>Frameworks/libpanelw.5.dylib</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			S5gEpvJTJdp5fJ6wI6FtNl01pjg=
+			xo/GKutgpv1M+xE+tV0nH5780Vs=
 			</data>
 			<key>requirement</key>
-			<string>identifier Nav and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
+			<string>identifier "libpanelw.5" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
 		</dict>
-		<key>MacOS/ZeroNet.pkg</key>
+		<key>MacOS/python</key>
 		<dict>
-			<key>symlink</key>
-			<string>../Resources/ZeroNet.pkg</string>
-		</dict>
-		<key>MacOS/_AE.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			MzlHNO/C/pov/NnqSvkrpgX5qMg=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_AE" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_Ctl.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			4JoftB9IQK++gky9bl4r9IEMbxk=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_Ctl" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_Dlg.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			6YUgXnsQq9PmTKUXQG3JRx5/q3Q=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_Dlg" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_Evt.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			Ve3rkZeOjd/2tJ2OVOAriH6a1FM=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_Evt" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_File.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			ts4qSS7Qj/vRULxhrr6BeFRQHkE=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_File" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_Menu.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			vFRiPnQf0w0oGTyn+SQXmMFoAzU=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_Menu" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_Qd.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			hE4+mGgDbk7Myo6+JgqEldOLfuA=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_Qd" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_Res.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			bRRsWXop3D75299wXG6ftlHzLR8=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_Res" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_Snd.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			GogFCy/prOyLqsgyWxGJJt+DqHM=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_Snd" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_Win.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			PcS7XYfJcxNg+UISAbT7IcaJb1U=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_Win" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_bisect.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			R3CVzgjIK5y0au0dmJvry8s2wVw=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_bisect" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_codecs_cn.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			Q9hqPWdRY0z7tOAFgUn7uCcZ6mk=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_codecs_cn" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_codecs_hk.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			VLQ+1nhuFybyUw3CTEVfFQw+994=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_codecs_hk" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_codecs_iso2022.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			NkacEO+2DEnuZwz/ENtKIOBBwZY=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_codecs_iso2022" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_codecs_jp.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			H6h4vmGNb9OfZO0bChTgkuDU8XE=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_codecs_jp" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_codecs_kr.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			MwHoysV0svgdEE4YgeZdHkgmwoU=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_codecs_kr" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_codecs_tw.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			HZF6R/H5IGCvGBDS/+5SYQd8oNM=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_codecs_tw" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_collections.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			qWAlFpbuVSClC3CGrxoaHev1+nI=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_collections" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_csv.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			EOjDOdSu+2RttRQytx9Wz3S/s5Q=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_csv" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_ctypes.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			NssxEhYGGnVbVZCRIyDQBB5iWeg=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_ctypes" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_curses.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			ekVxzQLY+8qe5L/7Cl4FEQFcoVc=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_curses" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_curses_panel.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			jzz8PwrfvW874l/nIbmEHT03eA0=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_curses_panel" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_elementtree.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			1T+ohNFbhJfP0J058L+b8cHqnZg=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_elementtree" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_functools.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			Uobu1z9P5rmRxbpeJbmTYhhm6Jw=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_functools" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_hashlib.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			00s91j/BNVRMLrKBIXsMycncuPM=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_hashlib" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_heapq.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			LTM8yFM7uPeaHl7/NmxcN4e+3Fk=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_heapq" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_hotshot.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			cUAq6C1SUNmUIE7uut6yKNKiEkM=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_hotshot" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_io.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			bmDh+5iaQZXFpYDgBmgcJ3yNYlQ=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_io" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_json.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			/Tjons5XNkOOeq9ZsU0yM90Aiew=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_json" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_locale.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			lzhmX3m6CB1r+ySac7V/tZcuxDU=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_locale" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_lsprof.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			hcr5E+3ME4EAqfc7JFy3az4ZSHQ=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_lsprof" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_multibytecodec.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			NeoJ9CamKngWJaYpOTGeYKGL/04=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_multibytecodec" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_multiprocessing.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			XrBilRevcfZ7M7xpHnX/HVwlwo0=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_multiprocessing" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_random.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			IdDjYRP9R2ONVdWhoyQzASFNVZE=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_random" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_scproxy.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			n2hLA7yP5lhSsg7plZjrBMHjnm8=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_scproxy" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_socket.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			pjimCCZKZQGfTmR49iQwhUUTwls=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_socket" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_sqlite3.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			qJMcH25zhrtrV3+3PdEpIMdb0i4=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_sqlite3" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_ssl.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			WkguF+uCAM7DFzveD6fddzIhBK0=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_ssl" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_struct.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			H4W7uqQ4QyoBpL5et0b8jb9F1+w=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_struct" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/_testcapi.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			/968gotc230wWm0alvf1bKNdCP0=
-			</data>
-			<key>requirement</key>
-			<string>identifier "_testcapi" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/array.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			zeddseG/Y8HBD5EgifaWKCqnIh4=
-			</data>
-			<key>requirement</key>
-			<string>identifier array and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/audioop.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			3/kQsJLkkqlKGdZc5vQLdu5fDNE=
-			</data>
-			<key>requirement</key>
-			<string>identifier audioop and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/binascii.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			DK9NWth1ym5Gq7FGcQb8bkH7dPA=
-			</data>
-			<key>requirement</key>
-			<string>identifier binascii and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/bz2.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			SwucP1twGNNopLp8i9jRzSGzbd8=
-			</data>
-			<key>requirement</key>
-			<string>identifier bz2 and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/cPickle.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			VyTkapaivh0Dz/4OmAhE86dWXbc=
-			</data>
-			<key>requirement</key>
-			<string>identifier cPickle and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/cStringIO.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			Q+oagS8kuLg2rm8cTXvf55m9x3c=
-			</data>
-			<key>requirement</key>
-			<string>identifier cStringIO and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/datetime.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			DGenbxlhzFD9LHfK+RvRrD6bjnE=
-			</data>
-			<key>requirement</key>
-			<string>identifier datetime and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/dbm.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			asCDEwkDsQFF/K/y7w8iT5w1WjE=
-			</data>
-			<key>requirement</key>
-			<string>identifier dbm and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/fcntl.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			ys8DwCKlqrPIBuLzh0qMze6Zd0k=
-			</data>
-			<key>requirement</key>
-			<string>identifier fcntl and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/gestalt.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			sZEv16QsyfluIoRtjU8z4xqJsp4=
-			</data>
-			<key>requirement</key>
-			<string>identifier gestalt and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/gevent._semaphore.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			8wJDH/TQalZAZPvcAJBuv0fWUoI=
-			</data>
-			<key>requirement</key>
-			<string>identifier "gevent._semaphore" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/gevent.ares.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			asssCT1+jZlp4HIYSC3zZt1VurQ=
-			</data>
-			<key>requirement</key>
-			<string>identifier "gevent.ares" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/gevent.libev._corecffi.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			BTMxde1HhmBZAeIYU4IrbGUO3Wk=
-			</data>
-			<key>requirement</key>
-			<string>identifier "gevent.libev._corecffi" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/gevent.libev.corecext.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			dLVGbR5LHoumLWGU1v+kAnnFowA=
-			</data>
-			<key>requirement</key>
-			<string>identifier "gevent.libev.corecext" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/greenlet.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			xr4vqENv3qmpGRg7VR4v2wk3MJg=
-			</data>
-			<key>requirement</key>
-			<string>identifier greenlet and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/grp.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			v/C6b1UcJCjb88ElT1b3D6B6YPM=
-			</data>
-			<key>requirement</key>
-			<string>identifier grp and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/itertools.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			DycZPsi3FStnrxBtrG9/GAFDRHc=
-			</data>
-			<key>requirement</key>
-			<string>identifier itertools and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/math.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			NBfl52/mHWog7DVo5rTdzdF1npQ=
-			</data>
-			<key>requirement</key>
-			<string>identifier math and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/mmap.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			/dj2wUDQD/p+50EkcHta/83vdy4=
-			</data>
-			<key>requirement</key>
-			<string>identifier mmap and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/msgpack._packer.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			ygJLATXdRp7oxYz4nYdv457E32g=
-			</data>
-			<key>requirement</key>
-			<string>identifier "msgpack._packer" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/msgpack._unpacker.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			kfQR8cydmOvGyt292JTVMjrJGYQ=
-			</data>
-			<key>requirement</key>
-			<string>identifier "msgpack._unpacker" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/operator.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			NvqrSu3z8dxi8/61bUXtsiPFkMs=
-			</data>
-			<key>requirement</key>
-			<string>identifier operator and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/parser.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			EI5nANjq+jzyqfNZuXN/XudCg7o=
-			</data>
-			<key>requirement</key>
-			<string>identifier parser and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/pyexpat.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			OwLA7A5ODAZ/Kod3LoF9eEb85Y0=
-			</data>
-			<key>requirement</key>
-			<string>identifier pyexpat and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/readline.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			SLLnFoVT1UFj8wLYGrUssXTh6mE=
-			</data>
-			<key>requirement</key>
-			<string>identifier readline and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/resource.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			Azx3XWgQY9S996zR6khD0vtjV6I=
-			</data>
-			<key>requirement</key>
-			<string>identifier resource and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/select.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			5d9z5bwwD6jlaC8F0h58CQi2pz4=
-			</data>
-			<key>requirement</key>
-			<string>identifier select and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/strop.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			BnwVCPNd1Oh18JO3F8F2I8kQQbc=
-			</data>
-			<key>requirement</key>
-			<string>identifier strop and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/termios.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			5GzQDIwUV5XOI+ZKGARwMgWBUzk=
-			</data>
-			<key>requirement</key>
-			<string>identifier termios and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/time.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			0DnAQpbI4PdDgOGoHzt+NHpKHdc=
-			</data>
-			<key>requirement</key>
-			<string>identifier time and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/unicodedata.so</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			8CDA9oQC90WlR77qtuZ1WnL9hTo=
-			</data>
-			<key>requirement</key>
-			<string>identifier unicodedata and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
-		</dict>
-		<key>MacOS/zlib.so</key>
-		<dict>
 			<key>cdhash</key>
 			<data>
-			hyOk6kfCkP7Opb8DiuMFhbl5b7Q=
+			TGVQYOKH/2TZlp0aMivMiYpdkD8=
 			</data>
 			<key>requirement</key>
-			<string>identifier zlib and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
+			<string>identifier python and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "4977YF9Q3Z"</string>
 		</dict>
-		<key>Resources/ZeroNet.pkg</key>
+		<key>Resources/__boot__.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			+bMvx0p5plPG8DfKvPZvYZHRDxs=
+			Un4CFCHiUrlJ43K6Oohr+HAHRmI=
 			</data>
 			<key>hash2</key>
 			<data>
-			N7BkR+Fnhih3WQOEN3N5fDG+aDzZjF1I4QpyeuB5iRw=
+			sw7NH0Y7zElM2qSaht5wQV6D2F28OutHfoq01bKso6k=
+			</data>
+		</dict>
+		<key>Resources/__error__.sh</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			fzf8eX6FsEIwqfFNbPWD7Z+CeVU=
+			</data>
+			<key>hash2</key>
+			<data>
+			FAFaatPU8voNoJibJ02bvYxp2V+GDD63eMtgg9qVWsE=
+			</data>
+		</dict>
+		<key>Resources/boot.py</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			aarNUM/udQ3Bx6gUliplnGve0HQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			VOkIhMH2vjR4AF2xKbqE+W8TJwKcci9lgwQX+kocZa0=
 			</data>
 		</dict>
 		<key>Resources/core/.gitignore</key>
@@ -2471,11 +2121,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			H+WSvaI/7hzAmTgvTKRoGkSYsSE=
+			TFW7dft3Nt/uQSEro8chA1gOYFE=
 			</data>
 			<key>hash2</key>
 			<data>
-			TfkRn8RuFnNywVND+GEcS7pxqiJf6A83seAqCuN6hic=
+			cmRATO4AQK/PELJEQy3QkElsc290FdQOSnwf+FsucaY=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/Newsfeed/__init__.py</key>
@@ -3516,11 +3166,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			SudcV8w8Qa3+5m2ZYsNJxFTM0Qc=
+			/WwPLMLsiWntdPVMOBDZ1Gx3Lx0=
 			</data>
 			<key>hash2</key>
 			<data>
-			Ig2dinRF1CmS6Od60TNjmSVTstc6230UO24Lr1F46/s=
+			YV5taHjprBCklwr6mGNoOLCOFsjVFdjcJ606eJtAeiU=
 			</data>
 		</dict>
 		<key>Resources/core/src/Connection/Connection.py</key>
@@ -3736,11 +3386,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			OSg/iKj8TmkTw2viOqlJL6h4ffo=
+			gOGCILnN8Dr4pAtpi7SAX+9Ce9A=
 			</data>
 			<key>hash2</key>
 			<data>
-			Ucc26bmeEzyA5k2eV8bEaElQn4CVkEoeDACPtFKzgPM=
+			S1wSXedNMil6X5YAkCfGUwafyTn8kwnSesPwSn9IBbg=
 			</data>
 		</dict>
 		<key>Resources/core/src/Debug/__init__.py</key>
@@ -3846,11 +3496,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			YV+s6Bo9bbrz0U5r4Sp2u1feld4=
+			2hmcvpia7XSol4/sbXSzogNiA3o=
 			</data>
 			<key>hash2</key>
 			<data>
-			t/3fY1OQVaIO30+pehhyAxU4XEpI1R35nz4nrbF/nzQ=
+			XM5vgOu0SUdm4zcrOkEqW03Q8V5lcTkoY8wilCiNSrA=
 			</data>
 		</dict>
 		<key>Resources/core/src/Site/SiteManager.py</key>
@@ -4374,11 +4024,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			lCKOz6r4Ohgk8fMIiKZPnvvo3Ms=
+			/vqXS/aLGi66fjALNW6idpbaiB8=
 			</data>
 			<key>hash2</key>
 			<data>
-			bgxHTQkMzEwGfWoy6uOsXtF843w6fVbCeXTVHZK/6i4=
+			d7RJ5O5CqeW5RWp5lZEcdVQAcDMxPZlrBz/tr4Oy1X8=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/UiServer.py</key>
@@ -4396,11 +4046,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			OgMZuqjTpT6UDxAOc63Xbvkj3p0=
+			fcNzNAR2aQPYbyGxujO+8Qszpao=
 			</data>
 			<key>hash2</key>
 			<data>
-			cAsPHR9q7qCn7pIBzn0Zp99Gl9F+F8UtEbXnodsl5Rc=
+			ru8dH0PNUswmkMQ5MVxMuz0L7bx1oZXjbu9VhQYoPto=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/__init__.py</key>
@@ -6359,6 +6009,737 @@
 			<key>hash2</key>
 			<data>
 			Oxp+dwlYFJILA1MVt91v2jBMn4SUmXYrTDQ5TowrIc8=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/MacOS.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Hlf5ONO3FESaDFWqcd8oiAr+4RQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			27nuQ7eur4ZKCKeENhk9GfCVKA4IcRp2ZBfkXwiYibI=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/Nav.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			egjKe+BnS9iXEaJYSN8r5U6tAeI=
+			</data>
+			<key>hash2</key>
+			<data>
+			8xtBQaOljephZJd4BF1c4TfxKD2MOXltQqFeVppGjeo=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_bisect.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			ufQTImJiPWvsdmOVBkwlLx/9FyM=
+			</data>
+			<key>hash2</key>
+			<data>
+			9svygHkKLE/kIgqfvnABnF6t2vt5F1rqW5N6Vhk4Rdg=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_cn.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			RrA4c+i3aIy1lg4C+ldaU/gn3RQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			enGSkRPekps2S0JFaWVAl2Oaw2Jg0XXx/TVmZ6TWtzI=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_hk.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			rgFWDzJ4teDFPmlWCVrjmYM+EuU=
+			</data>
+			<key>hash2</key>
+			<data>
+			IdW0ii80JxgsdJ+fgMy0u2nrNt1tDvtjPjx/Z4qbBY4=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_iso2022.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			QPmUHLWHOeGAUNkni9HPushGzBA=
+			</data>
+			<key>hash2</key>
+			<data>
+			YVdD4J7PTfPHBg6xOejdh/rdTCr2AeW5N3frf+VuC5w=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_jp.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			2Avn0IbqXWp6od9K6X1AHPZdQ+o=
+			</data>
+			<key>hash2</key>
+			<data>
+			xFxqBwNrD4TaOEi+B229sXdp1TyN1E6YmnzQx1OdiCg=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_kr.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			9pN97GInaOl3/yWcXS6XlYB7bQo=
+			</data>
+			<key>hash2</key>
+			<data>
+			4Kr/QC1ODMLnmMYuoKUdW2MSdbFJrQqY+GHS/4woy+I=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_codecs_tw.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			j8ZdcOEES0wXUCXjC3xysiv0IWs=
+			</data>
+			<key>hash2</key>
+			<data>
+			w62rZoBpzbOsgWIVVuxoed2QAqOtLuLHryR7OkE7Uis=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_collections.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			+B7i9c8jKGm+Sw7IEojkcHfPA0w=
+			</data>
+			<key>hash2</key>
+			<data>
+			MZkFsn6pvtwLeeyqpRcvg16oPAypw+All8InuEyZ3Ao=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_csv.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			NCdFbuDhiekXOjf/ZleNZwSILsE=
+			</data>
+			<key>hash2</key>
+			<data>
+			LKBxJUtoe30kl0vbnGtAjeUCf12OO0oYIr7tZr+tfKY=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_ctypes.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			5n3ZYHMN63ucZvDPEnQGMc1aNP0=
+			</data>
+			<key>hash2</key>
+			<data>
+			9H6b1UXi5/VGgiVI5X74EOBT+5R9urm3gWg0Hm8Dv1M=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_curses.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			754n7U0D3WEZk+KFnagSME5s+Pg=
+			</data>
+			<key>hash2</key>
+			<data>
+			GvkZBYEbTtr0fYYunVNwPERBG+qVEgecl+OW9GI6Ui4=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_curses_panel.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Q2uDu3yO5P2SbIRJAdvO2YFr9Y8=
+			</data>
+			<key>hash2</key>
+			<data>
+			Lnk+cm698M/K15F6VzSn7HYS4pUX86olXv+5TsOja7M=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_elementtree.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			pJCP+2y5uoQEDFI8YDOdxnYZlYE=
+			</data>
+			<key>hash2</key>
+			<data>
+			rHD3y5gf721jIwunNyJHXfRR3w5QSq8ibkGNx8W7akw=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_functools.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			jRRPfjiRmsLV0qyt6Fn9qeyKk3o=
+			</data>
+			<key>hash2</key>
+			<data>
+			/VulPsUwNxfI3ptGRF2vFrgacpJ5SHTkBaPUp8UggkU=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_hashlib.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			VTNYRZ3iRiLgftHR44kO3HBwFqk=
+			</data>
+			<key>hash2</key>
+			<data>
+			iEFCpKIZnuSnkhMyyunNaB4WcOhR99azZ0uaqchtqiM=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_heapq.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			dizfUV6Ms9r2RBKAhE23PsFTpYk=
+			</data>
+			<key>hash2</key>
+			<data>
+			8OLEEr5pFQoz090FbV+tU/GQGYPQ2kget0c8fP2dpmo=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_hotshot.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			TG7NbfOjUx1VYv9bgNJkSKdUiO8=
+			</data>
+			<key>hash2</key>
+			<data>
+			83hrpP1QPjU0FbqcuYkkgAi1z+Eb3yXuHbpEupRVDvY=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_io.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			bC0IjniDRH2TB3xNCU3vrB598LI=
+			</data>
+			<key>hash2</key>
+			<data>
+			aE95HxtKqsDfDi/aDRjl47llwc+34ymjKXAOrmN/UpI=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_json.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			CtKtjJ6jR8AHOcuSpLw++EEvyiA=
+			</data>
+			<key>hash2</key>
+			<data>
+			nepIqxlvAyCjEj6MUjAQCpG8cBTI1ZbMijrI1O4S5i4=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_locale.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			R00uYPfbEHI9XmwEdpg4TrnLZsY=
+			</data>
+			<key>hash2</key>
+			<data>
+			z5QwHHsqMt/wJ92t2t5yEW1+UoZd7yKARpiubQmmVZY=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_lsprof.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Bg8/L46M6Q0UVaFGKjj84YtUGF4=
+			</data>
+			<key>hash2</key>
+			<data>
+			LfF/2LDR6T1+Hf4topOH77nglH5QsTMGdPS9ojpq1s8=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_multibytecodec.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			3VKqx4qhtiSyxAgbXwK/WlPx5F4=
+			</data>
+			<key>hash2</key>
+			<data>
+			s3OTVMtTovoIKx0o7VB3cmdHti904xReTmjxTYA4cak=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_multiprocessing.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			M7PFlAxzmvwt3eePINy8IpaqGm0=
+			</data>
+			<key>hash2</key>
+			<data>
+			VCvR9TCxTYHbT/FCw5suKlnQhuizh8gfGVnxM5XAXI0=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_random.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			E/CiOa92QjPlirsSuxugO4kmPJI=
+			</data>
+			<key>hash2</key>
+			<data>
+			nuKCUHchwaTSiue5ueMWYbZWuyQqsr6CtVGaTbXNWr0=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_scproxy.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			nkSvkh4JjENHY7rcvr/bytMLTug=
+			</data>
+			<key>hash2</key>
+			<data>
+			ouIjVvxtdSC1LSt+K8NiGyCN1SjG7KHpM2cBgQBq8MM=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_socket.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			12lq0wp74CS5kRFL1hplrh7sZRQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			M5yN7FZGjS8gHEDTksihCQ2/gjyhBym04EQn+Codn0c=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_sqlite3.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			CnXa7V9oTC6t4CIKsz0fqzVCbhE=
+			</data>
+			<key>hash2</key>
+			<data>
+			ZcZc5u+0eLzOihNIzt7ZDJDAS0rm6zWHZ3qol6ZGw+c=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_ssl.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			/6+uftuCoBjDZimAlOrJZfIKW5k=
+			</data>
+			<key>hash2</key>
+			<data>
+			twBedkijIKSzf+KQf1mVD0A6n85URzh8qL3ZwmQxhgA=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/_struct.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			LS+ZGtnY3I8yOYFwygFzz4qh+Rk=
+			</data>
+			<key>hash2</key>
+			<data>
+			WwQDvdw349XfWiKUx5ERhMtJnYjhprhUV7ft8yWZ6m8=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/array.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			iebSFsLoT0W5SSoy5Qls51l6oJo=
+			</data>
+			<key>hash2</key>
+			<data>
+			+F77Uww/H6zmK/dHAp1/VJAeaWNrSZgu5aIWBFbrZWU=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/audioop.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			mu94GfzZMm4L1L8gTBL+Gt3hr1s=
+			</data>
+			<key>hash2</key>
+			<data>
+			LGVn80kW+qe7EDQeikgMWd6zYDua96ZejN9O/vv9gsM=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/binascii.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			wVjnqSw/cq5mV53QXjsjWJso67s=
+			</data>
+			<key>hash2</key>
+			<data>
+			7bM1v9xhPx+wHcZTZTVRYwjzhswjkAyKzHD9Z79lE/M=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/bz2.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			08/eW2j9hsci7nhAMQE4b7/WUz8=
+			</data>
+			<key>hash2</key>
+			<data>
+			8bpg8ZUEE659x6uuea5z0P+FkjA+umVN09AKgRVtYI4=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/cPickle.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			jFWy7Idnh38Z+eAzFvENzpcFQEY=
+			</data>
+			<key>hash2</key>
+			<data>
+			+UPEzHM3lBMLq44Sftfqxq7qhBGhny55MRAgV47MRuw=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/cStringIO.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			psAYbOvAw90rcMjREtm2Cj8xB1A=
+			</data>
+			<key>hash2</key>
+			<data>
+			2nFDCsAthRaxEUom8NM8F5fdGRDVhosyJ2wXbGI/LJ4=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/datetime.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			djviVkdVfBW3mRNRN9DcMHOpfZ8=
+			</data>
+			<key>hash2</key>
+			<data>
+			/kbSqp3DWdzT091a1OYjw+aaUNx2CrFFazdujOBUtN8=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/dbm.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			braGSI6Tzy64bMUI18a9eD9PeW8=
+			</data>
+			<key>hash2</key>
+			<data>
+			OeU7MS2dc2cI+oJlixpWq5AK7clMYjc2Y/ax+knyHLQ=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/fcntl.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			kkKv4qRCfqOUbhSba8lQsl/wOA8=
+			</data>
+			<key>hash2</key>
+			<data>
+			cK53mmFUYwE2EFdfaLFwtDm2gnix+OkedAT6I4PyXzA=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/future_builtins.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			bg+b4ThrFl7n4uxIRHwGjurDMTc=
+			</data>
+			<key>hash2</key>
+			<data>
+			C/gmAue2XT9W0BA3MeGA/P9JUy5KJxLV8QQ1XOXtLyU=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/gestalt.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			YU/hDPFoVAgjTCWBBvihhjF7FGU=
+			</data>
+			<key>hash2</key>
+			<data>
+			BiKgpqj6MPYMBJMNATn9BBFs4kEVIsKesKCM9MdyB+Y=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/gevent/_semaphore.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			YiIz8KZVoufcS3jyGb2OkYKtVLQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			GdB0ugFs0BlUfRVYb4GGLApchVafhXfHUw9fe8wL4N8=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/gevent/ares.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Trb5EjBRgOhAhyeIeZdvAeQrcF8=
+			</data>
+			<key>hash2</key>
+			<data>
+			/OTdHKMVVK2Sha9PboCaK7tj0az+rkcrT0j0FY0R+vU=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/gevent/libev/_corecffi.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			xtJJiDLuNgrrrkFWZ6ZBt3x13+g=
+			</data>
+			<key>hash2</key>
+			<data>
+			ANKFPFBWxxsnwy5snfRBRD8ykcEYsWtApgk5JL0kjfU=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/gevent/libev/corecext.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			W3XnErv3M6LcciREgR1fGq6ARxY=
+			</data>
+			<key>hash2</key>
+			<data>
+			gYvYM6TNtmn79zQcgc5/l1QpmFNgz2Jy6FPn2iBwURU=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/greenlet.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			ENIQ+SrV9/ZE6U3yuwNCbWWXzmc=
+			</data>
+			<key>hash2</key>
+			<data>
+			O8wkS3OYPeAnVXzXfGuK+nFuX03knXqCKWdhFn5EFCw=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/grp.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			1stmkZi9d9vXR5bbE4JxDxDSCk8=
+			</data>
+			<key>hash2</key>
+			<data>
+			jei5qbmgARe5nseZouu3p/OFH1yuPSef7MhdQnlBt8s=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/itertools.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			8btkPLcWEfsIhvSyWuDxrorzUCk=
+			</data>
+			<key>hash2</key>
+			<data>
+			uSdAP+JRFnxE6vNFZ/b24jTKMSgz7GiTA6YNvsfOkoA=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/math.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			N5Pl35QYkqfvKpNMmD/jSxdANQw=
+			</data>
+			<key>hash2</key>
+			<data>
+			OGkmekMUievOXWT2GPSowR0bCDOShq5ZFCJ+eCwWyCw=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/mmap.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			o72JC2iJ/3FOOksnZmXPR9PvvOQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			H5Y6yjsEkLgnvvQeBG8j8VwqWE+AdXgFypbQ+CDXZik=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/msgpack/_packer.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			VBq28Wqg7fCSorHj8a7FR96+4bU=
+			</data>
+			<key>hash2</key>
+			<data>
+			/+6DAr6SNK+Da3sRMexgO7NeUkXAmEbl3SRewZRd5O4=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/msgpack/_unpacker.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			75QGEkALo+aIB1viPqMtV+TbrTE=
+			</data>
+			<key>hash2</key>
+			<data>
+			actvd1MhOlDz0AkpQmIDrbrHHiG97UMF8aEG0peGhFk=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/operator.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			N2yF4gxi5Quf95qRm8lD/ynvNuc=
+			</data>
+			<key>hash2</key>
+			<data>
+			oLyJ4lsQpJs57/zs5AxUS0zPvtey3a6CZTABhHVASio=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/parser.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			GCYMtPSWY4FSM0+AHcXPLdvLbRM=
+			</data>
+			<key>hash2</key>
+			<data>
+			6D9Y6lmS75AbtKEp83Ib5ZgZxq9Czv/VzaVYsKuq52s=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/pyexpat.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			3r+XPbTWiO6UD3yVY8VN2eueNIw=
+			</data>
+			<key>hash2</key>
+			<data>
+			yWHSbySpDazc1aCm0ZyEY9c5U4YPfkZh004HeMVBxh8=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/resource.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			4R0LvkxA3yIsAfLL7rA1pfyrd8c=
+			</data>
+			<key>hash2</key>
+			<data>
+			GCIWD5sh24JzK8BP89ZIg/zEt1bQLs6ZrZK88xVUNAA=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/select.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			RqbaLOQ4+95fbNR5SPEcGXSqgCI=
+			</data>
+			<key>hash2</key>
+			<data>
+			kV2m4xMRlzjSfrcqNlMSDKFSTeeek21kHMLcnzpsSsc=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/strop.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			pqe4MNgObGpBabVpJ2Yz/dXL68s=
+			</data>
+			<key>hash2</key>
+			<data>
+			TcwOCb+u2PnbVxhSUiiyBrMlFLnB3XNO1NcklGqB9DU=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/termios.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			imtBFZHqgR7hPpULf0WU2JiQ9x8=
+			</data>
+			<key>hash2</key>
+			<data>
+			SEz7s85TZN4q5YuDVE6dAZ/i8C7N6iMwq3zD+j5Cp3U=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/time.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			MXpd97DkW0r2Kr1pGCC//KwdA9M=
+			</data>
+			<key>hash2</key>
+			<data>
+			264l+qo1seo0Pwg1JX+pQSuOzyNe8GKZo7Gf7eDH9qk=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/unicodedata.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Gi2w3tpVOADSjZMgcTGU7X1Pua4=
+			</data>
+			<key>hash2</key>
+			<data>
+			IPIY2lxzIEtIoENrDNHQ7Artcoe4bXgGHOp/UcDE+CA=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/lib-dynload/zlib.so</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			D+G1syX2neKelHMUy5MRMloYRrE=
+			</data>
+			<key>hash2</key>
+			<data>
+			whtnCKSKsdVXIJlgX9qdegn81Fv/U3vhfEnyITOCqMU=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/site-packages.zip</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			MO+Etq+9dJBzHQjoP5AnKTBbRzo=
+			</data>
+			<key>hash2</key>
+			<data>
+			pWTXhxUu02zNrEdyuyoJeo88LvIgMY9m0tT6igK1ZFY=
+			</data>
+		</dict>
+		<key>Resources/lib/python2.7/site.pyo</key>
+		<dict>
+			<key>symlink</key>
+			<string>../../site.pyo</string>
+		</dict>
+		<key>Resources/site.pyc</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			67uI5Pvb/AHyc5m5MeDL+ygqvY4=
+			</data>
+			<key>hash2</key>
+			<data>
+			p+nAvAv2bFOieA5b71ry4eqhLcfhCb9gP6JVDHbAhAI=
+			</data>
+		</dict>
+		<key>Resources/site.pyo</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			hA3ldAenrwkxaxKW6HT9iHJ6C6M=
+			</data>
+			<key>hash2</key>
+			<data>
+			OUQwFrlcVNacPWtoqcquawxK6ilqxPgxlM01+8sqkTk=
 			</data>
 		</dict>
 		<key>Resources/zeronet.icns</key>
