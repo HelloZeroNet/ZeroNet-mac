@@ -59,9 +59,12 @@ class Db(object):
         self.conn.row_factory = sqlite3.Row
         self.conn.isolation_level = None
         self.cur = self.getCursor()
-        # We need more speed then security
-        self.cur.execute("PRAGMA journal_mode = MEMORY")
-        self.cur.execute("PRAGMA synchronous = OFF")
+        if config.db_mode == "security":
+            self.cur.execute("PRAGMA journal_mode = WAL")
+            self.cur.execute("PRAGMA synchronous = NORMAL")
+        else:
+            self.cur.execute("PRAGMA journal_mode = MEMORY")
+            self.cur.execute("PRAGMA synchronous = OFF")
         if self.foreign_keys:
             self.execute("PRAGMA foreign_keys = ON")
         self.log.debug(
@@ -217,9 +220,9 @@ class Db(object):
 
         return changed_tables
 
-    # Load json file to db
+    # Update json file to db
     # Return: True if matched
-    def loadJson(self, file_path, file=None, cur=None):
+    def updateJson(self, file_path, file=None, cur=None):
         if not file_path.startswith(self.db_dir):
             return False  # Not from the db dir: Skipping
         relative_path = re.sub("^%s" % self.db_dir, "", file_path)  # File path realative to db file
@@ -256,7 +259,7 @@ class Db(object):
             commit_after_done = False
 
         # Row for current json file if required
-        if filter(lambda dbmap: "to_keyvalue" in dbmap or "to_table" in dbmap, matched_maps):
+        if not data or filter(lambda dbmap: "to_keyvalue" in dbmap or "to_table" in dbmap, matched_maps):
             json_row = cur.getJsonRow(relative_path)
 
         # Check matched mappings in schema
@@ -378,10 +381,10 @@ if __name__ == "__main__":
     cur = dbjson.getCursor()
     cur.execute("BEGIN")
     cur.logging = False
-    dbjson.loadJson("data/users/content.json", cur=cur)
+    dbjson.updateJson("data/users/content.json", cur=cur)
     for user_dir in os.listdir("data/users"):
         if os.path.isdir("data/users/%s" % user_dir):
-            dbjson.loadJson("data/users/%s/data.json" % user_dir, cur=cur)
+            dbjson.updateJson("data/users/%s/data.json" % user_dir, cur=cur)
             # print ".",
     cur.logging = True
     cur.execute("COMMIT")

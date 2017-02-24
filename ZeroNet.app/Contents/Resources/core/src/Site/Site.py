@@ -877,9 +877,9 @@ class Site(object):
     def needConnections(self, num=5):
         need = min(len(self.peers), num, config.connected_limit)  # Need 5 peer, but max total peers
 
-        connected = self.getConnectedPeers()
+        connected = len(self.getConnectedPeers())
 
-        self.log.debug("Need connections: %s, Current: %s, Total: %s" % (need, len(connected), len(self.peers)))
+        self.log.debug("Need connections: %s, Current: %s, Total: %s" % (need, connected, len(self.peers)))
 
         if connected < need:  # Need more than we have
             for peer in self.peers.values():
@@ -1055,7 +1055,11 @@ class Site(object):
         if inner_path == "content.json":
             self.content_updated = False
             self.log.debug("Can't update content.json")
-        if inner_path in self.bad_files:
+        if inner_path in self.bad_files and self.connection_server.has_internet:
             self.bad_files[inner_path] = self.bad_files.get(inner_path, 0) + 1
 
         self.updateWebsocket(file_failed=inner_path)
+
+        if self.bad_files.get(inner_path, 0) > 30:
+            self.log.debug("Giving up on %s" % inner_path)
+            del self.bad_files[inner_path]  # Give up after 30 tries

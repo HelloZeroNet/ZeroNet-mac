@@ -157,6 +157,9 @@ class UiRequest(object):
 
         if content_type == "text/html":
             content_type = "text/html; charset=utf-8"
+        if content_type == "text/plain":
+            content_type = "text/plain; charset=utf-8"
+
         cacheable_type = (
             content_type == "text/css" or content_type.startswith("image") or content_type.startswith("video") or
             self.env["REQUEST_METHOD"] == "OPTIONS" or content_type == "application/javascript"
@@ -240,7 +243,11 @@ class UiRequest(object):
         address = re.sub("/.*", "", path.lstrip("/"))
         if self.isProxyRequest() and (not path or "/" in path[1:]):
             file_url = re.sub(".*/", "", inner_path)
-            root_url = "/"
+            if self.env["HTTP_HOST"] == "zero":
+                root_url = "/" + address + "/"
+            else:
+                root_url = "/"
+
         else:
             file_url = "/" + address + "/" + inner_path
             root_url = "/" + address + "/"
@@ -325,6 +332,9 @@ class UiRequest(object):
         path = path.replace("/index.html/", "/")  # Base Backward compatibility fix
         if path.endswith("/"):
             path = path + "index.html"
+
+        if ".." in path:
+            raise Exception("Invalid path")
 
         match = re.match("/media/(?P<address>[A-Za-z0-9\._-]+)/(?P<inner_path>.*)", path)
         if match:

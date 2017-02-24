@@ -38,11 +38,11 @@
 		</data>
 		<key>Resources/core/README-zh-cn.md</key>
 		<data>
-		KKz4tRqoXcml+EbKtB4sVxngvcQ=
+		+caXqRx3Kewvs3wWpl3wg1A2w8g=
 		</data>
 		<key>Resources/core/README.md</key>
 		<data>
-		s7vF0md/Co4SyAuWpbsObNSr4Hc=
+		flWxy1YeFi6CgTdqVmhs6mjTfBY=
 		</data>
 		<key>Resources/core/Vagrantfile</key>
 		<data>
@@ -80,9 +80,17 @@
 		<data>
 		qUmYn1iuJjVxl4iB+JHeNaMsHw0=
 		</data>
+		<key>Resources/core/plugins/FilePack/FilePackPlugin.py</key>
+		<data>
+		hR0UEsZaEHBdiNYYNWUvdyY+Rm4=
+		</data>
+		<key>Resources/core/plugins/FilePack/__init__.py</key>
+		<data>
+		upvRxUvhOahIkKGQQ26tq6Fe5FU=
+		</data>
 		<key>Resources/core/plugins/MergerSite/MergerSitePlugin.py</key>
 		<data>
-		I7PhmWykVOt13hFQCr9Q1E+bVrs=
+		FP7KkSPDaUBzvAW4mK4ONJufwaw=
 		</data>
 		<key>Resources/core/plugins/MergerSite/__init__.py</key>
 		<data>
@@ -96,6 +104,10 @@
 		<data>
 		lpK1YYXcTvsqtvfoK3m+VEIe4CY=
 		</data>
+		<key>Resources/core/plugins/MergerSite/languages/it.json</key>
+		<data>
+		FRVAefPHeK7sVMzj2KsNIt7QBVo=
+		</data>
 		<key>Resources/core/plugins/MergerSite/languages/tr.json</key>
 		<data>
 		ww7ooz4qdem8NWC1amrIhVQHsgs=
@@ -108,9 +120,33 @@
 		<data>
 		1g6Gk1BnSeLuY8QvnL4sm0NG19s=
 		</data>
+		<key>Resources/core/plugins/Mute/MutePlugin.py</key>
+		<data>
+		g+bwIb4obaX5x3vBFrx7TFc44Cg=
+		</data>
+		<key>Resources/core/plugins/Mute/__init__.py</key>
+		<data>
+		P33u6LhxnEDF/qFlqXbWPTUgltY=
+		</data>
+		<key>Resources/core/plugins/Mute/languages/hu.json</key>
+		<data>
+		ue1pPROWoCiw1Rh/5a3ZRbCf/lU=
+		</data>
+		<key>Resources/core/plugins/Mute/languages/it.json</key>
+		<data>
+		OIuxMKIPnIofWVH3hf5L1tgvuyI=
+		</data>
+		<key>Resources/core/plugins/Mute/languages/zh-tw.json</key>
+		<data>
+		MnAUYGNm8q8KZqXAwlAvUAZEIUA=
+		</data>
+		<key>Resources/core/plugins/Mute/languages/zh.json</key>
+		<data>
+		RlCpSBwmD3jqqJeWCU4wSyzfJB0=
+		</data>
 		<key>Resources/core/plugins/Newsfeed/NewsfeedPlugin.py</key>
 		<data>
-		TFW7dft3Nt/uQSEro8chA1gOYFE=
+		4+UIRWKsveVcX9RAP1St4CK4Evo=
 		</data>
 		<key>Resources/core/plugins/Newsfeed/__init__.py</key>
 		<data>
@@ -118,7 +154,7 @@
 		</data>
 		<key>Resources/core/plugins/OptionalManager/ContentDbPlugin.py</key>
 		<data>
-		umkC+GJ+/H7gbQVmZXoVII/jxbg=
+		bgIAUtZJhoOqqv15CgXIlAQfVhc=
 		</data>
 		<key>Resources/core/plugins/OptionalManager/OptionalManagerPlugin.py</key>
 		<data>
@@ -170,7 +206,7 @@
 		</data>
 		<key>Resources/core/plugins/Sidebar/SidebarPlugin.py</key>
 		<data>
-		6aCin4J82+cremUm9iCBdf4vgDs=
+		2EcXaaltpizxfcBPWxi/e+qZpVg=
 		</data>
 		<key>Resources/core/plugins/Sidebar/__init__.py</key>
 		<data>
@@ -318,7 +354,7 @@
 		</data>
 		<key>Resources/core/plugins/Stats/StatsPlugin.py</key>
 		<data>
-		/7PsE2bje2YiNs3v3KM9egK2OlU=
+		ioYosnZNQV8PVho8CIHoj+PMfdM=
 		</data>
 		<key>Resources/core/plugins/Stats/__init__.py</key>
 		<data>
@@ -334,7 +370,7 @@
 		</data>
 		<key>Resources/core/plugins/Trayicon/TrayiconPlugin.py</key>
 		<data>
-		9/BV42q8mUAzMcZYxRKah3/cC6g=
+		CiVpv8ytMmiq8ds7IiVT+7Iuh1A=
 		</data>
 		<key>Resources/core/plugins/Trayicon/__init__.py</key>
 		<data>
@@ -347,6 +383,10 @@
 		<key>Resources/core/plugins/Trayicon/languages/hu.json</key>
 		<data>
 		08L3Q236yBNBr+U4L/tAJZ+qXc4=
+		</data>
+		<key>Resources/core/plugins/Trayicon/languages/it.json</key>
+		<data>
+		DoWa+JqgDnVMQmyVL+GkN5Y6QtQ=
 		</data>
 		<key>Resources/core/plugins/Trayicon/languages/tr.json</key>
 		<data>
@@ -366,7 +406,7 @@
 		</data>
 		<key>Resources/core/plugins/Trayicon/lib/notificationicon.py</key>
 		<data>
-		XfWVffjEzyAghgrk8TbDOWCY8HU=
+		ZBU9glWmeHdhQksj5NaCP+5qzwg=
 		</data>
 		<key>Resources/core/plugins/Trayicon/lib/winfolders.py</key>
 		<data>
@@ -438,7 +478,7 @@
 		</data>
 		<key>Resources/core/plugins/disabled-Multiuser/MultiuserPlugin.py</key>
 		<data>
-		INNZDn3KRNN5I9FE/zTx1YdQdPo=
+		1p6frKRDDyCGZ6KJ2acCAG9iOY4=
 		</data>
 		<key>Resources/core/plugins/disabled-Multiuser/UserPlugin.py</key>
 		<data>
@@ -458,7 +498,7 @@
 		</data>
 		<key>Resources/core/plugins/disabled-UiPassword/login.html</key>
 		<data>
-		F03oMRJXdVjlFJ61HdnmQHvqoOc=
+		MxVMMOEYTYGE72F17K0QiPK7G44=
 		</data>
 		<key>Resources/core/plugins/disabled-Zeroname-local/SiteManagerPlugin.py</key>
 		<data>
@@ -490,15 +530,15 @@
 		</data>
 		<key>Resources/core/src/Config.py</key>
 		<data>
-		/WwPLMLsiWntdPVMOBDZ1Gx3Lx0=
+		4srPT1qLS3+JBKoOYB9X3oXnp7s=
 		</data>
 		<key>Resources/core/src/Connection/Connection.py</key>
 		<data>
-		Z+zeY6JsXCoELH3qa2xxnKHc2is=
+		nPDC45FqiJjceiUhauA/ki0V4mE=
 		</data>
 		<key>Resources/core/src/Connection/ConnectionServer.py</key>
 		<data>
-		tJVveSQNm/kc2Ibfky0I1gKtw3g=
+		kdswv54Uvz1OXogU+Z86iy/u6yU=
 		</data>
 		<key>Resources/core/src/Connection/__init__.py</key>
 		<data>
@@ -506,7 +546,7 @@
 		</data>
 		<key>Resources/core/src/Content/ContentDb.py</key>
 		<data>
-		76v8ftat2N9fGkKf92J/ayMAj9c=
+		r2HQaxaB0oULra/VxfgTxq6s4X0=
 		</data>
 		<key>Resources/core/src/Content/ContentDbDict.py</key>
 		<data>
@@ -542,7 +582,7 @@
 		</data>
 		<key>Resources/core/src/Db/Db.py</key>
 		<data>
-		TNew9cyPLXUmx1ASFbUvhrGqX2I=
+		w7z4jL/WGg8GaMiEV7zFuv4vOD0=
 		</data>
 		<key>Resources/core/src/Db/DbCursor.py</key>
 		<data>
@@ -578,11 +618,11 @@
 		</data>
 		<key>Resources/core/src/File/FileRequest.py</key>
 		<data>
-		kEMf8MGn0orJgQeoVRNrWwLfggY=
+		6G7rWp68T4X7bavG/VGm8RKtLJI=
 		</data>
 		<key>Resources/core/src/File/FileServer.py</key>
 		<data>
-		KufYWBnDBO+rTfijzVZBuOnV3U8=
+		xU6hIGl3ETxfekWngAneUXGsReM=
 		</data>
 		<key>Resources/core/src/File/__init__.py</key>
 		<data>
@@ -610,15 +650,15 @@
 		</data>
 		<key>Resources/core/src/Site/Site.py</key>
 		<data>
-		2hmcvpia7XSol4/sbXSzogNiA3o=
+		wSjEvKbHcOfgBlC1iOnrjaVtoE4=
 		</data>
 		<key>Resources/core/src/Site/SiteManager.py</key>
 		<data>
-		Sr0t/b+eA5NWEBvxpVDao3OeHSE=
+		j1t0MyWA2VyxLcmio0mncFlHblY=
 		</data>
 		<key>Resources/core/src/Site/SiteStorage.py</key>
 		<data>
-		PiVWrfVjdKBBD0+vxJPJwRPwA8A=
+		qIE6GeAlL48X/1dOmQ4jCbLH6A4=
 		</data>
 		<key>Resources/core/src/Site/__init__.py</key>
 		<data>
@@ -658,7 +698,7 @@
 		</data>
 		<key>Resources/core/src/Test/TestDb.py</key>
 		<data>
-		BkKeGLryLVBRW9rfOAmFtGgB7/A=
+		dswN4hNFQw5cScraKI9saKJqrqc=
 		</data>
 		<key>Resources/core/src/Test/TestDbQuery.py</key>
 		<data>
@@ -794,23 +834,23 @@
 		</data>
 		<key>Resources/core/src/Translate/languages/zh-tw.json</key>
 		<data>
-		hMWUcYhwKfbDHQNN2yUyMa1JaoM=
+		4iH8hCbJJTt/9H7HNfmb72QhXSg=
 		</data>
 		<key>Resources/core/src/Translate/languages/zh.json</key>
 		<data>
-		RjsvidBKeCS7d6mV/pz2vcU63qg=
+		yhEkUPrYGH0RD3QkboKsnvH+gVk=
 		</data>
 		<key>Resources/core/src/Ui/UiRequest.py</key>
 		<data>
-		/vqXS/aLGi66fjALNW6idpbaiB8=
+		IzZqJHgeGtv+RzMuO8IKGcy835Y=
 		</data>
 		<key>Resources/core/src/Ui/UiServer.py</key>
 		<data>
-		cnG5wSp+PUJ3Yzg5cyPbAR4pGCI=
+		GJumRRBYe9d8a5p+JsequgbmAOU=
 		</data>
 		<key>Resources/core/src/Ui/UiWebsocket.py</key>
 		<data>
-		fcNzNAR2aQPYbyGxujO+8Qszpao=
+		FD93+bBiSLjQWyif3GEnRKHDqwI=
 		</data>
 		<key>Resources/core/src/Ui/__init__.py</key>
 		<data>
@@ -830,7 +870,7 @@
 		</data>
 		<key>Resources/core/src/Ui/media/Wrapper.coffee</key>
 		<data>
-		7+QUTbQyvFuG/ehphS4l1Ui901E=
+		OITG7cAyOpSuwUImJQ+DKEFuZ/s=
 		</data>
 		<key>Resources/core/src/Ui/media/Wrapper.css</key>
 		<data>
@@ -842,7 +882,7 @@
 		</data>
 		<key>Resources/core/src/Ui/media/all.js</key>
 		<data>
-		3QPiU2Rpcdn3GNtob0EnOhbXxWs=
+		0fpFaAZfnY2GHtBdYi7CI+8HqPM=
 		</data>
 		<key>Resources/core/src/Ui/media/img/favicon.ico</key>
 		<data>
@@ -906,7 +946,7 @@
 		</data>
 		<key>Resources/core/src/Worker/WorkerManager.py</key>
 		<data>
-		DgKj/XV3jE4eMvTw1YEzw56uZ6Y=
+		RQvrV4PS69xsEsRFHvvU1Nq9S0o=
 		</data>
 		<key>Resources/core/src/Worker/__init__.py</key>
 		<data>
@@ -1430,7 +1470,7 @@
 		</data>
 		<key>Resources/core/src/main.py</key>
 		<data>
-		aQ9NOdIeDLUEgqeKEobUCBGWF5Y=
+		HpCjK9OpGU5mWkVJREjXud1FjP4=
 		</data>
 		<key>Resources/core/src/util/Diff.py</key>
 		<data>
@@ -1462,7 +1502,7 @@
 		</data>
 		<key>Resources/core/src/util/SocksProxy.py</key>
 		<data>
-		XZZDcoOK7cOrorV4wJtFM2RodsA=
+		Dle5gZnkKipmSI4dVnZLRECFmLE=
 		</data>
 		<key>Resources/core/src/util/SslPatch.py</key>
 		<data>
@@ -1923,22 +1963,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			KKz4tRqoXcml+EbKtB4sVxngvcQ=
+			+caXqRx3Kewvs3wWpl3wg1A2w8g=
 			</data>
 			<key>hash2</key>
 			<data>
-			Bmt7VVPN9Wph5CCmHG64nHK25dgzAYDtG5XntO8ZZQA=
+			DLtKStYTV1//PVpII1NsthLtZfiwlWpQGV0GKlViSz0=
 			</data>
 		</dict>
 		<key>Resources/core/README.md</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			s7vF0md/Co4SyAuWpbsObNSr4Hc=
+			flWxy1YeFi6CgTdqVmhs6mjTfBY=
 			</data>
 			<key>hash2</key>
 			<data>
-			BRVl+gL+8U2pXGk7pqvoJ7VWfhRiFvs26blN1vvw5gI=
+			2kssqdYINlA4EO3rPdi0wTjLR8tLTB78edhwAhGuQhM=
 			</data>
 		</dict>
 		<key>Resources/core/Vagrantfile</key>
@@ -2040,15 +2080,37 @@
 			dgiRbOvwAC1aUGpBnD1Ls6V/tAvqjKPkXBANi3ffJ3c=
 			</data>
 		</dict>
+		<key>Resources/core/plugins/FilePack/FilePackPlugin.py</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			hR0UEsZaEHBdiNYYNWUvdyY+Rm4=
+			</data>
+			<key>hash2</key>
+			<data>
+			7taFt7WzuM3Ih+HXsBkR5EORxd3uDiFoXZgFvZRZ6JM=
+			</data>
+		</dict>
+		<key>Resources/core/plugins/FilePack/__init__.py</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			upvRxUvhOahIkKGQQ26tq6Fe5FU=
+			</data>
+			<key>hash2</key>
+			<data>
+			GTRGE/6dMkG6xY6xVtvxSORcpjlldqVvfhrKUmmb7F8=
+			</data>
+		</dict>
 		<key>Resources/core/plugins/MergerSite/MergerSitePlugin.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			I7PhmWykVOt13hFQCr9Q1E+bVrs=
+			FP7KkSPDaUBzvAW4mK4ONJufwaw=
 			</data>
 			<key>hash2</key>
 			<data>
-			XMkSmHP6g1pCBWriGoBXcHNZRExPiV8x1zuo043w2xo=
+			c8pgUIsu4tqSP69n3HIQQQoXPVvnmgZZ2OZGgjRvyQ4=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/MergerSite/__init__.py</key>
@@ -2084,6 +2146,17 @@
 			k/NZX7EHQFAzeeHaL4k4hcrCIOEbpqwb9PcuYN24JGk=
 			</data>
 		</dict>
+		<key>Resources/core/plugins/MergerSite/languages/it.json</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			FRVAefPHeK7sVMzj2KsNIt7QBVo=
+			</data>
+			<key>hash2</key>
+			<data>
+			8sfKHQNuX7G1NaJjf980n3FHaHm4QKgw3LVonzXvFBA=
+			</data>
+		</dict>
 		<key>Resources/core/plugins/MergerSite/languages/tr.json</key>
 		<dict>
 			<key>hash</key>
@@ -2117,15 +2190,81 @@
 			GuPopWEtqF7Ik3A5PFvvRzaTB3/mZZR6GZJ9uo1Nk4Y=
 			</data>
 		</dict>
+		<key>Resources/core/plugins/Mute/MutePlugin.py</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			g+bwIb4obaX5x3vBFrx7TFc44Cg=
+			</data>
+			<key>hash2</key>
+			<data>
+			nKTmNLLVNVhNQztjhUZXAHaA+PJKsHmD6mHrq3tr1oc=
+			</data>
+		</dict>
+		<key>Resources/core/plugins/Mute/__init__.py</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			P33u6LhxnEDF/qFlqXbWPTUgltY=
+			</data>
+			<key>hash2</key>
+			<data>
+			+gx3fOi45Sjc9kGrYSP/lHCo8w5d/bKB7TgLj5gf/CE=
+			</data>
+		</dict>
+		<key>Resources/core/plugins/Mute/languages/hu.json</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			ue1pPROWoCiw1Rh/5a3ZRbCf/lU=
+			</data>
+			<key>hash2</key>
+			<data>
+			vfutvs4NgoTQU5y1DXcEUQLnUs37wXPbqw8BpR+GNlo=
+			</data>
+		</dict>
+		<key>Resources/core/plugins/Mute/languages/it.json</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			OIuxMKIPnIofWVH3hf5L1tgvuyI=
+			</data>
+			<key>hash2</key>
+			<data>
+			ia+znXkcXaUKqrleFyxP0DDwQwdVxdaN6ZNdddnowoU=
+			</data>
+		</dict>
+		<key>Resources/core/plugins/Mute/languages/zh-tw.json</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			MnAUYGNm8q8KZqXAwlAvUAZEIUA=
+			</data>
+			<key>hash2</key>
+			<data>
+			TP8AN4FTiPAD0WILRIfsEfcDmvSSsk0bL7ZLyVX7XBc=
+			</data>
+		</dict>
+		<key>Resources/core/plugins/Mute/languages/zh.json</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			RlCpSBwmD3jqqJeWCU4wSyzfJB0=
+			</data>
+			<key>hash2</key>
+			<data>
+			WvTEXAHu/7NT3vhXNKNEEsCEUllm2bHQSN83wLcRR+o=
+			</data>
+		</dict>
 		<key>Resources/core/plugins/Newsfeed/NewsfeedPlugin.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			TFW7dft3Nt/uQSEro8chA1gOYFE=
+			4+UIRWKsveVcX9RAP1St4CK4Evo=
 			</data>
 			<key>hash2</key>
 			<data>
-			cmRATO4AQK/PELJEQy3QkElsc290FdQOSnwf+FsucaY=
+			Phgd5GQwU8bF+QvMJQMSE9dh7iQuiAhvqoHvxxCtX08=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/Newsfeed/__init__.py</key>
@@ -2143,11 +2282,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			umkC+GJ+/H7gbQVmZXoVII/jxbg=
+			bgIAUtZJhoOqqv15CgXIlAQfVhc=
 			</data>
 			<key>hash2</key>
 			<data>
-			NEbX+jJySAim7KvKskUmzR9Z4aMHpY0SCKC1jjXIxTI=
+			aBSsn55DSQLmPxaOVB8hsk2LhSoC2Ga8vSQT5Q0XLRw=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/OptionalManager/OptionalManagerPlugin.py</key>
@@ -2286,11 +2425,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			6aCin4J82+cremUm9iCBdf4vgDs=
+			2EcXaaltpizxfcBPWxi/e+qZpVg=
 			</data>
 			<key>hash2</key>
 			<data>
-			WBciGUEJz87I628xRNRc0qDTikBXWGPVOTt8bNjLCCA=
+			K/IXm263qi1IbzKjhw7FsXfD3/A5Foc3njDvQ7w+Hks=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/Sidebar/__init__.py</key>
@@ -2693,11 +2832,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			/7PsE2bje2YiNs3v3KM9egK2OlU=
+			ioYosnZNQV8PVho8CIHoj+PMfdM=
 			</data>
 			<key>hash2</key>
 			<data>
-			eMPW77Lic2Cl0CNSDjT7fzm9CjBZUtkCFzVVvltpwHc=
+			36ZkxB+frf2/G61HYUAhYI4AtEuaQ7QD5ZjBzd/AMmU=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/Stats/__init__.py</key>
@@ -2737,11 +2876,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			9/BV42q8mUAzMcZYxRKah3/cC6g=
+			CiVpv8ytMmiq8ds7IiVT+7Iuh1A=
 			</data>
 			<key>hash2</key>
 			<data>
-			X6jIUdfjc3LZOTgiKUqlHBb1YQVPRxW08SsX6x7EIwQ=
+			KmdKrcnpn+3CcWuoWaYIV3Q1cA2eSh689Nbw4ayUeyc=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/Trayicon/__init__.py</key>
@@ -2775,6 +2914,17 @@
 			<key>hash2</key>
 			<data>
 			TDhl4C6Vc/Z7KYAkG7aK9p0s4UUOQHGr3Ca8RBmQIJw=
+			</data>
+		</dict>
+		<key>Resources/core/plugins/Trayicon/languages/it.json</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			DoWa+JqgDnVMQmyVL+GkN5Y6QtQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			oVtTY2WQXg3QDb+YU3NZQYQmo5QFZ/p5wCHh+y8M+Jw=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/Trayicon/languages/tr.json</key>
@@ -2825,11 +2975,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			XfWVffjEzyAghgrk8TbDOWCY8HU=
+			ZBU9glWmeHdhQksj5NaCP+5qzwg=
 			</data>
 			<key>hash2</key>
 			<data>
-			SS/HWsIogLRu12xbJhQxBEJoN0O8+t+K8i84vYWdyi4=
+			wf3GcSHoVuSOnBC3ZxyhfUCEdqILJfbTfRLBXXMuHqA=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/Trayicon/lib/winfolders.py</key>
@@ -3023,11 +3173,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			INNZDn3KRNN5I9FE/zTx1YdQdPo=
+			1p6frKRDDyCGZ6KJ2acCAG9iOY4=
 			</data>
 			<key>hash2</key>
 			<data>
-			DzaNwVLW/wcRz1xtHv6SnSR1ivVseKgq/9vGEhiEm9E=
+			LiaNKkxe9km+k2oRPd9Ng5qf8C4aVvH0hxMp2v+BPDU=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/disabled-Multiuser/UserPlugin.py</key>
@@ -3078,11 +3228,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			F03oMRJXdVjlFJ61HdnmQHvqoOc=
+			MxVMMOEYTYGE72F17K0QiPK7G44=
 			</data>
 			<key>hash2</key>
 			<data>
-			I81xhgU+tPxELDHT0wknIROd/iSCFV1d88TcwwrrS5w=
+			eiQ/CptOpQjEXH1FIZvwgCm91gDk9ZQt+7/NJh745Nw=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/disabled-Zeroname-local/SiteManagerPlugin.py</key>
@@ -3166,33 +3316,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			/WwPLMLsiWntdPVMOBDZ1Gx3Lx0=
+			4srPT1qLS3+JBKoOYB9X3oXnp7s=
 			</data>
 			<key>hash2</key>
 			<data>
-			YV5taHjprBCklwr6mGNoOLCOFsjVFdjcJ606eJtAeiU=
+			Daddhra4Liqmbdt2bKXve4Fj8AmyepGDJTnQEdl8ykc=
 			</data>
 		</dict>
 		<key>Resources/core/src/Connection/Connection.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Z+zeY6JsXCoELH3qa2xxnKHc2is=
+			nPDC45FqiJjceiUhauA/ki0V4mE=
 			</data>
 			<key>hash2</key>
 			<data>
-			qOHG7pYdWIMsw70NNvdGW4lB3KjJsQi1sOl/lHP9w7s=
+			c8q7WDJVL9xsdewyc6MZkto2sxgLkquaknabRPG75/w=
 			</data>
 		</dict>
 		<key>Resources/core/src/Connection/ConnectionServer.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			tJVveSQNm/kc2Ibfky0I1gKtw3g=
+			kdswv54Uvz1OXogU+Z86iy/u6yU=
 			</data>
 			<key>hash2</key>
 			<data>
-			eFpOePxY58AbdGibeqZYoAurjXmHtsiwtCoaZYTSSuo=
+			cHb9Ht2N/IBP5ikS256JIMuAZ6tS17Z3NN7L+EVRvd4=
 			</data>
 		</dict>
 		<key>Resources/core/src/Connection/__init__.py</key>
@@ -3210,11 +3360,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			76v8ftat2N9fGkKf92J/ayMAj9c=
+			r2HQaxaB0oULra/VxfgTxq6s4X0=
 			</data>
 			<key>hash2</key>
 			<data>
-			1+5WAlUGyNmPX99oEO1UnlbPlegUL259uX5BpyF7aYw=
+			cEoenPwj5TUymUJjHkD6YtBZigQn8x2dRuZYU7jtQm0=
 			</data>
 		</dict>
 		<key>Resources/core/src/Content/ContentDbDict.py</key>
@@ -3309,11 +3459,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			TNew9cyPLXUmx1ASFbUvhrGqX2I=
+			w7z4jL/WGg8GaMiEV7zFuv4vOD0=
 			</data>
 			<key>hash2</key>
 			<data>
-			FiiMc7TkXuPkAGnGPKzIYwC6J89QAmDtuwRHLx3zxwA=
+			XoBeY3bO3kROJxtj/GlgZhfKVjd4Sn7+Yfja3LvDcfU=
 			</data>
 		</dict>
 		<key>Resources/core/src/Db/DbCursor.py</key>
@@ -3408,22 +3558,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			kEMf8MGn0orJgQeoVRNrWwLfggY=
+			6G7rWp68T4X7bavG/VGm8RKtLJI=
 			</data>
 			<key>hash2</key>
 			<data>
-			p8CA+YujjZiYrIm76hhqEUCZH8a3QD4veIYLsBXWhao=
+			KtWD2qwCELEPXikGtcyBL6ByMVkCjpB//zK48/uHdRI=
 			</data>
 		</dict>
 		<key>Resources/core/src/File/FileServer.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			KufYWBnDBO+rTfijzVZBuOnV3U8=
+			xU6hIGl3ETxfekWngAneUXGsReM=
 			</data>
 			<key>hash2</key>
 			<data>
-			8MDZzaFUtZWHiuyQa+wtr2ScPy0YUz6cyNfJ7dRzl+4=
+			avHCwyf5bKv6jgYx3hcFzMJQRN6Pv+D5eRFvMQG78xw=
 			</data>
 		</dict>
 		<key>Resources/core/src/File/__init__.py</key>
@@ -3496,33 +3646,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			2hmcvpia7XSol4/sbXSzogNiA3o=
+			wSjEvKbHcOfgBlC1iOnrjaVtoE4=
 			</data>
 			<key>hash2</key>
 			<data>
-			XM5vgOu0SUdm4zcrOkEqW03Q8V5lcTkoY8wilCiNSrA=
+			frLBr5wFw4xLdYvtgRnjGzbQRP/7PyWfx8VRTX4grcQ=
 			</data>
 		</dict>
 		<key>Resources/core/src/Site/SiteManager.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Sr0t/b+eA5NWEBvxpVDao3OeHSE=
+			j1t0MyWA2VyxLcmio0mncFlHblY=
 			</data>
 			<key>hash2</key>
 			<data>
-			n4wD+4z4n60hmAc8NVNVzaoqwWuSqg2DFJM1FJQkVuo=
+			y5LWOcLchLr3ZbT/O8Q+MM+zImPk9gauJB8AnKrmFUE=
 			</data>
 		</dict>
 		<key>Resources/core/src/Site/SiteStorage.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			PiVWrfVjdKBBD0+vxJPJwRPwA8A=
+			qIE6GeAlL48X/1dOmQ4jCbLH6A4=
 			</data>
 			<key>hash2</key>
 			<data>
-			A8o0xAaZhXFrRUA8rDvjGg6bnl0+0vDQFCmmst+HxHY=
+			3aJHdMJmWZgOUzuaGcE+KcoMI/P+U7hS9DNfB7tCfws=
 			</data>
 		</dict>
 		<key>Resources/core/src/Site/__init__.py</key>
@@ -3628,11 +3778,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			BkKeGLryLVBRW9rfOAmFtGgB7/A=
+			dswN4hNFQw5cScraKI9saKJqrqc=
 			</data>
 			<key>hash2</key>
 			<data>
-			0149VZmvBC6wnUrk/tPxoNALkPw26nJFrtjV5DksRHE=
+			VlyyhIvnhaf4ZMKFQE/Ge0A/6xZ41hMNzKiS9lI+R04=
 			</data>
 		</dict>
 		<key>Resources/core/src/Test/TestDbQuery.py</key>
@@ -4002,55 +4152,55 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			hMWUcYhwKfbDHQNN2yUyMa1JaoM=
+			4iH8hCbJJTt/9H7HNfmb72QhXSg=
 			</data>
 			<key>hash2</key>
 			<data>
-			5vejM6uPTmO8JjzrjmylK199nDhABkuAlutopVXqI7c=
+			O6VYFx126LRuJzgrd14NcobJtqXWXJWhSmNxNI7UZRo=
 			</data>
 		</dict>
 		<key>Resources/core/src/Translate/languages/zh.json</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			RjsvidBKeCS7d6mV/pz2vcU63qg=
+			yhEkUPrYGH0RD3QkboKsnvH+gVk=
 			</data>
 			<key>hash2</key>
 			<data>
-			b5Exid0NGC/fpAj9q4RtZW4sxKRXQGn+BkDTShQYRng=
+			/ua2SbVpF/EcWQR6RCxlO1o8hq17tGecQcTIY/1LkDU=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/UiRequest.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			/vqXS/aLGi66fjALNW6idpbaiB8=
+			IzZqJHgeGtv+RzMuO8IKGcy835Y=
 			</data>
 			<key>hash2</key>
 			<data>
-			d7RJ5O5CqeW5RWp5lZEcdVQAcDMxPZlrBz/tr4Oy1X8=
+			aV0SZyHvMJ3Qhst3exw3ua59y3WQghvG0dZxDx8ygUY=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/UiServer.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			cnG5wSp+PUJ3Yzg5cyPbAR4pGCI=
+			GJumRRBYe9d8a5p+JsequgbmAOU=
 			</data>
 			<key>hash2</key>
 			<data>
-			3ie/23iy0IJUU6EAC9sDTYrMrwikE9ggBYAZSSDgeww=
+			/hWPnQI4hm7sAYqYgirjFt2PG3b3upu0qN6l6/rRejY=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/UiWebsocket.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			fcNzNAR2aQPYbyGxujO+8Qszpao=
+			FD93+bBiSLjQWyif3GEnRKHDqwI=
 			</data>
 			<key>hash2</key>
 			<data>
-			ru8dH0PNUswmkMQ5MVxMuz0L7bx1oZXjbu9VhQYoPto=
+			qWZLdmJQcdIl/lItbIaUUOTHCcsoLGmDQXIuB+W2/4w=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/__init__.py</key>
@@ -4101,11 +4251,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			7+QUTbQyvFuG/ehphS4l1Ui901E=
+			OITG7cAyOpSuwUImJQ+DKEFuZ/s=
 			</data>
 			<key>hash2</key>
 			<data>
-			WWZuhfX67PYf5ZCAJztF15BNV283m5MfytMcPj5snAM=
+			jb2X2JMym7zy+3Q19PmcbztEk/ReGZzf2x5dLIh45to=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/media/Wrapper.css</key>
@@ -4134,11 +4284,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			3QPiU2Rpcdn3GNtob0EnOhbXxWs=
+			0fpFaAZfnY2GHtBdYi7CI+8HqPM=
 			</data>
 			<key>hash2</key>
 			<data>
-			lO7vLlHITBx6FafebtBRWp3WjsL0L3PcL3e8HKk825A=
+			Z/W1DzNg01EHk+KVEXOGn3qauL8VTEIosknYVEtHjcY=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/media/img/favicon.ico</key>
@@ -4310,11 +4460,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			DgKj/XV3jE4eMvTw1YEzw56uZ6Y=
+			RQvrV4PS69xsEsRFHvvU1Nq9S0o=
 			</data>
 			<key>hash2</key>
 			<data>
-			8xXIFyAJrVWU5lVf3cVxqBvUJ2paQ+pAynDW7X6AMm8=
+			T+9aJo7sv75hy+rZQgy4UX6w1atDYYhZtgK2gcJdYL0=
 			</data>
 		</dict>
 		<key>Resources/core/src/Worker/__init__.py</key>
@@ -5751,11 +5901,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			aQ9NOdIeDLUEgqeKEobUCBGWF5Y=
+			HpCjK9OpGU5mWkVJREjXud1FjP4=
 			</data>
 			<key>hash2</key>
 			<data>
-			shHBtCE6iUW5TvZk+XCX89gN5vJXmNm/IFvtROULSy4=
+			/171JtJFteiuM7ndsPPo+GlyH21cq+iO4zyrArKpjyA=
 			</data>
 		</dict>
 		<key>Resources/core/src/util/Diff.py</key>
@@ -5839,11 +5989,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			XZZDcoOK7cOrorV4wJtFM2RodsA=
+			Dle5gZnkKipmSI4dVnZLRECFmLE=
 			</data>
 			<key>hash2</key>
 			<data>
-			poSoBusFpYHm9bpPzM9W+PqqAFSw80zgn33kYX/sr7E=
+			Yin+jHt67duAg42e64iQgKnUDDUxCodZjAGwJogqE5k=
 			</data>
 		</dict>
 		<key>Resources/core/src/util/SslPatch.py</key>

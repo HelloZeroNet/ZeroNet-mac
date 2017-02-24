@@ -64,17 +64,12 @@ Decentralized websites using Bitcoin crypto and the BitTorrent network - https:/
 ## How to join
 
 * Download ZeroBundle package:
-  * [Microsoft Windows](https://github.com/HelloZeroNet/ZeroBundle/raw/master/dist/ZeroBundle-win.zip)
-  * [Apple OS X](https://github.com/HelloZeroNet/ZeroBundle/raw/master/dist/ZeroBundle-mac-osx.zip)
+  * [Microsoft Windows](https://github.com/HelloZeroNet/ZeroNet-win/archive/dist/ZeroNet-win.zip)
+  * [Apple macOS](https://github.com/HelloZeroNet/ZeroNet-mac/archive/dist/ZeroNet-mac.zip)
   * [Linux 64bit](https://github.com/HelloZeroNet/ZeroBundle/raw/master/dist/ZeroBundle-linux64.tar.gz)
   * [Linux 32bit](https://github.com/HelloZeroNet/ZeroBundle/raw/master/dist/ZeroBundle-linux32.tar.gz)
 * Unpack anywhere
-* Run `ZeroNet.cmd` (win), `ZeroNet(.app)` (osx), `ZeroNet.sh` (linux)
-* On OSX you may need to make the application executable via `chmod +x ZeroNet.app`
-
-If you get "classic environment no longer supported" error on OS X: Open a Terminal window and drop ZeroNet.app on it
-
-It downloads the latest version of ZeroNet then starts it automatically.
+* Run `ZeroNet.exe` (win), `ZeroNet(.app)` (osx), `ZeroNet.sh` (linux)
 
 ### Linux terminal
 
