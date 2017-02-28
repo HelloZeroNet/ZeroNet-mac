@@ -90,7 +90,7 @@
 		</data>
 		<key>Resources/core/plugins/MergerSite/MergerSitePlugin.py</key>
 		<data>
-		FP7KkSPDaUBzvAW4mK4ONJufwaw=
+		g27rn5MSyLCHpFP7EX8w0FgRyJY=
 		</data>
 		<key>Resources/core/plugins/MergerSite/__init__.py</key>
 		<data>
@@ -198,7 +198,7 @@
 		</data>
 		<key>Resources/core/plugins/PeerDb/PeerDbPlugin.py</key>
 		<data>
-		ki4w2uWTaIqgQbo+STH2gt5u9FM=
+		HyVGuJiBhU8Crt6uejhkOAPbzxQ=
 		</data>
 		<key>Resources/core/plugins/PeerDb/__init__.py</key>
 		<data>
@@ -354,7 +354,7 @@
 		</data>
 		<key>Resources/core/plugins/Stats/StatsPlugin.py</key>
 		<data>
-		ioYosnZNQV8PVho8CIHoj+PMfdM=
+		alZo5p5FQ4YsKe1GH6dwr6I7hJo=
 		</data>
 		<key>Resources/core/plugins/Stats/__init__.py</key>
 		<data>
@@ -530,15 +530,15 @@
 		</data>
 		<key>Resources/core/src/Config.py</key>
 		<data>
-		4srPT1qLS3+JBKoOYB9X3oXnp7s=
+		xOYYAb/gYGZbte3i+32G9OrXo9A=
 		</data>
 		<key>Resources/core/src/Connection/Connection.py</key>
 		<data>
-		nPDC45FqiJjceiUhauA/ki0V4mE=
+		W2ALip8cEkAtWaLHGl9WMslRENo=
 		</data>
 		<key>Resources/core/src/Connection/ConnectionServer.py</key>
 		<data>
-		kdswv54Uvz1OXogU+Z86iy/u6yU=
+		SfGuWAqxXbv/nLXUN+gagE5xt6s=
 		</data>
 		<key>Resources/core/src/Connection/__init__.py</key>
 		<data>
@@ -618,11 +618,11 @@
 		</data>
 		<key>Resources/core/src/File/FileRequest.py</key>
 		<data>
-		6G7rWp68T4X7bavG/VGm8RKtLJI=
+		QTfQfAEAD82gK2xLlw0S/cN8fvI=
 		</data>
 		<key>Resources/core/src/File/FileServer.py</key>
 		<data>
-		xU6hIGl3ETxfekWngAneUXGsReM=
+		y+yk3lTRKx1+9JccScPmd3LEumc=
 		</data>
 		<key>Resources/core/src/File/__init__.py</key>
 		<data>
@@ -630,7 +630,7 @@
 		</data>
 		<key>Resources/core/src/Peer/Peer.py</key>
 		<data>
-		Ccf05Zfh97TLc3IPhSFdytyA8dU=
+		ub5426jHOgFpwf423853ZqvOhik=
 		</data>
 		<key>Resources/core/src/Peer/PeerHashfield.py</key>
 		<data>
@@ -650,7 +650,7 @@
 		</data>
 		<key>Resources/core/src/Site/Site.py</key>
 		<data>
-		wSjEvKbHcOfgBlC1iOnrjaVtoE4=
+		Jwh6ip53GMrX+vz59d2y5eCL8Q0=
 		</data>
 		<key>Resources/core/src/Site/SiteManager.py</key>
 		<data>
@@ -770,7 +770,7 @@
 		</data>
 		<key>Resources/core/src/Test/conftest.py</key>
 		<data>
-		7lFCjdinfjbl06AD56WUFWbBE4c=
+		DSljHgNkrs9wsvHxMa/Ze/kbiR4=
 		</data>
 		<key>Resources/core/src/Test/coverage.ini</key>
 		<data>
@@ -842,7 +842,7 @@
 		</data>
 		<key>Resources/core/src/Ui/UiRequest.py</key>
 		<data>
-		IzZqJHgeGtv+RzMuO8IKGcy835Y=
+		HL/99OLk+4zKGVjCB+vyFZgLl+0=
 		</data>
 		<key>Resources/core/src/Ui/UiServer.py</key>
 		<data>
@@ -946,7 +946,7 @@
 		</data>
 		<key>Resources/core/src/Worker/WorkerManager.py</key>
 		<data>
-		RQvrV4PS69xsEsRFHvvU1Nq9S0o=
+		mYT7Saum8JzCPkxHxKFvjbx3iJc=
 		</data>
 		<key>Resources/core/src/Worker/__init__.py</key>
 		<data>
@@ -2106,11 +2106,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			FP7KkSPDaUBzvAW4mK4ONJufwaw=
+			g27rn5MSyLCHpFP7EX8w0FgRyJY=
 			</data>
 			<key>hash2</key>
 			<data>
-			c8pgUIsu4tqSP69n3HIQQQoXPVvnmgZZ2OZGgjRvyQ4=
+			Q07kNXHzgrfo1WPBTzXgfTawmfNZo060rBtPCJ3X+YI=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/MergerSite/__init__.py</key>
@@ -2403,11 +2403,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ki4w2uWTaIqgQbo+STH2gt5u9FM=
+			HyVGuJiBhU8Crt6uejhkOAPbzxQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			D8s1rRkudRGiq7RyZXdGY3Oce5kCJSwiMR8kY3iOH7I=
+			ZNkf5pfqOUIxRSUuv4mUWucOpYG07fw3dj/X4Xq23A8=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/PeerDb/__init__.py</key>
@@ -2832,11 +2832,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ioYosnZNQV8PVho8CIHoj+PMfdM=
+			alZo5p5FQ4YsKe1GH6dwr6I7hJo=
 			</data>
 			<key>hash2</key>
 			<data>
-			36ZkxB+frf2/G61HYUAhYI4AtEuaQ7QD5ZjBzd/AMmU=
+			hJ6RGcM2AHtK0Y+0IIdDgMcV3Cu8/7kvjW2QK1c6s9o=
 			</data>
 		</dict>
 		<key>Resources/core/plugins/Stats/__init__.py</key>
@@ -3316,33 +3316,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			4srPT1qLS3+JBKoOYB9X3oXnp7s=
+			xOYYAb/gYGZbte3i+32G9OrXo9A=
 			</data>
 			<key>hash2</key>
 			<data>
-			Daddhra4Liqmbdt2bKXve4Fj8AmyepGDJTnQEdl8ykc=
+			ITME8zF29FvEaY7knZMW+QBnum8urwgaIFHD+hvcUik=
 			</data>
 		</dict>
 		<key>Resources/core/src/Connection/Connection.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			nPDC45FqiJjceiUhauA/ki0V4mE=
+			W2ALip8cEkAtWaLHGl9WMslRENo=
 			</data>
 			<key>hash2</key>
 			<data>
-			c8q7WDJVL9xsdewyc6MZkto2sxgLkquaknabRPG75/w=
+			aAvhKvvaK8tjfyiZIxJMizwZo38QBTcHF7hoR496LgU=
 			</data>
 		</dict>
 		<key>Resources/core/src/Connection/ConnectionServer.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			kdswv54Uvz1OXogU+Z86iy/u6yU=
+			SfGuWAqxXbv/nLXUN+gagE5xt6s=
 			</data>
 			<key>hash2</key>
 			<data>
-			cHb9Ht2N/IBP5ikS256JIMuAZ6tS17Z3NN7L+EVRvd4=
+			jvt/F5+P7DqRYn7OZJ5QesmQ9xdJBDBJMv2WsYPDXls=
 			</data>
 		</dict>
 		<key>Resources/core/src/Connection/__init__.py</key>
@@ -3558,22 +3558,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			6G7rWp68T4X7bavG/VGm8RKtLJI=
+			QTfQfAEAD82gK2xLlw0S/cN8fvI=
 			</data>
 			<key>hash2</key>
 			<data>
-			KtWD2qwCELEPXikGtcyBL6ByMVkCjpB//zK48/uHdRI=
+			BXvmN+K8VVblYNhLaQqTc1PN+gtCl43aa75+pnVRrlM=
 			</data>
 		</dict>
 		<key>Resources/core/src/File/FileServer.py</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			xU6hIGl3ETxfekWngAneUXGsReM=
+			y+yk3lTRKx1+9JccScPmd3LEumc=
 			</data>
 			<key>hash2</key>
 			<data>
-			avHCwyf5bKv6jgYx3hcFzMJQRN6Pv+D5eRFvMQG78xw=
+			aZlAlDMOnM/5vxYafDMJi2o8XIncanH/SKq88IHifuY=
 			</data>
 		</dict>
 		<key>Resources/core/src/File/__init__.py</key>
@@ -3591,11 +3591,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Ccf05Zfh97TLc3IPhSFdytyA8dU=
+			ub5426jHOgFpwf423853ZqvOhik=
 			</data>
 			<key>hash2</key>
 			<data>
-			hh6XHDrz1hLzGmQys2mA5KKDz1NHUldD1BmoPqwT7nY=
+			W0NMYzHKtuUlq3qKFZGvjnBOHFSUhc/rXzG+LfvBkYg=
 			</data>
 		</dict>
 		<key>Resources/core/src/Peer/PeerHashfield.py</key>
@@ -3646,11 +3646,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			wSjEvKbHcOfgBlC1iOnrjaVtoE4=
+			Jwh6ip53GMrX+vz59d2y5eCL8Q0=
 			</data>
 			<key>hash2</key>
 			<data>
-			frLBr5wFw4xLdYvtgRnjGzbQRP/7PyWfx8VRTX4grcQ=
+			Dg/ekmUSSd1Mo4cYHYO6CDBdK45IFqv2r2moYEmU8zE=
 			</data>
 		</dict>
 		<key>Resources/core/src/Site/SiteManager.py</key>
@@ -3976,11 +3976,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			7lFCjdinfjbl06AD56WUFWbBE4c=
+			DSljHgNkrs9wsvHxMa/Ze/kbiR4=
 			</data>
 			<key>hash2</key>
 			<data>
-			j7hV9fxY1Eymw1XahjWsTMckO3wJIotaC/3k4u7Hx+A=
+			hLi6iWNHP44/7WtMd1OuMx7/U+JbC1K8ssSZKmEjBUw=
 			</data>
 		</dict>
 		<key>Resources/core/src/Test/coverage.ini</key>
@@ -4174,11 +4174,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			IzZqJHgeGtv+RzMuO8IKGcy835Y=
+			HL/99OLk+4zKGVjCB+vyFZgLl+0=
 			</data>
 			<key>hash2</key>
 			<data>
-			aV0SZyHvMJ3Qhst3exw3ua59y3WQghvG0dZxDx8ygUY=
+			7yImvjEX4zUqDPn6DDAKvrYNZAlKexfTdeDjZAkaDcA=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/UiServer.py</key>
@@ -4460,11 +4460,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			RQvrV4PS69xsEsRFHvvU1Nq9S0o=
+			mYT7Saum8JzCPkxHxKFvjbx3iJc=
 			</data>
 			<key>hash2</key>
 			<data>
-			T+9aJo7sv75hy+rZQgy4UX6w1atDYYhZtgK2gcJdYL0=
+			Iol6yrnkbImq2gmHzvQuOUK7Q9Bx1Baxswqf1kGpfo4=
 			</data>
 		</dict>
 		<key>Resources/core/src/Worker/__init__.py</key>
