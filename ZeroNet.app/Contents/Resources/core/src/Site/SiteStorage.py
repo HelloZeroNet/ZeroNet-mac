@@ -77,13 +77,13 @@ class SiteStorage(object):
     def getDbFiles(self):
         for content_inner_path, content in self.site.content_manager.contents.iteritems():
             # content.json file itself
-            if self.isFile(content_inner_path):  # Missing content.json file
+            if self.isFile(content_inner_path):
                 yield content_inner_path, self.open(content_inner_path)
             else:
                 self.log.error("[MISSING] %s" % content_inner_path)
             # Data files in content.json
             content_inner_path_dir = helper.getDirname(content_inner_path)  # Content.json dir relative to site
-            for file_relative_path in content["files"].keys():
+            for file_relative_path in content.get("files", {}).keys() + content.get("files_optional", {}).keys():
                 if not file_relative_path.endswith(".json"):
                     continue  # We only interesed in json files
                 file_inner_path = content_inner_path_dir + file_relative_path  # File Relative to site dir
@@ -202,7 +202,7 @@ class SiteStorage(object):
             raise err
 
     # List files from a directory
-    def list(self, dir_inner_path):
+    def walk(self, dir_inner_path):
         directory = self.getPath(dir_inner_path)
         for root, dirs, files in os.walk(directory):
             root = root.replace("\\", "/")
@@ -212,6 +212,11 @@ class SiteStorage(object):
                     yield root_relative_path + "/" + file_name
                 else:
                     yield file_name
+
+    # list directories in a directory
+    def list(self, dir_inner_path):
+        directory = self.getPath(dir_inner_path)
+        return os.listdir(directory)
 
     # Site content updated
     def onUpdated(self, inner_path, file=None):
