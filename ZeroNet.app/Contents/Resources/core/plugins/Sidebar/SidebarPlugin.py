@@ -70,6 +70,15 @@ class UiWebsocketPlugin(object):
         connectable = len([peer_id for peer_id in site.peers.keys() if not peer_id.endswith(":0")])
         onion = len([peer_id for peer_id in site.peers.keys() if ".onion" in peer_id])
         peers_total = len(site.peers)
+
+        # Add myself
+        if site.settings["serving"]:
+            peers_total += 1
+            if site.connection_server.port_opened:
+                connectable += 1
+            if site.connection_server.tor_manager.start_onions:
+                onion += 1
+
         if peers_total:
             percent_connected = float(connected) / peers_total
             percent_connectable = float(connectable) / peers_total
@@ -493,7 +502,7 @@ class UiWebsocketPlugin(object):
                 self.cmd("notification", ["geolite-done", _["GeoLite2 City database downloaded!"], 5000])
                 time.sleep(2)  # Wait for notify animation
                 return True
-            except Exception, err:
+            except Exception as err:
                 self.log.error("Error downloading %s: %s" % (db_url, err))
                 pass
         self.cmd("notification", [
@@ -574,6 +583,7 @@ class UiWebsocketPlugin(object):
             return self.response(to, "You don't have permission to run this command")
 
         self.site.settings["own"] = bool(owned)
+        self.site.updateWebsocket(owned=owned)
 
     def actionSiteSetAutodownloadoptional(self, to, owned):
         permissions = self.getPermissions(to)

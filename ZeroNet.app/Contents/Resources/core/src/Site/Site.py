@@ -92,7 +92,10 @@ class Site(object):
             for inner_path in self.bad_files:
                 self.bad_files[inner_path] = 1
         else:
-            self.settings = {"own": False, "serving": True, "permissions": [], "added": int(time.time()), "optional_downloaded": 0, "size_optional": 0}  # Default
+            self.settings = {
+                "own": False, "serving": True, "permissions": [],
+                "added": int(time.time()), "optional_downloaded": 0, "size_optional": 0
+            }  # Default
 
         # Add admin permissions to homepage
         if self.address == config.homepage and "ADMIN" not in self.settings["permissions"]:
@@ -127,6 +130,9 @@ class Site(object):
         s = time.time()
         if config.verbose:
             self.log.debug("Downloading %s..." % inner_path)
+
+        if not inner_path.endswith("content.json"):
+            return False
 
         found = self.needFile(inner_path, update=self.bad_files.get(inner_path))
         content_inner_dir = helper.getDirname(inner_path)
@@ -232,6 +238,19 @@ class Site(object):
         file_inner_paths = []
         for bad_file, tries in self.bad_files.items():
             if force or random.randint(0, min(40, tries)) < 4:  # Larger number tries = less likely to check every 15min
+                # Skip files without info
+                file_info = self.content_manager.getFileInfo(bad_file)
+                if bad_file.endswith("content.json"):
+                    if file_info is False:
+                        del self.bad_files[bad_file]
+                        self.log.debug("No info for file: %s, removing from bad_files" % bad_file)
+                        continue
+                else:
+                    if file_info is False or not file_info.get("size"):
+                        del self.bad_files[bad_file]
+                        self.log.debug("No info for file: %s, removing from bad_files" % bad_file)
+                        continue
+
                 if bad_file.endswith("content.json"):
                     content_inner_paths.append(bad_file)
                 else:
@@ -246,6 +265,10 @@ class Site(object):
     # Download all files of the site
     @util.Noparallel(blocking=False)
     def download(self, check_size=False, blind_includes=False):
+        if not self.connection_server:
+            self.log.debug("No connection server found, skipping download")
+            return False
+
         self.log.debug(
             "Start downloading, bad_files: %s, check_size: %s, blind_includes: %s" %
             (self.bad_files, check_size, blind_includes)
@@ -342,7 +365,12 @@ class Site(object):
 
         if since is None:  # No since defined, download from last modification time-1day
             since = self.settings.get("modified", 60 * 60 * 24) - 60 * 60 * 24
-        self.log.debug("Try to get listModifications from peers: %s, connected: %s, since: %s" % (peers_try, peers_connected_num, since))
+
+        if config.verbose:
+            self.log.debug(
+                "Try to get listModifications from peers: %s, connected: %s, since: %s" %
+                (peers_try, peers_connected_num, since)
+            )
 
         updaters = []
         for i in range(3):
@@ -351,7 +379,7 @@ class Site(object):
         gevent.joinall(updaters, timeout=10)  # Wait 10 sec to workers done query modifications
 
         if not queried:  # Start another 3 thread if first 3 is stuck
-            peers_try[0:0] = [peer for peer in self.getConnectedPeers() if peer.connection.connected]  # Add really connected peers
+            peers_try[0:0] = [peer for peer in self.getConnectedPeers() if peer.connection.connected]  # Add connected peers
             for _ in range(10):
                 gevent.joinall(updaters, timeout=10)  # Wait another 10 sec if none of updaters finished
                 if queried:
@@ -371,13 +399,15 @@ class Site(object):
 
         # Remove files that no longer in content.json
         for bad_file in self.bad_files.keys():
-            if bad_file.endswith("content.json"):
-                continue
-
             file_info = self.content_manager.getFileInfo(bad_file)
-            if file_info is False or not file_info.get("size"):
-                del self.bad_files[bad_file]
-                self.log.debug("No info for file: %s, removing from bad_files" % bad_file)
+            if bad_file.endswith("content.json"):
+                if file_info is False:
+                    del self.bad_files[bad_file]
+                    self.log.debug("No info for file: %s, removing from bad_files" % bad_file)
+            else:
+                if file_info is False or not file_info.get("size"):
+                    del self.bad_files[bad_file]
+                    self.log.debug("No info for file: %s, removing from bad_files" % bad_file)
 
         if announce:
             self.announce()
@@ -570,7 +600,13 @@ class Site(object):
 
         # Copy files
         for content_inner_path, content in self.content_manager.contents.items():
-            for file_relative_path in sorted(content["files"].keys()):
+            file_relative_paths = content.get("files", {}).keys()
+
+            # Sign content.json at the end to make sure every file is included
+            file_relative_paths.sort()
+            file_relative_paths.sort(key=lambda key: key.replace("-default", "").endswith("content.json"))
+
+            for file_relative_path in file_relative_paths:
                 file_inner_path = helper.getDirname(content_inner_path) + file_relative_path  # Relative to content.json
                 file_inner_path = file_inner_path.strip("/")  # Strip leading /
                 if not file_inner_path.startswith(root_inner_path):
@@ -593,7 +629,7 @@ class Site(object):
                 dest_dir = os.path.dirname(file_path_dest)
                 if not os.path.isdir(dest_dir):
                     os.makedirs(dest_dir)
-                if file_inner_path_dest == "content.json-default":  # Don't copy root content.json-default
+                if file_inner_path_dest.replace("-default", "") == "content.json":  # Don't copy root content.json-default
                     continue
 
                 shutil.copy(file_path, file_path_dest)
@@ -677,6 +713,12 @@ class Site(object):
                         ))
                         return False
                     self.downloadContent(file_info["content_inner_path"])
+                if file_info.get("size", 0) > config.file_size_limit * 1024 * 1024:
+                    self.log.debug(
+                        "File size %s too large: %sMB > %sMB, skipping..." %
+                        (inner_path, file_info.get("size", 0) / 1024 / 1024, config.file_size_limit)
+                    )
+                    return False
 
             task = self.worker_manager.addTask(inner_path, peer, priority=priority)
             if blocking:
@@ -767,7 +809,7 @@ class Site(object):
                     req.close()
                     req = None
                 if not response:
-                    self.log.debug("Http tracker %s response error" % url)
+                    self.log.debug("Http tracker %s response error" % tracker_address)
                     return False
                 # Decode peers
                 peer_data = bencode.decode(response)["peers"]
@@ -780,7 +822,7 @@ class Site(object):
                     addr, port = struct.unpack('!LH', peer)
                     peers.append({"addr": socket.inet_ntoa(struct.pack('!L', addr)), "port": port})
             except Exception, err:
-                self.log.debug("Http tracker %s error: %s" % (url, err))
+                self.log.debug("Http tracker %s error: %s" % (tracker_address, err))
                 if req:
                     req.close()
                     req = None
@@ -900,9 +942,12 @@ class Site(object):
                         connected += 1  # Successfully connected
                 if connected >= need:
                     break
+            self.log.debug(
+                "Connected before: %s, after: %s. Check site: %s." %
+                (connected_before, connected, check_site_on_reconnect)
+            )
 
         if check_site_on_reconnect and connected_before == 0 and connected > 0 and self.connection_server.has_internet:
-            self.log.debug("Connected before: %s, after: %s. We need to check the site." % (connected_before, connected))
             gevent.spawn(self.update, check_files=False)
 
         return connected
@@ -932,7 +977,11 @@ class Site(object):
 
     # Return: Recently found peers
     def getRecentPeers(self, need_num):
-        found = sorted(self.peers.values()[0:need_num*50], key=lambda peer: peer.time_found + peer.reputation * 60, reverse=True)[0:need_num*2]
+        found = sorted(
+            self.peers.values()[0:need_num * 50],
+            key=lambda peer: peer.time_found + peer.reputation * 60,
+            reverse=True
+        )[0:need_num * 2]
         random.shuffle(found)
         return found[0:need_num]
 
@@ -949,7 +998,7 @@ class Site(object):
         return back
 
     # Cleanup probably dead peers and close connection if too much
-    def cleanupPeers(self):
+    def cleanupPeers(self, peers_protected=[]):
         peers = self.peers.values()
         if len(peers) > 20:
             # Cleanup old peers
@@ -979,8 +1028,11 @@ class Site(object):
         need_to_close = len(connected_peers) - config.connected_limit
 
         if closed < need_to_close:
-            for peer in sorted(connected_peers, key=lambda peer: min(peer.connection.sites, 5)):  # Try to keep connections with more sites
+            # Try to keep connections with more sites
+            for peer in sorted(connected_peers, key=lambda peer: min(peer.connection.sites, 5)):
                 if not peer.connection:
+                    continue
+                if peer.key in peers_protected:
                     continue
                 if peer.connection.sites > 5:
                     break
@@ -1063,6 +1115,13 @@ class Site(object):
             param = None
         for ws in self.websockets:
             ws.event("siteChanged", self, param)
+
+    def messageWebsocket(self, message, type="info", progress=None):
+        for ws in self.websockets:
+            if progress is None:
+                ws.cmd("notification", [type, message])
+            else:
+                ws.cmd("progress", [type, message, progress])
 
     # File download started
     @util.Noparallel(blocking=False)

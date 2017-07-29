@@ -38,7 +38,7 @@ def openArchive(archive_path, path_within):
 
 @PluginManager.registerTo("UiRequest")
 class UiRequestPlugin(object):
-    def actionSiteMedia(self, path, header_length=True):
+    def actionSiteMedia(self, path, **kwargs):
         if ".zip/" in path or ".tar.gz/" in path:
             path_parts = self.parsePath(path)
             file_path = u"%s/%s/%s" % (config.data_dir, path_parts["address"], path_parts["inner_path"].decode("utf8"))
@@ -47,7 +47,7 @@ class UiRequestPlugin(object):
             if not os.path.isfile(archive_path):
                 site = self.server.site_manager.get(path_parts["address"])
                 if not site:
-                    self.error404(path)
+                    return self.actionSiteAddPrompt(path)
                 # Wait until file downloads
                 result = site.needFile(site.storage.getInnerPath(archive_path), priority=10)
                 # Send virutal file path download finished event to remove loading screen
@@ -57,16 +57,16 @@ class UiRequestPlugin(object):
             try:
                 file = openArchive(archive_path, path_within)
                 content_type = self.getContentType(file_path)
-                self.sendHeader(200, content_type=content_type)
+                self.sendHeader(200, content_type=content_type, noscript=kwargs.get("header_noscript", False))
                 return self.streamFile(file)
-            except Exception, err:
+            except Exception as err:
                 self.log.debug("Error opening archive file: %s" % err)
                 return self.error404(path)
 
-        return super(UiRequestPlugin, self).actionSiteMedia(path, header_length=header_length)
+        return super(UiRequestPlugin, self).actionSiteMedia(path, **kwargs)
 
     def streamFile(self, file):
-        while 1:
+        for i in range(100):  # Read max 6MB
             try:
                 block = file.read(60 * 1024)
                 if block:

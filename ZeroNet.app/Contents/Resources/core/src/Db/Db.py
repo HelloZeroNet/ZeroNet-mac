@@ -8,6 +8,7 @@ import gevent
 
 from DbCursor import DbCursor
 from Config import config
+from util import SafeRe
 
 opened_dbs = []
 
@@ -225,12 +226,16 @@ class Db(object):
     def updateJson(self, file_path, file=None, cur=None):
         if not file_path.startswith(self.db_dir):
             return False  # Not from the db dir: Skipping
-        relative_path = re.sub("^%s" % self.db_dir, "", file_path)  # File path realative to db file
+        relative_path = file_path[len(self.db_dir):]  # File path realative to db file
+
         # Check if filename matches any of mappings in schema
         matched_maps = []
         for match, map_settings in self.schema["maps"].items():
-            if re.match(match, relative_path):
-                matched_maps.append(map_settings)
+            try:
+                if SafeRe.match(match, relative_path):
+                    matched_maps.append(map_settings)
+            except SafeRe.UnsafePatternError as err:
+                self.log.error(err)
 
         # No match found for the file
         if not matched_maps:

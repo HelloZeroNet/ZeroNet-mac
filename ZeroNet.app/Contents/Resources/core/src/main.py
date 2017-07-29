@@ -32,14 +32,14 @@ if not os.path.isdir(config.log_dir):
     os.mkdir(config.log_dir)
     try:
         os.chmod(config.log_dir, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
-    except Exception, err:
+    except Exception as err:
         print "Can't change permission of %s: %s" % (config.log_dir, err)
 
 if not os.path.isdir(config.data_dir):
     os.mkdir(config.data_dir)
     try:
         os.chmod(config.data_dir, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
-    except Exception, err:
+    except Exception as err:
         print "Can't change permission of %s: %s" % (config.data_dir, err)
 
 if not os.path.isfile("%s/sites.json" % config.data_dir):
@@ -76,9 +76,13 @@ if config.action == "main":
     )
 else:
     log_file_path = "%s/cmd.log" % config.log_dir
+    if config.silent:
+        level = logging.ERROR
+    else:
+        level = logging.DEBUG
     logging.basicConfig(
         format='[%(asctime)s] %(levelname)-8s %(name)s %(message)s',
-        level=logging.DEBUG, stream=open(log_file_path, "w")
+        level=level, stream=open(log_file_path, "w")
     )
 
 # Console logger
@@ -222,7 +226,11 @@ class Actions(object):
                 import getpass
                 privatekey = getpass.getpass("Private key (input hidden):")
         diffs = site.content_manager.getDiffs(inner_path)
-        succ = site.content_manager.sign(inner_path=inner_path, privatekey=privatekey, update_changed_files=True, remove_missing_optional=remove_missing_optional)
+        try:
+            succ = site.content_manager.sign(inner_path=inner_path, privatekey=privatekey, update_changed_files=True, remove_missing_optional=remove_missing_optional)
+        except Exception, err:
+            logging.error("Sign error: %s" % err)
+            succ = False
         if succ and publish:
             self.sitePublish(address, inner_path=inner_path, diffs=diffs)
 
@@ -240,13 +248,17 @@ class Actions(object):
         for content_inner_path in site.content_manager.contents:
             s = time.time()
             logging.info("Verifing %s signature..." % content_inner_path)
-            file_correct = site.content_manager.verifyFile(
-                content_inner_path, site.storage.open(content_inner_path, "rb"), ignore_same=False
-            )
+            try:
+                file_correct = site.content_manager.verifyFile(
+                    content_inner_path, site.storage.open(content_inner_path, "rb"), ignore_same=False
+                )
+            except Exception, err:
+                file_correct = False
+
             if file_correct is True:
                 logging.info("[OK] %s (Done in %.3fs)" % (content_inner_path, time.time() - s))
             else:
-                logging.error("[ERROR] %s: invalid file!" % content_inner_path)
+                logging.error("[ERROR] %s: invalid file: %s!" % (content_inner_path, err))
                 raw_input("Continue?")
                 bad_files += content_inner_path
 
@@ -463,7 +475,11 @@ class Actions(object):
             parameters = json.loads(parameters.replace("'", '"'))
         else:
             parameters = {}
-        logging.info("Response: %s" % peer.request(cmd, parameters))
+        try:
+            res = peer.request(cmd, parameters)
+            print json.dumps(res, indent=2, ensure_ascii=False)
+        except Exception, err:
+            print "Unknown response (%s): %s" % (err, res)
 
 
 actions = Actions()

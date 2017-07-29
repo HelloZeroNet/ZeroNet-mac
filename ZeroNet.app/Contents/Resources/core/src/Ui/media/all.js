@@ -684,11 +684,11 @@ jQuery.extend( jQuery.easing,
 
 (function() {
   var Notifications,
-    __slice = [].slice;
+    slice = [].slice;
 
   Notifications = (function() {
-    function Notifications(_at_elem) {
-      this.elem = _at_elem;
+    function Notifications(elem1) {
+      this.elem = elem1;
       this;
     }
 
@@ -707,14 +707,14 @@ jQuery.extend( jQuery.easing,
     };
 
     Notifications.prototype.add = function(id, type, body, timeout) {
-      var elem, width, _i, _len, _ref;
+      var elem, i, len, ref, width;
       if (timeout == null) {
         timeout = 0;
       }
       id = id.replace(/[^A-Za-z0-9]/g, "");
-      _ref = $(".notification-" + id);
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        elem = _ref[_i];
+      ref = $(".notification-" + id);
+      for (i = 0, len = ref.length; i < len; i++) {
+        elem = ref[i];
         this.close($(elem));
       }
       elem = $(".notification.template", this.elem).clone().removeClass("template");
@@ -764,6 +764,9 @@ jQuery.extend( jQuery.easing,
       elem.animate({
         "width": width
       }, 700, "easeInOutCubic");
+      $(".body", elem).css({
+        "width": width - 80
+      });
       $(".body", elem).cssLater("box-shadow", "0px 0px 5px rgba(0,0,0,0.1)", 1000);
       $(".close, .button", elem).on("click", (function(_this) {
         return function() {
@@ -791,8 +794,8 @@ jQuery.extend( jQuery.easing,
 
     Notifications.prototype.log = function() {
       var args;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      return console.log.apply(console, ["[Notifications]"].concat(__slice.call(args)));
+      args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+      return console.log.apply(console, ["[Notifications]"].concat(slice.call(args)));
     };
 
     return Notifications;
@@ -802,6 +805,7 @@ jQuery.extend( jQuery.easing,
   window.Notifications = Notifications;
 
 }).call(this);
+
 
 
 /* ---- src/Ui/media/Wrapper.coffee ---- */
@@ -880,7 +884,7 @@ jQuery.extend( jQuery.easing,
         }
       } else if (cmd === "notification") {
         type = message.params[0];
-        id = "notification-" + message.id;
+        id = "notification-ws-" + message.id;
         if (indexOf.call(message.params[0], "-") >= 0) {
           ref = message.params[0].split("-"), id = ref[0], type = ref[1];
         }
@@ -888,7 +892,7 @@ jQuery.extend( jQuery.easing,
       } else if (cmd === "progress") {
         return this.actionProgress(message);
       } else if (cmd === "prompt") {
-        return this.displayPrompt(message.params[0], message.params[1], message.params[2], (function(_this) {
+        return this.displayPrompt(message.params[0], message.params[1], message.params[2], message.params[3], (function(_this) {
           return function(res) {
             return _this.ws.response(message.id, res);
           };
@@ -1005,7 +1009,9 @@ jQuery.extend( jQuery.easing,
       if (back.match(/^\/[^\/]+$/)) {
         back += "/";
       }
-      if (query.replace("?", "")) {
+      if (query.startsWith("#")) {
+        back = query;
+      } else if (query.replace("?", "")) {
         back += "?" + query.replace("?", "");
       }
       return back;
@@ -1084,19 +1090,27 @@ jQuery.extend( jQuery.easing,
       return this.notifications.add("notification-" + message.id, message.params[0], body, message.params[2]);
     };
 
-    Wrapper.prototype.displayConfirm = function(message, caption, cb) {
-      var body, button;
-      body = $("<span class='message'>" + message + "</span>");
-      button = $("<a href='#" + caption + "' class='button button-" + caption + "'>" + caption + "</a>");
-      button.on("click", (function(_this) {
-        return function() {
-          cb(true);
-          return false;
-        };
-      })(this));
-      body.append(button);
+    Wrapper.prototype.displayConfirm = function(message, captions, cb) {
+      var body, button, buttons, caption, i, j, len;
+      body = $("<span class='message-outer'><span class='message'>" + message + "</span></span>");
+      buttons = $("<span class='buttons'></span>");
+      if (!(captions instanceof Array)) {
+        captions = [captions];
+      }
+      for (i = j = 0, len = captions.length; j < len; i = ++j) {
+        caption = captions[i];
+        button = $("<a href='#" + caption + "' class='button button-confirm button-" + caption + " button-" + (i + 1) + "' data-value='" + (i + 1) + "'>" + caption + "</a>");
+        button.on("click", (function(_this) {
+          return function(e) {
+            cb(parseInt(e.currentTarget.dataset.value));
+            return false;
+          };
+        })(this));
+        buttons.append(button);
+      }
+      body.append(buttons);
       this.notifications.add("notification-" + caption, "ask", body);
-      button.focus();
+      buttons.first().focus();
       return $(".notification").scrollLeft(0);
     };
 
@@ -1112,21 +1126,21 @@ jQuery.extend( jQuery.easing,
         caption = "ok";
       }
       return this.displayConfirm(message.params[0], caption, (function(_this) {
-        return function() {
+        return function(res) {
           _this.sendInner({
             "cmd": "response",
             "to": message.id,
-            "result": "boom"
+            "result": res
           });
           return false;
         };
       })(this));
     };
 
-    Wrapper.prototype.displayPrompt = function(message, type, caption, cb) {
+    Wrapper.prototype.displayPrompt = function(message, type, caption, placeholder, cb) {
       var body, button, input;
       body = $("<span class='message'>" + message + "</span>");
-      input = $("<input type='" + type + "' class='input button-" + type + "'/>");
+      input = $("<input type='" + type + "' class='input button-" + type + "' placeholder='" + placeholder + "'/>");
       input.on("keyup", (function(_this) {
         return function(e) {
           if (e.keyCode === 13) {
@@ -1149,15 +1163,20 @@ jQuery.extend( jQuery.easing,
     };
 
     Wrapper.prototype.actionPrompt = function(message) {
-      var caption, type;
+      var caption, placeholder, type;
       message.params = this.toHtmlSafe(message.params);
       if (message.params[1]) {
         type = message.params[1];
       } else {
         type = "text";
       }
-      caption = "OK";
-      return this.displayPrompt(message.params[0], type, caption, (function(_this) {
+      caption = message.params[2] ? message.params[2] : "OK";
+      if (message.params[3] != null) {
+        placeholder = message.params[3];
+      } else {
+        placeholder = "";
+      }
+      return this.displayPrompt(message.params[0], type, caption, placeholder, (function(_this) {
         return function(res) {
           return _this.sendInner({
             "cmd": "response",
@@ -1462,8 +1481,12 @@ jQuery.extend( jQuery.easing,
       }
       for (i = j = 0, len = values.length; j < len; i = ++j) {
         value = values[i];
-        value = String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        value = value.replace(/&lt;([\/]{0,1}(br|b|u|i))&gt;/g, "<$1>");
+        if (value instanceof Array) {
+          value = this.toHtmlSafe(value);
+        } else {
+          value = String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+          value = value.replace(/&lt;([\/]{0,1}(br|b|u|i))&gt;/g, "<$1>");
+        }
         values[i] = value;
       }
       return values;

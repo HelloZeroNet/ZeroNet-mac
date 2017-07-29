@@ -11,8 +11,17 @@ from Crypt import CryptHash
 from Config import config
 from util import helper
 from util import Diff
+from util import SafeRe
 from Peer import PeerHashfield
 from ContentDbDict import ContentDbDict
+
+
+class VerifyError(Exception):
+    pass
+
+
+class SignError(Exception):
+    pass
 
 
 class ContentManager(object):
@@ -352,6 +361,12 @@ class ContentManager(object):
             if not file_info:
                 return False  # File not found
             inner_path = file_info["content_inner_path"]
+
+        if inner_path == "content.json": # Root content.json
+            rules = {}
+            rules["signers"] = self.getValidSigners(inner_path, content)
+            return rules
+
         dirs = inner_path.split("/")  # Parent dirs of content.json
         inner_path_parts = [dirs.pop()]  # Filename relative to content.json
         inner_path_parts.insert(0, dirs.pop())  # Dont check in self dir
@@ -394,7 +409,7 @@ class ContentManager(object):
         if "signers" in rules:
             rules["signers"] = rules["signers"][:]  # Make copy of the signers
         for permission_pattern, permission_rules in user_contents["permission_rules"].items():  # Regexp rules
-            if not re.match(permission_pattern, user_urn):
+            if not SafeRe.match(permission_pattern, user_urn):
                 continue  # Rule is not valid for user
             # Update rules if its better than current recorded ones
             for key, val in permission_rules.iteritems():
@@ -450,11 +465,32 @@ class ContentManager(object):
                     self.site.storage.delete(file_inner_path + "-old")
         return diffs
 
+    def hashFile(self, dir_inner_path, file_relative_path, optional=False):
+        back = {}
+        file_inner_path = dir_inner_path + "/" + file_relative_path
+
+        file_path = self.site.storage.getPath(file_inner_path)
+        file_size = os.path.getsize(file_path)
+        sha512sum = CryptHash.sha512sum(file_path)  # Calculate sha512 sum of file
+        if optional and not self.hashfield.hasHash(sha512sum):
+            self.optionalDownloaded(file_inner_path, sha512sum, file_size, own=True)
+
+        back[file_relative_path] = {"sha512": sha512sum, "size": os.path.getsize(file_path)}
+        return back
+
+    def isValidRelativePath(self, relative_path):
+        if ".." in relative_path:
+            return False
+        elif len(relative_path) > 255:
+            return False
+        else:
+            return re.match("^[a-z\[\]\(\) A-Z0-9_@=\.\+-/]+$", relative_path)
+
     # Hash files in directory
     def hashFiles(self, dir_inner_path, ignore_pattern=None, optional_pattern=None):
         files_node = {}
         files_optional_node = {}
-        if not re.match("^[a-zA-Z0-9_@=\.\+-/]*$", dir_inner_path):
+        if dir_inner_path and not self.isValidRelativePath(dir_inner_path):
             ignored = True
             self.log.error("- [ERROR] Only ascii encoded directories allowed: %s" % dir_inner_path)
 
@@ -464,36 +500,37 @@ class ContentManager(object):
             ignored = optional = False
             if file_name == "content.json":
                 ignored = True
-            elif ignore_pattern and re.match(ignore_pattern, file_relative_path):
+            elif ignore_pattern and SafeRe.match(ignore_pattern, file_relative_path):
                 ignored = True
             elif file_name.startswith(".") or file_name.endswith("-old") or file_name.endswith("-new"):
                 ignored = True
-            elif not re.match("^[a-zA-Z0-9_@=\.\+\-/]+$", file_relative_path):
+            elif not self.isValidRelativePath(file_relative_path):
                 ignored = True
-                self.log.error("- [ERROR] Only ascii encoded filenames allowed: %s" % file_relative_path)
-            elif optional_pattern and re.match(optional_pattern, file_relative_path):
+                self.log.error("- [ERROR] Invalid filename: %s" % file_relative_path)
+            elif optional_pattern and SafeRe.match(optional_pattern, file_relative_path):
                 optional = True
 
             if ignored:  # Ignore content.json, defined regexp and files starting with .
                 self.log.info("- [SKIPPED] %s" % file_relative_path)
             else:
-                file_inner_path = dir_inner_path + "/" + file_relative_path
-                file_path = self.site.storage.getPath(file_inner_path)
-                sha512sum = CryptHash.sha512sum(file_path)  # Calculate sha512 sum of file
                 if optional:
-                    self.log.info("- [OPTIONAL] %s (SHA512: %s)" % (file_relative_path, sha512sum))
-                    file_size = os.path.getsize(file_path)
-                    files_optional_node[file_relative_path] = {"sha512": sha512sum, "size": file_size}
-                    if not self.hashfield.hasHash(sha512sum):
-                        self.optionalDownloaded(file_inner_path, sha512sum, file_size, own=True)
+                    self.log.info("- [OPTIONAL] %s" % file_relative_path)
+                    files_optional_node.update(
+                        self.hashFile(dir_inner_path, file_relative_path, optional=True)
+                    )
                 else:
-                    self.log.info("- %s (SHA512: %s)" % (file_relative_path, sha512sum))
-                    files_node[file_relative_path] = {"sha512": sha512sum, "size": os.path.getsize(file_path)}
+                    self.log.info("- %s" % file_relative_path)
+                    files_node.update(
+                        self.hashFile(dir_inner_path, file_relative_path)
+                    )
         return files_node, files_optional_node
 
     # Create and sign a content.json
     # Return: The new content if filewrite = False
     def sign(self, inner_path="content.json", privatekey=None, filewrite=True, update_changed_files=False, extend=None, remove_missing_optional=False):
+        if not inner_path.endswith("content.json"):
+            raise SignError("Invalid file name, you can only sign content.json files")
+
         if inner_path in self.contents:
             content = self.contents.get(inner_path)
             if content and content.get("cert_sign", False) is None and self.site.storage.isFile(inner_path):
@@ -577,7 +614,7 @@ class ContentManager(object):
         privatekey_address = CryptBitcoin.privatekeyToAddress(privatekey)
         valid_signers = self.getValidSigners(inner_path, new_content)
         if privatekey_address not in valid_signers:
-            return self.log.error(
+            raise SignError(
                 "Private key invalid! Valid signers: %s, Private key address: %s" %
                 (valid_signers, privatekey_address)
             )
@@ -605,13 +642,7 @@ class ContentManager(object):
             new_content["signs"] = {}
             new_content["signs"][privatekey_address] = sign
 
-        if inner_path == "content.json":  # To root content.json add old format sign for backward compatibility
-            oldsign_content = json.dumps(new_content, sort_keys=True)
-            new_content["sign"] = CryptBitcoin.signOld(oldsign_content, privatekey)
-
-        if not self.verifyContent(inner_path, new_content):
-            self.log.error("Sign failed: Invalid content")
-            return False
+        self.verifyContent(inner_path, new_content)
 
         if filewrite:
             self.log.info("Saving to %s..." % inner_path)
@@ -631,7 +662,7 @@ class ContentManager(object):
         valid_signers = []
         if inner_path == "content.json":  # Root content.json
             if "content.json" in self.contents and "signers" in self.contents["content.json"]:
-                valid_signers += self.contents["content.json"]["signers"].keys()
+                valid_signers += self.contents["content.json"]["signers"][:]
         else:
             rules = self.getRules(inner_path, content)
             if rules and "signers" in rules:
@@ -653,24 +684,25 @@ class ContentManager(object):
         if not rules.get("cert_signers"):
             return True  # Does not need cert
 
+        if not "cert_user_id" in content:
+            raise VerifyError("Missing cert_user_id")
+
         name, domain = content["cert_user_id"].split("@")
         cert_address = rules["cert_signers"].get(domain)
         if not cert_address:  # Cert signer not allowed
-            self.log.warning("Invalid cert signer: %s" % domain)
-            return False
+            raise VerifyError("Invalid cert signer: %s" % domain)
 
         try:
             cert_subject = "%s#%s/%s" % (rules["user_address"], content["cert_auth_type"], name)
             result = CryptBitcoin.verify(cert_subject, cert_address, content["cert_sign"])
         except Exception, err:
-            self.log.warning("Certificate verify error: %s" % err)
-            result = False
+            raise VerifyError("Certificate verify error: %s" % err)
         return result
 
     # Checks if the content.json content is valid
     # Return: True or False
     def verifyContent(self, inner_path, content):
-        content_size = len(json.dumps(content, indent=1)) + sum([file["size"] for file in content["files"].values()])  # Size of new content
+        content_size = len(json.dumps(content, indent=1)) + sum([file["size"] for file in content["files"].values() if file["size"] >= 0])  # Size of new content
         # Calculate old content size
         old_content = self.contents.get(inner_path)
         if old_content:
@@ -680,7 +712,7 @@ class ContentManager(object):
             old_content_size = 0
             old_content_size_optional = 0
 
-        content_size_optional = sum([file["size"] for file in content.get("files_optional", {}).values()])
+        content_size_optional = sum([file["size"] for file in content.get("files_optional", {}).values() if file["size"] >= 0])
         site_size = self.site.settings["size"] - old_content_size + content_size  # Site size without old content plus the new
         site_size_optional = self.site.settings["size_optional"] - old_content_size_optional + content_size_optional  # Site size without old content plus the new
 
@@ -688,69 +720,70 @@ class ContentManager(object):
 
         # Check site address
         if content.get("address") and content["address"] != self.site.address:
-            self.log.warning("%s: Wrong site address: %s != %s" % (inner_path, content["address"], self.site.address))
-            return False
+            raise VerifyError("Wrong site address: %s != %s" % (content["address"], self.site.address))
 
         # Check file inner path
         if content.get("inner_path") and content["inner_path"] != inner_path:
-            self.log.warning("%s: Wrong inner_path: %s" % (inner_path, content["inner_path"]))
-            return False
+            raise VerifyError("Wrong inner_path: %s" % content["inner_path"])
 
         # Check total site size limit
         if site_size > site_size_limit:
-            self.log.warning("%s: Site too large %s > %s, aborting task..." % (inner_path, site_size, site_size_limit))
             if inner_path == "content.json" and self.site.settings["size"] == 0:
                 # First content.json download, save site size to display warning
                 self.site.settings["size"] = site_size
             task = self.site.worker_manager.findTask(inner_path)
             if task:  # Dont try to download from other peers
                 self.site.worker_manager.failTask(task)
-            return False
+            raise VerifyError("Site too large %sB > %sB, aborting task..." % (site_size, site_size_limit))
+
+        # Verify valid filenames
+        for file_relative_path in content.get("files", {}).keys() + content.get("files_optional", {}).keys():
+            if not self.isValidRelativePath(file_relative_path):
+                raise VerifyError("Invalid relative path: %s" % file_relative_path)
 
         if inner_path == "content.json":
             self.site.settings["size"] = site_size
             self.site.settings["size_optional"] = site_size_optional
             return True  # Root content.json is passed
+        else:
+            if self.verifyContentInclude(inner_path, content, content_size, content_size_optional):
+                self.site.settings["size"] = site_size
+                self.site.settings["size_optional"] = site_size_optional
+                return True
+            else:
+                return False
 
+    def verifyContentInclude(self, inner_path, content, content_size, content_size_optional):
         # Load include details
         rules = self.getRules(inner_path, content)
         if not rules:
-            self.log.warning("%s: No rules" % inner_path)
-            return False
+            raise VerifyError("No rules")
 
         # Check include size limit
         if rules.get("max_size") is not None:  # Include size limit
             if content_size > rules["max_size"]:
-                self.log.warning("%s: Include too large %s > %s" % (inner_path, content_size, rules["max_size"]))
-                return False
+                raise VerifyError("Include too large %sB > %sB" % (content_size, rules["max_size"]))
 
         if rules.get("max_size_optional") is not None:  # Include optional files limit
             if content_size_optional > rules["max_size_optional"]:
-                self.log.warning("%s: Include optional files too large %s > %s" % (
-                    inner_path, content_size_optional, rules["max_size_optional"])
+                raise VerifyError("Include optional files too large %sB > %sB" % (
+                    content_size_optional, rules["max_size_optional"])
                 )
-                return False
 
         # Filename limit
         if rules.get("files_allowed"):
             for file_inner_path in content["files"].keys():
-                if not re.match("^%s$" % rules["files_allowed"], file_inner_path):
-                    self.log.warning("%s %s: File not allowed" % (inner_path, file_inner_path))
-                    return False
+                if not SafeRe.match("^%s$" % rules["files_allowed"], file_inner_path):
+                    raise VerifyError("File not allowed: %s" % file_inner_path)
 
         if rules.get("files_allowed_optional"):
             for file_inner_path in content.get("files_optional", {}).keys():
-                if not re.match("^%s$" % rules["files_allowed_optional"], file_inner_path):
-                    self.log.warning("%s %s: Optional file not allowed" % (inner_path, file_inner_path))
-                    return False
+                if not SafeRe.match("^%s$" % rules["files_allowed_optional"], file_inner_path):
+                    raise VerifyError("Optional file not allowed: %s" % file_inner_path)
 
         # Check if content includes allowed
         if rules.get("includes_allowed") is False and content.get("includes"):
-            self.log.warning("%s: Includes not allowed" % inner_path)
-            return False  # Includes not allowed
-
-        self.site.settings["size"] = site_size
-        self.site.settings["size_optional"] = site_size_optional
+            raise VerifyError("Includes not allowed")
 
         return True  # All good
 
@@ -770,20 +803,16 @@ class ContentManager(object):
                     if old_content["modified"] == new_content["modified"] and ignore_same:  # Ignore, have the same content.json
                         return None
                     elif old_content["modified"] > new_content["modified"]:  # We have newer
-                        self.log.debug(
-                            "We have newer %s (Our: %s, Sent: %s)" %
-                            (inner_path, old_content["modified"], new_content["modified"])
+                        raise VerifyError(
+                            "We have newer (Our: %s, Sent: %s)" %
+                            (old_content["modified"], new_content["modified"])
                         )
-                        # gevent.spawn(self.site.publish, inner_path=inner_path)  # Try to fix the broken peers
-                        return False
                 if new_content["modified"] > time.time() + 60 * 60 * 24:  # Content modified in the far future (allow 1 day+)
-                    self.log.warning("%s modify is in the future!" % inner_path)
-                    return False
+                    raise VerifyError("Modify timestamp is in the far future!")
                 if self.isArchived(inner_path, new_content["modified"]):
-                    self.log.warning("%s this file is archived!" % inner_path)
                     if inner_path in self.site.bad_files:
                         del self.site.bad_files[inner_path]
-                    return False
+                    raise VerifyError("This file is archived!")
                 # Check sign
                 sign = new_content.get("sign")
                 signs = new_content.get("signs", {})
@@ -803,23 +832,19 @@ class ContentManager(object):
                         '"modified": %s' % modified_fixed
                     )
 
-                if not self.verifyContent(inner_path, new_content):
-                    return False  # Content not valid (files too large, invalid files)
+                self.verifyContent(inner_path, new_content)
 
                 if signs:  # New style signing
                     valid_signers = self.getValidSigners(inner_path, new_content)
                     signs_required = self.getSignsRequired(inner_path, new_content)
 
                     if inner_path == "content.json" and len(valid_signers) > 1:  # Check signers_sign on root content.json
-                        if not CryptBitcoin.verify(
-                            "%s:%s" % (signs_required, ",".join(valid_signers)), self.site.address, new_content["signers_sign"]
-                        ):
-                            self.log.warning("%s invalid signers_sign!" % inner_path)
-                            return False
+                        signers_data = "%s:%s" % (signs_required, ",".join(valid_signers))
+                        if not CryptBitcoin.verify(signers_data, self.site.address, new_content["signers_sign"]):
+                            raise VerifyError("Invalid signers_sign!")
 
                     if inner_path != "content.json" and not self.verifyCert(inner_path, new_content):  # Check if cert valid
-                        self.log.warning("%s invalid cert!" % inner_path)
-                        return False
+                        raise VerifyError("Invalid cert!")
 
                     valid_signs = 0
                     for address in valid_signers:
@@ -827,36 +852,36 @@ class ContentManager(object):
                             valid_signs += CryptBitcoin.verify(sign_content, address, signs[address])
                         if valid_signs >= signs_required:
                             break  # Break if we has enough signs
-                    if config.verbose:
-                        self.log.debug("%s: Valid signs: %s/%s" % (inner_path, valid_signs, signs_required))
-                    return valid_signs >= signs_required
+                    if valid_signs < signs_required:
+                        raise VerifyError("Valid signs: %s/%s" % (valid_signs, signs_required))
+                    else:
+                        return True
                 else:  # Old style signing
-                    return CryptBitcoin.verify(sign_content, self.site.address, sign)
+                    if CryptBitcoin.verify(sign_content, self.site.address, sign):
+                        return True
+                    else:
+                        raise VerifyError("Invalid old-style sign")
 
             except Exception, err:
                 self.log.warning("Verify sign error: %s" % Debug.formatException(err))
-                return False
+                raise err
 
         else:  # Check using sha512 hash
             file_info = self.getFileInfo(inner_path)
             if file_info:
-                if "sha512" in file_info:
-                    hash_valid = CryptHash.sha512sum(file) == file_info["sha512"]
-                elif "sha1" in file_info:  # Backward compatibility
-                    hash_valid = CryptHash.sha1sum(file) == file_info["sha1"]
-                else:
-                    hash_valid = False
+                if CryptHash.sha512sum(file) != file_info["sha512"]:
+                    raise VerifyError("Invalid hash")
+
                 if file_info.get("size", 0) != file.tell():
-                    self.log.warning(
-                        "%s file size does not match %s <> %s, Hash: %s" %
-                        (inner_path, file.tell(), file_info.get("size", 0), hash_valid)
+                    raise VerifyError(
+                        "File size does not match %s <> %s" %
+                        (inner_path, file.tell(), file_info.get("size", 0))
                     )
-                    return False
-                return hash_valid
+
+                return True
 
             else:  # File not in content.json
-                self.log.warning("File not in content.json: %s" % inner_path)
-                return False
+                raise VerifyError("File not in content.json")
 
     def optionalDownloaded(self, inner_path, hash, size=None, own=False):
         if size is None:
@@ -877,55 +902,3 @@ class ContentManager(object):
             done = self.hashfield.removeHash(hash)
         self.site.settings["optional_downloaded"] -= size
         return done
-
-
-if __name__ == "__main__":
-    def testSign():
-        global config
-        from Site import Site
-        site = Site("12Hw8rTgzrNo4DSh2AkqwPRqDyTticwJyH")
-        content_manager = ContentManager(site)
-        content_manager.sign(
-            "data/users/1KRxE1s3oDyNDawuYWpzbLUwNm8oDbeEp6/content.json", "5JCGE6UUruhfmAfcZ2GYjvrswkaiq7uLo6Gmtf2ep2Jh2jtNzWR"
-        )
-
-    def testVerify():
-        from Site import Site
-        site = Site("12Hw8rTgzrNo4DSh2AkqwPRqDyTticwJyH")
-
-        content_manager = ContentManager(site)
-        print "Loaded contents:", content_manager.contents.keys()
-
-        file = open(site.storage.getPath("data/users/1KRxE1s3oDyNDawuYWpzbLUwNm8oDbeEp6/content.json"))
-        print "content.json valid:", content_manager.verifyFile(
-            "data/users/1KRxE1s3oDyNDawuYWpzbLUwNm8oDbeEp6/content.json", file, ignore_same=False
-        )
-
-        file = open(site.storage.getPath("data/users/1KRxE1s3oDyNDawuYWpzbLUwNm8oDbeEp6/messages.json"))
-        print "messages.json valid:", content_manager.verifyFile(
-            "data/users/1KRxE1s3oDyNDawuYWpzbLUwNm8oDbeEp6/messages.json", file, ignore_same=False
-        )
-
-    def testInfo():
-        from Site import Site
-        site = Site("12Hw8rTgzrNo4DSh2AkqwPRqDyTticwJyH")
-
-        content_manager = ContentManager(site)
-        print content_manager.contents.keys()
-
-        print content_manager.getFileInfo("index.html")
-        print content_manager.getIncludeInfo("data/users/1KRxE1s3oDyNDawuYWpzbLUwNm8oDbeEp6/content.json")
-        print content_manager.getValidSigners("data/users/1KRxE1s3oDyNDawuYWpzbLUwNm8oDbeEp6/content.json")
-        print content_manager.getValidSigners("data/users/content.json")
-        print content_manager.getValidSigners("content.json")
-
-    import sys
-    import logging
-    os.chdir("../..")
-    sys.path.insert(0, os.path.abspath("."))
-    sys.path.insert(0, os.path.abspath("src"))
-    logging.basicConfig(level=logging.DEBUG)
-
-    # testSign()
-    testVerify()
-    # testInfo()

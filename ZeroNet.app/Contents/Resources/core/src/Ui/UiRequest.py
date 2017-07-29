@@ -40,10 +40,34 @@ class UiRequest(object):
         self.start_response = start_response  # Start response function
         self.user = None
 
+    def isHostAllowed(self, host):
+        if host in self.server.allowed_hosts:
+            return True
+
+        if self.isProxyRequest():  # Support for chrome extension proxy
+            if self.server.site_manager.isDomain(host):
+                return True
+            else:
+                return False
+
+        if self.server.learn_allowed_host:
+            # Learn the first request's host as allowed one
+            self.server.learn_allowed_host = False
+            self.server.allowed_hosts.add(host)
+            self.server.log.info("Added %s as allowed host" % host)
+            return True
+
+        return False
+
     # Call the request handler function base on path
     def route(self, path):
-        if config.ui_restrict and self.env['REMOTE_ADDR'] not in config.ui_restrict:  # Restict Ui access by ip
+        # Restict Ui access by ip
+        if config.ui_restrict and self.env['REMOTE_ADDR'] not in config.ui_restrict:
             return self.error403(details=False)
+
+        # Check if host allowed to do request
+        if not self.isHostAllowed(self.env.get("HTTP_HOST")):
+            return self.error403("Invalid host: %s" % self.env.get("HTTP_HOST"), details=False)
 
         path = re.sub("^http://zero[/]+", "/", path)  # Remove begining http://zero/ for chrome extension
         path = re.sub("^http://", "/", path)  # Remove begining http for chrome extension .bit access
@@ -75,6 +99,12 @@ class UiRequest(object):
             return self.actionDebug()
         elif path == "/Console" and config.debug:
             return self.actionConsole()
+        # Wrapper-less static files
+        elif path.startswith("/raw/"):
+            return self.actionSiteMedia(path.replace("/raw", "/media", 1), header_noscript=True)
+
+        elif path.startswith("/add/"):
+            return self.actionSiteAdd()
         # Site media wrapper
         else:
             if self.get.get("wrapper_nonce"):
@@ -140,16 +170,35 @@ class UiRequest(object):
             self.user = UserManager.user_manager.create()
         return self.user
 
+    def getRequestUrl(self):
+        if self.isProxyRequest():
+            if self.env["PATH_INFO"].startswith("http://zero/"):
+                return self.env["PATH_INFO"]
+            else:  # Add http://zero to direct domain access
+                return self.env["PATH_INFO"].replace("http://", "http://zero/", 1)
+        else:
+            return self.env["wsgi.url_scheme"] + "://" + self.env["HTTP_HOST"] + self.env["PATH_INFO"]
+
+    def getReferer(self):
+        referer = self.env.get("HTTP_REFERER")
+        if referer and self.isProxyRequest() and not referer.startswith("http://zero/"):
+            return referer.replace("http://", "http://zero/", 1)
+        else:
+            return referer
+
     # Send response headers
-    def sendHeader(self, status=200, content_type="text/html", extra_headers=[]):
+    def sendHeader(self, status=200, content_type="text/html", noscript=False, extra_headers=[]):
         headers = []
         headers.append(("Version", "HTTP/1.1"))
         headers.append(("Connection", "Keep-Alive"))
         headers.append(("Keep-Alive", "max=25, timeout=30"))
-        if content_type != "text/html":
-            headers.append(("Access-Control-Allow-Origin", "*"))  # Allow json access on non-html files
         headers.append(("X-Frame-Options", "SAMEORIGIN"))
-        # headers.append(("Content-Security-Policy", "default-src 'self' data: 'unsafe-inline' ws://127.0.0.1:* http://127.0.0.1:* wss://tracker.webtorrent.io; sandbox allow-same-origin allow-top-navigation allow-scripts"))  # Only local connections
+        if content_type != "text/html" and self.env.get("HTTP_REFERER") and self.isSameOrigin(self.getReferer(), self.getRequestUrl()):
+           headers.append(("Access-Control-Allow-Origin", "*"))  # Allow load font files from css
+
+        if noscript:
+            headers.append(("Content-Security-Policy", "default-src 'none'; sandbox allow-top-navigation allow-forms; img-src 'self'; font-src 'self'; media-src 'self'; style-src 'self' 'unsafe-inline';"))
+
         if self.env["REQUEST_METHOD"] == "OPTIONS":
             # Allow json access
             headers.append(("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Cookie"))
@@ -159,6 +208,10 @@ class UiRequest(object):
             content_type = "text/html; charset=utf-8"
         if content_type == "text/plain":
             content_type = "text/plain; charset=utf-8"
+
+        # Download instead of display file types that can be dangerous
+        if re.findall("/svg|/xml|/x-shockwave-flash|/pdf", content_type):
+            headers.append(("Content-Disposition", "attachment"))
 
         cacheable_type = (
             content_type == "text/css" or content_type.startswith("image") or content_type.startswith("video") or
@@ -183,7 +236,7 @@ class UiRequest(object):
 
     # Redirect to an url
     def actionRedirect(self, url):
-        self.start_response('301 Redirect', [('Location', url)])
+        self.start_response('301 Redirect', [('Location', str(url))])
         yield "Location changed: %s" % url
 
     def actionIndex(self):
@@ -232,7 +285,13 @@ class UiRequest(object):
         else:  # Bad url
             return False
 
-    def renderWrapper(self, site, path, inner_path, title, extra_headers):
+    def getSiteUrl(self, address):
+        if self.isProxyRequest():
+            return "http://zero/" + address
+        else:
+            return "/" + address
+
+    def renderWrapper(self, site, path, inner_path, title, extra_headers, show_loadingscreen=None):
         file_inner_path = inner_path
         if not file_inner_path:
             file_inner_path = "index.html"  # If inner path defaults to index.html
@@ -242,10 +301,11 @@ class UiRequest(object):
 
         address = re.sub("/.*", "", path.lstrip("/"))
         if self.isProxyRequest() and (not path or "/" in path[1:]):
-            file_url = re.sub(".*/", "", inner_path)
             if self.env["HTTP_HOST"] == "zero":
                 root_url = "/" + address + "/"
+                file_url = "/" + address + "/" + inner_path
             else:
+                file_url = "/" + inner_path
                 root_url = "/"
 
         else:
@@ -262,6 +322,8 @@ class UiRequest(object):
 
         if self.env.get("QUERY_STRING"):
             query_string = "?%s&wrapper_nonce=%s" % (self.env["QUERY_STRING"], wrapper_nonce)
+        elif "?" in inner_path:
+            query_string = "&wrapper_nonce=%s" % wrapper_nonce
         else:
             query_string = "?wrapper_nonce=%s" % wrapper_nonce
 
@@ -292,6 +354,9 @@ class UiRequest(object):
         else:
             sandbox_permissions = ""
 
+        if show_loadingscreen is None:
+            show_loadingscreen = not site.storage.isFile(file_inner_path)
+
         return self.render(
             "src/Ui/template/wrapper.html",
             server_url=server_url,
@@ -307,7 +372,7 @@ class UiRequest(object):
             wrapper_nonce=wrapper_nonce,
             postmessage_nonce_security=postmessage_nonce_security,
             permissions=json.dumps(site.settings["permissions"]),
-            show_loadingscreen=json.dumps(not site.storage.isFile(file_inner_path)),
+            show_loadingscreen=json.dumps(show_loadingscreen),
             sandbox_permissions=sandbox_permissions,
             rev=config.rev,
             lang=config.language,
@@ -320,12 +385,18 @@ class UiRequest(object):
         self.server.wrapper_nonces.append(wrapper_nonce)
         return wrapper_nonce
 
-    # Returns if media request allowed from that referer
-    def isMediaRequestAllowed(self, site_address, referer):
-        if not re.sub("^http[s]{0,1}://", "", referer).startswith(self.env["HTTP_HOST"]):
+    # Create a new wrapper nonce that allows to get one site
+    def getAddNonce(self):
+        add_nonce = CryptHash.random()
+        self.server.add_nonces.append(add_nonce)
+        return add_nonce
+
+    def isSameOrigin(self, url_a, url_b):
+        if not url_a or not url_b:
             return False
-        referer_path = re.sub("http[s]{0,1}://.*?/", "/", referer).replace("/media", "")  # Remove site address
-        return referer_path.startswith("/" + site_address)
+        origin_a = re.sub("http[s]{0,1}://(.*?/.*?/).*", "\\1", url_a)
+        origin_b = re.sub("http[s]{0,1}://(.*?/.*?/).*", "\\1", url_b)
+        return origin_a == origin_b
 
     # Return {address: 1Site.., inner_path: /data/users.json} from url path
     def parsePath(self, path):
@@ -336,71 +407,74 @@ class UiRequest(object):
         if ".." in path:
             raise Exception("Invalid path")
 
-        match = re.match("/media/(?P<address>[A-Za-z0-9\._-]+)/(?P<inner_path>.*)", path)
+        match = re.match("/media/(?P<address>[A-Za-z0-9\._-]+)(?P<inner_path>/.*|$)", path)
         if match:
             path_parts = match.groupdict()
             path_parts["request_address"] = path_parts["address"]  # Original request address (for Merger sites)
+            path_parts["inner_path"] = path_parts["inner_path"].lstrip("/")
             return path_parts
         else:
             return None
 
     # Serve a media for site
-    def actionSiteMedia(self, path, header_length=True):
+    def actionSiteMedia(self, path, header_length=True, header_noscript=False):
         if ".." in path:  # File not in allowed path
             return self.error403("Invalid file path")
 
         path_parts = self.parsePath(path)
 
+        if not path_parts:
+            return self.error404(path)
+
         # Check wrapper nonce
         content_type = self.getContentType(path_parts["inner_path"])
-        if "htm" in content_type:  # Valid nonce must present to render html files
+        if "htm" in content_type and not header_noscript:  # Valid nonce must present to render html files
             wrapper_nonce = self.get.get("wrapper_nonce")
             if wrapper_nonce not in self.server.wrapper_nonces:
                 return self.error403("Wrapper nonce error. Please reload the page.")
             self.server.wrapper_nonces.remove(self.get["wrapper_nonce"])
+        else:
+            referer = self.env.get("HTTP_REFERER")
+            if referer and path_parts:  # Only allow same site to receive media
+                if not self.isSameOrigin(self.getRequestUrl(), self.getReferer()):
+                    self.log.error("Media referrer error: %s not allowed from %s" % (self.getRequestUrl(), self.getReferer()))
+                    return self.error403("Media referrer error")  # Referrer not starts same address as requested path
 
-        referer = self.env.get("HTTP_REFERER")
-        if referer and path_parts:  # Only allow same site to receive media
-            if not self.isMediaRequestAllowed(path_parts["request_address"], referer):
-                self.log.error("Media referrer error: %s not allowed from %s" % (path_parts["address"], referer))
-                return self.error403("Media referrer error")  # Referrer not starts same address as requested path
+        address = path_parts["address"]
+        file_path = "%s/%s/%s" % (config.data_dir, address, path_parts["inner_path"])
+        if config.debug and file_path.split("/")[-1].startswith("all."):
+            # If debugging merge *.css to all.css and *.js to all.js
+            site = self.server.sites.get(address)
+            if site and site.settings["own"]:
+                from Debug import DebugMedia
+                DebugMedia.merge(file_path)
+        if not address or address == ".":
+            return self.error403(path_parts["inner_path"])
+        if os.path.isfile(file_path):  # File exists
+            return self.actionFile(file_path, header_length=header_length, header_noscript=header_noscript)
+        elif os.path.isdir(file_path):  # If this is actually a folder, add "/" and redirect
+            if path_parts["inner_path"]:
+                return self.actionRedirect("./%s/" % path_parts["inner_path"].split("/")[-1])
+            else:
+                return self.actionRedirect("./%s/" % path_parts["address"])
+        else:  # File not exists, try to download
+            if address not in SiteManager.site_manager.sites:  # Only in case if site already started downloading
+                return self.actionSiteAddPrompt(path)
 
-        if path_parts:  # Looks like a valid path
-            address = path_parts["address"]
-            file_path = "%s/%s/%s" % (config.data_dir, address, path_parts["inner_path"])
-            if config.debug and file_path.split("/")[-1].startswith("all."):
-                # If debugging merge *.css to all.css and *.js to all.js
-                site = self.server.sites.get(address)
-                if site.settings["own"]:
-                    from Debug import DebugMedia
-                    DebugMedia.merge(file_path)
-            if not address or address == ".":
-                return self.error403(path_parts["inner_path"])
-            if os.path.isfile(file_path):  # File exists
-                return self.actionFile(file_path, header_length=header_length)
-            elif os.path.isdir(file_path):  # If this is actually a folder, add "/" and redirect
-                return self.actionRedirect("./{0}/".format(path_parts["inner_path"].split("/")[-1]))
-            else:  # File not exists, try to download
-                if address not in SiteManager.site_manager.sites:  # Only in case if site already started downloading
-                    return self.error404(path_parts["inner_path"])
+            site = SiteManager.site_manager.need(address)
 
-                site = SiteManager.site_manager.need(address)
+            if path_parts["inner_path"].endswith("favicon.ico"):  # Default favicon for all sites
+                return self.actionFile("src/Ui/media/img/favicon.ico")
 
-                if path_parts["inner_path"].endswith("favicon.ico"):  # Default favicon for all sites
-                    return self.actionFile("src/Ui/media/img/favicon.ico")
-
-                result = site.needFile(path_parts["inner_path"], priority=5)  # Wait until file downloads
-                if result:
-                    return self.actionFile(file_path, header_length=header_length)
-                else:
-                    self.log.debug("File not found: %s" % path_parts["inner_path"])
-                    # Site larger than allowed, re-add wrapper nonce to allow reload
-                    if site.settings.get("size", 0) > site.getSizeLimit() * 1024 * 1024:
-                        self.server.wrapper_nonces.append(self.get.get("wrapper_nonce"))
-                    return self.error404(path_parts["inner_path"])
-
-        else:  # Bad url
-            return self.error404(path)
+            result = site.needFile(path_parts["inner_path"], priority=15)  # Wait until file downloads
+            if result:
+                return self.actionFile(file_path, header_length=header_length, header_noscript=header_noscript)
+            else:
+                self.log.debug("File not found: %s" % path_parts["inner_path"])
+                # Site larger than allowed, re-add wrapper nonce to allow reload
+                if site.settings.get("size", 0) > site.getSizeLimit() * 1024 * 1024:
+                    self.server.wrapper_nonces.append(self.get.get("wrapper_nonce"))
+                return self.error404(path_parts["inner_path"])
 
     # Serve a media for ui
     def actionUiMedia(self, path):
@@ -420,14 +494,34 @@ class UiRequest(object):
         else:  # Bad url
             return self.error400()
 
+    def actionSiteAdd(self):
+        post = dict(cgi.parse_qsl(self.env["wsgi.input"].read()))
+        if post["add_nonce"] not in self.server.add_nonces:
+            return self.error403("Add nonce error.")
+        self.server.add_nonces.remove(post["add_nonce"])
+        SiteManager.site_manager.need(post["address"])
+        return self.actionRedirect(post["url"])
+
+    def actionSiteAddPrompt(self, path):
+        path_parts = self.parsePath(path)
+        if not path_parts or not self.server.site_manager.isAddress(path_parts["address"]):
+            return self.error404(path)
+
+        self.sendHeader(200, "text/html", noscript=True)
+        template = open("src/Ui/template/site_add.html").read()
+        template = template.replace("{url}", cgi.escape(self.env["PATH_INFO"], True))
+        template = template.replace("{address}", path_parts["address"])
+        template = template.replace("{add_nonce}", self.getAddNonce())
+        return template
+
     # Stream a file to client
-    def actionFile(self, file_path, block_size=64 * 1024, send_header=True, header_length=True):
+    def actionFile(self, file_path, block_size=64 * 1024, send_header=True, header_length=True, header_noscript=False):
+        if ".." in file_path:
+            raise Exception("Invalid path")
         if os.path.isfile(file_path):
             # Try to figure out content type by extension
             content_type = self.getContentType(file_path)
 
-            # TODO: Dont allow external access: extra_headers=
-            # [("Content-Security-Policy", "default-src 'unsafe-inline' data: http://localhost:43110 ws://localhost:43110")]
             range = self.env.get("HTTP_RANGE")
             range_start = None
             if send_header:
@@ -448,7 +542,7 @@ class UiRequest(object):
                     status = 206
                 else:
                     status = 200
-                self.sendHeader(status, content_type=content_type, extra_headers=extra_headers.items())
+                self.sendHeader(status, content_type=content_type, noscript=header_noscript, extra_headers=extra_headers.items())
             if self.env["REQUEST_METHOD"] != "OPTIONS":
                 file = open(file_path, "rb")
                 if range_start:
@@ -513,6 +607,7 @@ class UiRequest(object):
         import sys
         sites = self.server.sites
         main = sys.modules["main"]
+
         def bench(code, times=100):
             sites = self.server.sites
             main = sys.modules["main"]
@@ -583,7 +678,7 @@ class UiRequest(object):
             return """
                 <h1>%s</h1>
                 <h2>%s</h3>
-            """ % (title, message)
+            """ % (title, cgi.escape(message))
 
 
 # - Reload for eaiser developing -

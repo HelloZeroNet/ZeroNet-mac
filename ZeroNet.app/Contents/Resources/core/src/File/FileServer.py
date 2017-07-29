@@ -72,9 +72,8 @@ class FileServer(ConnectionServer):
         self.log.info("Trying to open port using UpnpPunch...")
         try:
             UpnpPunch.ask_to_open_port(self.port, 'ZeroNet', retries=3, protos=["TCP"])
-        except (UpnpPunch.UpnpError, UpnpPunch.IGDError, socket.error) as err:
-            self.log.error("UpnpPunch run error: %s" %
-                           Debug.formatException(err))
+        except Exception as err:
+            self.log.error("UpnpPunch run error: %s" % Debug.formatException(err))
             return False
 
         if self.testOpenport(port)["result"] is True:
@@ -97,14 +96,14 @@ class FileServer(ConnectionServer):
     def testOpenportPortchecker(self, port=None):
         self.log.info("Checking port %s using portchecker.co..." % port)
         try:
-            data = urllib2.urlopen("http://portchecker.co/check", "port=%s" % port, timeout=20.0).read()
+            data = urllib2.urlopen("https://portchecker.co/check", "port=%s" % port, timeout=20.0).read()
             message = re.match('.*<div id="results-wrapper">(.*?)</div>', data, re.DOTALL).group(1)
             message = re.sub("<.*?>", "", message.replace("<br>", " ").replace("&nbsp;", " ").strip())  # Strip http tags
         except Exception, err:
             message = "Error: %s" % Debug.formatException(err)
             data = ""
 
-        if "closed" in message or "Error" in message:
+        if "open" not in message:
             if config.tor != "always":
                 self.log.info("[BAD :(] Port closed: %s" % message)
             if port == self.port:
@@ -137,7 +136,7 @@ class FileServer(ConnectionServer):
         except Exception, err:
             message = "Error: %s" % Debug.formatException(err)
 
-        if "Error" in message:
+        if "Success" not in message:
             if config.tor != "always":
                 self.log.info("[BAD :(] Port closed: %s" % message)
             if port == self.port:
@@ -205,19 +204,21 @@ class FileServer(ConnectionServer):
         import gc
         startup = True
         time.sleep(5 * 60)  # Sites already cleaned up on startup
+        peers_protected = set([])
         while 1:
             # Sites health care every 20 min
-            self.log.debug("Running site cleanup, connections: %s, internet: %s" % (len(self.connections), self.has_internet))
+            self.log.debug("Running site cleanup, connections: %s, internet: %s, protected peers: %s" % (len(self.connections), self.has_internet, peers_protected))
 
             for address, site in self.sites.items():
                 if not site.settings["serving"]:
                     continue
 
                 if not startup:
-                    site.cleanupPeers()
+                    site.cleanupPeers(peers_protected)
 
                 time.sleep(1)  # Prevent too quick request
 
+            peers_protected = set([])
             for address, site in self.sites.items():
                 if not site.settings["serving"]:
                     continue
@@ -231,7 +232,9 @@ class FileServer(ConnectionServer):
                     site.retryBadFiles()
 
                 if not startup:  # Don't do it at start up because checkSite already has needConnections at start up.
-                    site.needConnections(check_site_on_reconnect=True)  # Keep active peer connection to get the updates
+                    connected_num = site.needConnections(check_site_on_reconnect=True)  # Keep active peer connection to get the updates
+                    if connected_num < config.connected_limit:  # This site has small amount of peers, protect them from closing
+                        peers_protected.update([peer.key for peer in site.getConnectedPeers()])
 
                 time.sleep(1)  # Prevent too quick request
 

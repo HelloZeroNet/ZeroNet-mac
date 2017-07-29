@@ -127,6 +127,8 @@ class Peer(object):
 
         for retry in range(1, 4):  # Retry 3 times
             try:
+                if not self.connection:
+                    raise Exception("No connection found")
                 res = self.connection.request(cmd, params, stream_to)
                 if not res:
                     raise Exception("Send error")
@@ -153,7 +155,7 @@ class Peer(object):
         return None  # Failed after 4 retry
 
     # Get a file content from peer
-    def getFile(self, site, inner_path):
+    def getFile(self, site, inner_path, file_size=None):
         # Use streamFile if client supports it
         if config.stream_downloads and self.connection and self.connection.handshake and self.connection.handshake["rev"] > 310:
             return self.streamFile(site, inner_path)
@@ -166,7 +168,7 @@ class Peer(object):
 
         s = time.time()
         while True:  # Read in 512k parts
-            res = self.request("getFile", {"site": site, "inner_path": inner_path, "location": location})
+            res = self.request("getFile", {"site": site, "inner_path": inner_path, "location": location, "file_size": file_size})
 
             if not res or "body" not in res:  # Error
                 return False
@@ -327,7 +329,11 @@ class Peer(object):
     # On connection error
     def onConnectionError(self, reason="Unknown"):
         self.connection_error += 1
-        if self.connection_error >= 6:  # Dead peer
+        if self.site and len(self.site.peers) > 200:
+            limit = 3
+        else:
+            limit = 6
+        if self.connection_error >= limit:  # Dead peer
             self.remove("Peer connection: %s" % reason)
 
     # Done working with peer

@@ -9,8 +9,8 @@ import ConfigParser
 class Config(object):
 
     def __init__(self, argv):
-        self.version = "0.5.4"
-        self.rev = 2054
+        self.version = "0.5.7"
+        self.rev = 2167
         self.argv = argv
         self.action = None
         self.config_file = "zeronet.conf"
@@ -61,7 +61,7 @@ class Config(object):
         else:
             fix_float_decimals = False
 
-        this_file = os.path.abspath(__file__).replace("\\", "/")
+        this_file = os.path.abspath(__file__).replace("\\", "/").rstrip("cd")
 
         if this_file.endswith("/Contents/Resources/core/src/Config.py"):
             # Running as ZeroNet.app
@@ -77,6 +77,12 @@ class Config(object):
         elif this_file.endswith("/core/src/Config.py"):
             # Running as exe or source is at Application Support directory, put var files to outside of core dir
             start_dir = this_file.replace("/core/src/Config.py", "").decode(sys.getfilesystemencoding())
+            config_file = start_dir + "/zeronet.conf"
+            data_dir = start_dir + "/data"
+            log_dir = start_dir + "/log"
+        elif this_file.endswith("usr/share/zeronet/src/Config.py"):
+            # Running from non-writeable location, e.g., AppImage
+            start_dir = os.path.expanduser("~/ZeroNet").decode(sys.getfilesystemencoding())
             config_file = start_dir + "/zeronet.conf"
             data_dir = start_dir + "/data"
             log_dir = start_dir + "/log"
@@ -162,6 +168,7 @@ class Config(object):
         # Config parameters
         self.parser.add_argument('--verbose', help='More detailed logging', action='store_true')
         self.parser.add_argument('--debug', help='Debug mode', action='store_true')
+        self.parser.add_argument('--silent', help='Disable logging to terminal output', action='store_true')
         self.parser.add_argument('--debug_socket', help='Debug socket connections', action='store_true')
         self.parser.add_argument('--debug_gevent', help='Debug gevent functions', action='store_true')
 
@@ -175,13 +182,16 @@ class Config(object):
         self.parser.add_argument('--ui_ip', help='Web interface bind address', default="127.0.0.1", metavar='ip')
         self.parser.add_argument('--ui_port', help='Web interface bind port', default=43110, type=int, metavar='port')
         self.parser.add_argument('--ui_restrict', help='Restrict web access', default=False, metavar='ip', nargs='*')
+        self.parser.add_argument('--ui_host', help='Allow access using this hosts', metavar='host', nargs='*')
+
         self.parser.add_argument('--open_browser', help='Open homepage in web browser automatically',
                                  nargs='?', const="default_browser", metavar='browser_name')
         self.parser.add_argument('--homepage', help='Web interface Homepage', default='1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D',
                                  metavar='address')
         self.parser.add_argument('--updatesite', help='Source code update site', default='1UPDatEDxnvHDo7TXvq6AEBARfNkyfxsp',
                                  metavar='address')
-        self.parser.add_argument('--size_limit', help='Default site size limit in MB', default=10, type=int, metavar='size')
+        self.parser.add_argument('--size_limit', help='Default site size limit in MB', default=10, type=int, metavar='limit')
+        self.parser.add_argument('--file_size_limit', help='Maximum per file size limit in MB', default=10, type=int, metavar='limit')
         self.parser.add_argument('--connected_limit', help='Max connected peer per site', default=8, type=int, metavar='connected_limit')
         self.parser.add_argument('--workers', help='Download workers per site', default=5, type=int, metavar='workers')
 
@@ -225,6 +235,7 @@ class Config(object):
         self.parser.add_argument('--tor_hs_limit', help='Maximum number of hidden services', metavar='limit', type=int, default=10)
 
         self.parser.add_argument('--version', action='version', version='ZeroNet %s r%s' % (self.version, self.rev))
+        self.parser.add_argument('--end', help='Stop multi value argument parsing', action='store_true')
 
         return self.parser
 
@@ -310,6 +321,7 @@ class Config(object):
         # Find out if action is specificed on start
         action = self.getAction(argv)
         if not action:
+            argv.append("--end")
             argv.append("main")
             action = "main"
         argv = self.moveUnknownToEnd(argv, action)
