@@ -13,7 +13,7 @@ class Notifications
 
 
 	add: (id, type, body, timeout=0) ->
-		id = id.replace /[^A-Za-z0-9]/g, ""
+		id = id.replace /[^A-Za-z0-9-]/g, ""
 		# Close notifications with same id
 		for elem in $(".notification-#{id}")
 			@close $(elem)
@@ -68,6 +68,11 @@ class Notifications
 		# Select list
 		$(".select", elem).on "click", =>
 			@close elem
+
+		# Input enter
+		$("input", elem).on "keyup", (e) =>
+			if e.keyCode == 13
+				@close elem
 
 		return elem
 

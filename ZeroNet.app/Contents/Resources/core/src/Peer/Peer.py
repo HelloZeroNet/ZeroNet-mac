@@ -9,12 +9,14 @@ from Debug import Debug
 from Config import config
 from util import helper
 from PeerHashfield import PeerHashfield
+from Plugin import PluginManager
 
 if config.use_tempfiles:
     import tempfile
 
 
 # Communicate remote peers
+@PluginManager.acceptPlugins
 class Peer(object):
     __slots__ = (
         "ip", "port", "site", "key", "connection", "connection_server", "time_found", "time_response", "time_hashfield", "time_added", "has_hashfield",
@@ -69,6 +71,7 @@ class Peer(object):
             self.log("Getting connection...")
 
         if connection:  # Connection specified
+            self.log("Assigning connection %s" % connection)
             self.connection = connection
             self.connection.sites += 1
         else:  # Try to find from connection pool or create new connection
@@ -111,8 +114,14 @@ class Peer(object):
         else:
             return helper.packAddress(self.ip, self.port)
 
-    # Found a peer on tracker
-    def found(self):
+    # Found a peer from a source
+    def found(self, source="other"):
+        if source == "tracker":
+            self.reputation += 10
+        elif source == "local":
+            self.reputation += 30
+        if source in ("tracker", "local"):
+            self.site.peers_recent.appendleft(self)
         self.time_found = time.time()
 
     # Send a command to peer and return response value
@@ -123,7 +132,7 @@ class Peer(object):
                 self.onConnectionError("Reconnect error")
                 return None  # Connection failed
 
-        self.log("Send request: %s %s" % (params.get("site", ""), cmd))
+        self.log("Send request: %s %s %s %s" % (params.get("site", ""), cmd, params.get("inner_path", ""), params.get("location", "")))
 
         for retry in range(1, 4):  # Retry 3 times
             try:
@@ -139,7 +148,10 @@ class Peer(object):
                 else:  # Successful request, reset connection error num
                     self.connection_error = 0
                 self.time_response = time.time()
-                return res
+                if res:
+                    return res
+                else:
+                    raise Exception("Invalid response: %s" % res)
             except Exception, err:
                 if type(err).__name__ == "Notify":  # Greenlet killed by worker
                     self.log("Peer worker got killed: %s, aborting cmd: %s" % (err.message, cmd))
@@ -155,62 +167,56 @@ class Peer(object):
         return None  # Failed after 4 retry
 
     # Get a file content from peer
-    def getFile(self, site, inner_path, file_size=None):
-        # Use streamFile if client supports it
-        if config.stream_downloads and self.connection and self.connection.handshake and self.connection.handshake["rev"] > 310:
-            return self.streamFile(site, inner_path)
+    def getFile(self, site, inner_path, file_size=None, pos_from=0, pos_to=None, streaming=False):
+        if file_size and file_size > 5 * 1024 * 1024:
+            max_read_size = 1024 * 1024
+        else:
+            max_read_size = 512 * 1024
 
-        location = 0
+        if pos_to:
+            read_bytes = min(max_read_size, pos_to - pos_from)
+        else:
+            read_bytes = max_read_size
+
+        location = pos_from
+
         if config.use_tempfiles:
             buff = tempfile.SpooledTemporaryFile(max_size=16 * 1024, mode='w+b')
         else:
             buff = StringIO()
 
         s = time.time()
-        while True:  # Read in 512k parts
-            res = self.request("getFile", {"site": site, "inner_path": inner_path, "location": location, "file_size": file_size})
+        while True:  # Read in smaller parts
+            if config.stream_downloads or read_bytes > 256 * 1024 or streaming:
+                res = self.request("streamFile", {"site": site, "inner_path": inner_path, "location": location, "read_bytes": read_bytes, "file_size": file_size}, stream_to=buff)
+                if not res or "location" not in res:  # Error
+                    return False
+            else:
+                self.log("Send: %s" % inner_path)
+                res = self.request("getFile", {"site": site, "inner_path": inner_path, "location": location, "read_bytes": read_bytes, "file_size": file_size})
+                if not res or "location" not in res:  # Error
+                    return False
+                self.log("Recv: %s" % inner_path)
+                buff.write(res["body"])
+                res["body"] = None  # Save memory
 
-            if not res or "body" not in res:  # Error
-                return False
-
-            buff.write(res["body"])
-            res["body"] = None  # Save memory
-            if res["location"] == res["size"]:  # End of file
+            if res["location"] == res["size"] or res["location"] == pos_to:  # End of file
                 break
             else:
                 location = res["location"]
+                if pos_to:
+                    read_bytes = min(max_read_size, pos_to - location)
 
-        self.download_bytes += res["location"]
+        if pos_to:
+            recv = pos_to - pos_from
+        else:
+            recv = res["location"]
+
+        self.download_bytes += recv
         self.download_time += (time.time() - s)
         if self.site:
-            self.site.settings["bytes_recv"] = self.site.settings.get("bytes_recv", 0) + res["location"]
-        buff.seek(0)
-        return buff
-
-    # Download file out of msgpack context to save memory and cpu
-    def streamFile(self, site, inner_path):
-        location = 0
-        if config.use_tempfiles:
-            buff = tempfile.SpooledTemporaryFile(max_size=16 * 1024, mode='w+b')
-        else:
-            buff = StringIO()
-
-        s = time.time()
-        while True:  # Read in 512k parts
-            res = self.request("streamFile", {"site": site, "inner_path": inner_path, "location": location}, stream_to=buff)
-
-            if not res or "location" not in res:  # Error
-                self.log("Invalid response: %s" % res)
-                return False
-
-            if res["location"] == res["size"]:  # End of file
-                break
-            else:
-                location = res["location"]
-
-        self.download_bytes += res["location"]
-        self.download_time += (time.time() - s)
-        self.site.settings["bytes_recv"] = self.site.settings.get("bytes_recv", 0) + res["location"]
+            self.site.settings["bytes_recv"] = self.site.settings.get("bytes_recv", 0) + recv
+        self.log("Downloaded: %s, pos: %s, read_bytes: %s" % (inner_path, buff.tell(), read_bytes))
         buff.seek(0)
         return buff
 
@@ -243,7 +249,7 @@ class Peer(object):
             site = self.site  # If no site defined request peers for this site
 
         # give back 5 connectible peers
-        packed_peers = helper.packPeers(self.site.getConnectablePeers(5))
+        packed_peers = helper.packPeers(self.site.getConnectablePeers(5, allow_private=False))
         request = {"site": site.address, "peers": packed_peers["ip4"], "need": need_num}
         if packed_peers["onion"]:
             request["peers_onion"] = packed_peers["onion"]
@@ -254,12 +260,12 @@ class Peer(object):
         # Ip4
         for peer in res.get("peers", []):
             address = helper.unpackAddress(peer)
-            if site.addPeer(*address):
+            if site.addPeer(*address, source="pex"):
                 added += 1
         # Onion
         for peer in res.get("peers_onion", []):
             address = helper.unpackOnionAddress(peer)
-            if site.addPeer(*address):
+            if site.addPeer(*address, source="pex"):
                 added += 1
 
         if added:
@@ -273,13 +279,13 @@ class Peer(object):
         return self.request("listModified", {"since": since, "site": self.site.address})
 
     def updateHashfield(self, force=False):
-        # Don't update hashfield again in 15 min
-        if self.time_hashfield and time.time() - self.time_hashfield > 60 * 15 and not force:
+        # Don't update hashfield again in 5 min
+        if self.time_hashfield and time.time() - self.time_hashfield < 5 * 60 and not force:
             return False
 
         self.time_hashfield = time.time()
         res = self.request("getHashfield", {"site": self.site.address})
-        if not res or "error" in res:
+        if not res or "error" in res or not "hashfield_raw" in res:
             return False
         self.hashfield.replaceFromString(res["hashfield_raw"])
 
@@ -289,7 +295,7 @@ class Peer(object):
     # Return: {hash1: ["ip:port", "ip:port",...],...}
     def findHashIds(self, hash_ids):
         res = self.request("findHashIds", {"site": self.site.address, "hash_ids": hash_ids})
-        if not res or "error" in res:
+        if not res or "error" in res or type(res) is not dict:
             return False
         # Unpack IP4
         back = {key: map(helper.unpackAddress, val) for key, val in res["peers"].items()[0:30]}
@@ -321,6 +327,10 @@ class Peer(object):
         self.log("Removing peer...Connection error: %s, Hash failed: %s" % (self.connection_error, self.hash_failed))
         if self.site and self.key in self.site.peers:
             del(self.site.peers[self.key])
+
+        if self.site and self in self.site.peers_recent:
+            self.site.peers_recent.remove(self)
+
         if self.connection:
             self.connection.close(reason)
 

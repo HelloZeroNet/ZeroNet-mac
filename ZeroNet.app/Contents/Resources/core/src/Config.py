@@ -9,10 +9,16 @@ import ConfigParser
 class Config(object):
 
     def __init__(self, argv):
-        self.version = "0.5.7"
-        self.rev = 2167
+        self.version = "0.6.3"
+        self.rev = 3542
         self.argv = argv
         self.action = None
+        self.pending_changes = {}
+        self.need_restart = False
+        self.keys_api_change_allowed = set(["tor", "fileserver_port", "language", "tor_use_bridges", "trackers_proxy", "trackers", "trackers_file", "open_browser"])
+        self.keys_restart_need = set(["tor", "fileserver_port"])
+        self.start_dir = self.getStartDir()
+
         self.config_file = "zeronet.conf"
         self.createParser()
         self.createArguments()
@@ -30,37 +36,7 @@ class Config(object):
     def strToBool(self, v):
         return v.lower() in ("yes", "true", "t", "1")
 
-    # Create command line arguments
-    def createArguments(self):
-        trackers = [
-            "zero://boot3rdez4rzn36x.onion:15441",
-            "zero://boot.zeronet.io#f36ca555bee6ba216b14d10f38c16f7769ff064e0e37d887603548cc2e64191d:15441",
-            "udp://tracker.coppersurfer.tk:6969",
-            "udp://tracker.leechers-paradise.org:6969",
-            "udp://9.rarbg.com:2710",
-            "http://tracker.opentrackr.org:1337/announce",
-            "http://explodie.org:6969/announce",
-            "http://tracker1.wasabii.com.tw:6969/announce"
-        ]
-        # Platform specific
-        if sys.platform.startswith("win"):
-            coffeescript = "type %s | tools\\coffee\\coffee.cmd"
-        else:
-            coffeescript = None
-
-        try:
-            language, enc = locale.getdefaultlocale()
-            language = language.split("_")[0]
-        except Exception:
-            language = "en"
-
-        use_openssl = True
-
-        if repr(1483108852.565) != "1483108852.565":
-            fix_float_decimals = True
-        else:
-            fix_float_decimals = False
-
+    def getStartDir(self):
         this_file = os.path.abspath(__file__).replace("\\", "/").rstrip("cd")
 
         if this_file.endswith("/Contents/Resources/core/src/Config.py"):
@@ -87,9 +63,47 @@ class Config(object):
             data_dir = start_dir + "/data"
             log_dir = start_dir + "/log"
         else:
+            start_dir = "."
             config_file = "zeronet.conf"
             data_dir = "data"
             log_dir = "log"
+
+        return start_dir
+
+    # Create command line arguments
+    def createArguments(self):
+        trackers = [
+            "zero://boot3rdez4rzn36x.onion:15441",
+            "zero://zero.booth.moe#f36ca555bee6ba216b14d10f38c16f7769ff064e0e37d887603548cc2e64191d:443",  # US/NY
+            "udp://tracker.coppersurfer.tk:6969",  # DE
+            "udp://tracker.leechers-paradise.org:6969",  # NL
+            "udp://104.238.198.186:8000",  # US/LA
+            "http://tracker.swateam.org.uk:2710/announce",  # US/NY
+            "http://open.acgnxtracker.com:80/announce",  # DE
+            "http://retracker.mgts.by:80/announce"  # BY
+        ]
+        # Platform specific
+        if sys.platform.startswith("win"):
+            coffeescript = "type %s | tools\\coffee\\coffee.cmd"
+        else:
+            coffeescript = None
+
+        try:
+            language, enc = locale.getdefaultlocale()
+            language = language.split("_")[0]
+        except Exception:
+            language = "en"
+
+        use_openssl = True
+
+        if repr(1483108852.565) != "1483108852.565":
+            fix_float_decimals = True
+        else:
+            fix_float_decimals = False
+
+        config_file = self.start_dir + "/zeronet.conf"
+        data_dir = self.start_dir + "/data"
+        log_dir = self.start_dir + "/log"
 
         ip_local = ["127.0.0.1"]
 
@@ -131,6 +145,12 @@ class Config(object):
         action = self.subparsers.add_parser("siteVerify", help='Verify site files using sha512: address')
         action.add_argument('address', help='Site to verify')
 
+        # SiteCmd
+        action = self.subparsers.add_parser("siteCmd", help='Execute a ZeroFrame API command on a site')
+        action.add_argument('address', help='Site address')
+        action.add_argument('cmd', help='API command name')
+        action.add_argument('parameters', help='Parameters of the command', nargs='?')
+
         # dbRebuild
         action = self.subparsers.add_parser("dbRebuild", help='Rebuild site database cache')
         action.add_argument('address', help='Site to rebuild')
@@ -165,24 +185,40 @@ class Config(object):
         action.add_argument('message', help='Message to sign')
         action.add_argument('privatekey', help='Private key')
 
+        # Crypt Verify
+        action = self.subparsers.add_parser("cryptVerify", help='Verify message using Bitcoin public address')
+        action.add_argument('message', help='Message to verify')
+        action.add_argument('sign', help='Signiture for message')
+        action.add_argument('address', help='Signer\'s address')
+
+        # Crypt GetPrivatekey
+        action = self.subparsers.add_parser("cryptGetPrivatekey", help='Generate a privatekey from master seed')
+        action.add_argument('master_seed', help='Source master seed')
+        action.add_argument('site_address_index', help='Site address index', type=int)
+
+        action = self.subparsers.add_parser("getConfig", help='Return json-encoded info')
+        action = self.subparsers.add_parser("testConnection", help='Testing')
+        action = self.subparsers.add_parser("testAnnounce", help='Testing')
+
         # Config parameters
         self.parser.add_argument('--verbose', help='More detailed logging', action='store_true')
         self.parser.add_argument('--debug', help='Debug mode', action='store_true')
         self.parser.add_argument('--silent', help='Disable logging to terminal output', action='store_true')
         self.parser.add_argument('--debug_socket', help='Debug socket connections', action='store_true')
-        self.parser.add_argument('--debug_gevent', help='Debug gevent functions', action='store_true')
 
         self.parser.add_argument('--batch', help="Batch mode (No interactive input for commands)", action='store_true')
 
         self.parser.add_argument('--config_file', help='Path of config file', default=config_file, metavar="path")
         self.parser.add_argument('--data_dir', help='Path of data directory', default=data_dir, metavar="path")
         self.parser.add_argument('--log_dir', help='Path of logging directory', default=log_dir, metavar="path")
+        self.parser.add_argument('--log_level', help='Level of logging to file', default="DEBUG", choices=["DEBUG", "INFO", "ERROR"])
 
         self.parser.add_argument('--language', help='Web interface language', default=language, metavar='language')
         self.parser.add_argument('--ui_ip', help='Web interface bind address', default="127.0.0.1", metavar='ip')
         self.parser.add_argument('--ui_port', help='Web interface bind port', default=43110, type=int, metavar='port')
         self.parser.add_argument('--ui_restrict', help='Restrict web access', default=False, metavar='ip', nargs='*')
         self.parser.add_argument('--ui_host', help='Allow access using this hosts', metavar='host', nargs='*')
+        self.parser.add_argument('--ui_trans_proxy', help='Allow access using a transparent proxy', action='store_true')
 
         self.parser.add_argument('--open_browser', help='Open homepage in web browser automatically',
                                  nargs='?', const="default_browser", metavar='browser_name')
@@ -193,10 +229,12 @@ class Config(object):
         self.parser.add_argument('--size_limit', help='Default site size limit in MB', default=10, type=int, metavar='limit')
         self.parser.add_argument('--file_size_limit', help='Maximum per file size limit in MB', default=10, type=int, metavar='limit')
         self.parser.add_argument('--connected_limit', help='Max connected peer per site', default=8, type=int, metavar='connected_limit')
+        self.parser.add_argument('--global_connected_limit', help='Max connections', default=512, type=int, metavar='global_connected_limit')
         self.parser.add_argument('--workers', help='Download workers per site', default=5, type=int, metavar='workers')
 
         self.parser.add_argument('--fileserver_ip', help='FileServer bind address', default="*", metavar='ip')
-        self.parser.add_argument('--fileserver_port', help='FileServer bind port', default=15441, type=int, metavar='port')
+        self.parser.add_argument('--fileserver_port', help='FileServer bind port (0: randomize)', default=0, type=int, metavar='port')
+        self.parser.add_argument('--fileserver_port_range', help='FileServer randomization range', default="10000-40000", metavar='port')
         self.parser.add_argument('--ip_local', help='My local ips', default=ip_local, type=int, metavar='ip', nargs='*')
 
         self.parser.add_argument('--disable_udp', help='Disable UDP connections', action='store_true')
@@ -205,10 +243,12 @@ class Config(object):
         self.parser.add_argument('--ip_external', help='Set reported external ip (tested on start if None)', metavar='ip')
         self.parser.add_argument('--trackers', help='Bootstraping torrent trackers', default=trackers, metavar='protocol://address', nargs='*')
         self.parser.add_argument('--trackers_file', help='Load torrent trackers dynamically from a file', default=False, metavar='path')
+        self.parser.add_argument('--trackers_proxy', help='Force use proxy to connect to trackers (disable, tor, ip:port)', default="disable")
         self.parser.add_argument('--use_openssl', help='Use OpenSSL liblary for speedup',
                                  type='bool', choices=[True, False], default=use_openssl)
         self.parser.add_argument('--disable_db', help='Disable database updating', action='store_true')
         self.parser.add_argument('--disable_encryption', help='Disable connection encryption', action='store_true')
+        self.parser.add_argument('--force_encryption', help="Enforce encryption to all peer connections", action='store_true')
         self.parser.add_argument('--disable_sslcompression', help='Disable SSL compression to save memory',
                                  type='bool', choices=[True, False], default=True)
         self.parser.add_argument('--keep_ssl_cert', help='Disable new SSL cert generation on startup', action='store_true')
@@ -220,10 +260,11 @@ class Config(object):
         self.parser.add_argument('--stream_downloads', help='Stream download directly to files (experimental)',
                                  type='bool', choices=[True, False], default=False)
         self.parser.add_argument("--msgpack_purepython", help='Use less memory, but a bit more CPU power',
-                                 type='bool', choices=[True, False], default=True)
+                                 type='bool', choices=[True, False], default=False)
         self.parser.add_argument("--fix_float_decimals", help='Fix content.json modification date float precision on verification',
                                  type='bool', choices=[True, False], default=fix_float_decimals)
         self.parser.add_argument("--db_mode", choices=["speed", "security"], default="speed")
+        self.parser.add_argument("--download_optional", choices=["manual", "auto"], default="manual")
 
         self.parser.add_argument('--coffeescript_compiler', help='Coffeescript compiler for developing', default=coffeescript,
                                  metavar='executable_path')
@@ -232,7 +273,9 @@ class Config(object):
         self.parser.add_argument('--tor_controller', help='Tor controller address', metavar='ip:port', default='127.0.0.1:9051')
         self.parser.add_argument('--tor_proxy', help='Tor proxy address', metavar='ip:port', default='127.0.0.1:9050')
         self.parser.add_argument('--tor_password', help='Tor controller password', metavar='password')
-        self.parser.add_argument('--tor_hs_limit', help='Maximum number of hidden services', metavar='limit', type=int, default=10)
+        self.parser.add_argument('--tor_use_bridges', help='Use obfuscated bridge relays to avoid Tor block', action='store_true')
+        self.parser.add_argument('--tor_hs_limit', help='Maximum number of hidden services in Tor always mode', metavar='limit', type=int, default=10)
+        self.parser.add_argument('--tor_hs_port', help='Hidden service port in Tor always mode', metavar='limit', type=int, default=15441)
 
         self.parser.add_argument('--version', action='version', version='ZeroNet %s r%s' % (self.version, self.rev))
         self.parser.add_argument('--end', help='Stop multi value argument parsing', action='store_true')
@@ -240,10 +283,18 @@ class Config(object):
         return self.parser
 
     def loadTrackersFile(self):
-        self.trackers = []
-        for tracker in open(self.trackers_file):
-            if "://" in tracker:
-                self.trackers.append(tracker.strip())
+        if not self.trackers_file:
+            return None
+
+        self.trackers = self.arguments.trackers[:]
+
+        try:
+            for line in open(self.start_dir + "/" + self.trackers_file):
+                tracker = line.strip()
+                if "://" in tracker and tracker not in self.trackers:
+                    self.trackers.append(tracker)
+        except Exception as err:
+            print "Error loading trackers file: %s" % err
 
     # Find arguments specified for current action
     def getActionArguments(self):
@@ -316,6 +367,8 @@ class Config(object):
             self.parser._print_message = original_print_message
             self.parser.exit = original_exit
 
+        self.loadTrackersFile()
+
     # Parse command line arguments
     def parseCommandline(self, argv, silent=False):
         # Find out if action is specificed on start
@@ -347,10 +400,17 @@ class Config(object):
                 for key, val in config.items(section):
                     if section != "global":  # If not global prefix key with section
                         key = section + "_" + key
+
+                    to_end = key == "open_browser"  # Prefer config value over argument
+                    argv_extend = ["--%s" % key]
                     if val:
                         for line in val.strip().split("\n"):  # Allow multi-line values
-                            argv.insert(1, line)
-                    argv.insert(1, "--%s" % key)
+                            argv_extend.append(line)
+
+                    if to_end:
+                        argv = argv[:-2] + argv_extend + argv[-2:]
+                    else:
+                        argv = argv[:1] + argv_extend + argv[1:]
         return argv
 
     # Expose arguments as class attributes
@@ -359,6 +419,8 @@ class Config(object):
         if self.arguments:
             args = vars(self.arguments)
             for key, val in args.items():
+                if type(val) is list:
+                    val = val[:]
                 setattr(self, key, val)
 
     def loadPlugins(self):
@@ -388,15 +450,27 @@ class Config(object):
         for line in lines:
             if line.strip() == "[global]":
                 global_line_i = i
-            if line.startswith(key + " = "):
+            if line.startswith(key + " ="):
                 key_line_i = i
             i += 1
+
+        if key_line_i and len(lines) > key_line_i + 1:
+            while True:  # Delete previous multiline values
+                is_value_line = lines[key_line_i + 1].startswith(" ") or lines[key_line_i + 1].startswith("\t")
+                if not is_value_line:
+                    break
+                del lines[key_line_i + 1]
 
         if value is None:  # Delete line
             if key_line_i:
                 del lines[key_line_i]
+
         else:  # Add / update
-            new_line = "%s = %s" % (key, str(value).replace("\n", "").replace("\r", ""))
+            if type(value) is list:
+                value_lines = [""] + [str(line).replace("\n", "").replace("\r", "") for line in value]
+            else:
+                value_lines = [str(value).replace("\n", "").replace("\r", "")]
+            new_line = "%s = %s" % (key, "\n ".join(value_lines))
             if key_line_i:  # Already in the config, change the line
                 lines[key_line_i] = new_line
             elif global_line_i is None:  # No global section yet, append to end of file
@@ -406,5 +480,34 @@ class Config(object):
                 lines.insert(global_line_i + 1, new_line)
 
         open(self.config_file, "w").write("\n".join(lines))
+
+    def getServerInfo(self):
+        from Plugin import PluginManager
+
+        info = {
+            "platform": sys.platform,
+            "fileserver_ip": self.fileserver_ip,
+            "fileserver_port": self.fileserver_port,
+            "ui_ip": self.ui_ip,
+            "ui_port": self.ui_port,
+            "version": self.version,
+            "rev": self.rev,
+            "language": self.language,
+            "debug": self.debug,
+            "plugins": PluginManager.plugin_manager.plugin_names,
+
+            "log_dir": os.path.abspath(self.log_dir),
+            "data_dir": os.path.abspath(self.data_dir),
+            "src_dir": os.path.dirname(os.path.abspath(__file__))
+        }
+
+        try:
+            info["ip_external"] = sys.modules["main"].file_server.port_opened
+            info["tor_enabled"] = sys.modules["main"].file_server.tor_manager.enabled
+            info["tor_status"] = sys.modules["main"].file_server.tor_manager.status
+        except:
+            pass
+
+        return info
 
 config = Config(sys.argv)

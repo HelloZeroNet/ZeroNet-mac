@@ -20,7 +20,6 @@ def main():
         if main.update_after_shutdown:  # Updater
             import gc
             import update
-            import atexit
             # Try cleanup openssl
             try:
                 if "lib.opensslVerify" in sys.modules:
@@ -42,16 +41,6 @@ def main():
             except Exception, err:
                 print "Update error: %s" % err
 
-            # Close log files
-            logger = sys.modules["main"].logging.getLogger()
-
-            for handler in logger.handlers[:]:
-                handler.flush()
-                handler.close()
-                logger.removeHandler(handler)
-
-            atexit._run_exitfuncs()
-
     except Exception, err:  # Prevent closing
         import traceback
         try:
@@ -63,10 +52,18 @@ def main():
         from Config import config
         traceback.print_exc(file=open(config.log_dir + "/error.log", "a"))
 
-    if main and main.update_after_shutdown:  # Updater
-        # Restart
-        gc.collect()  # Garbage collect
+    if main and (main.update_after_shutdown or main.restart_after_shutdown):  # Updater
+        import atexit
         print "Restarting..."
+        # Close log files
+        logger = sys.modules["main"].logging.getLogger()
+
+        for handler in logger.handlers[:]:
+            handler.flush()
+            handler.close()
+            logger.removeHandler(handler)
+
+        atexit._run_exitfuncs()
         import time
         time.sleep(1)  # Wait files to close
         args = sys.argv[:]

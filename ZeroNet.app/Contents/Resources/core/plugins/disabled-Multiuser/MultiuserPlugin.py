@@ -12,6 +12,7 @@ try:
 except Exception, err:
     local_master_addresses = set()
 
+
 @PluginManager.registerTo("UiRequest")
 class UiRequestPlugin(object):
     def __init__(self, *args, **kwargs):
@@ -47,8 +48,8 @@ class UiRequestPlugin(object):
 
         if user_created:
             if not extra_headers:
-                extra_headers = []
-            extra_headers.append(('Set-Cookie', "master_address=%s;path=/;max-age=2592000;" % user.master_address))  # = 30 days
+                extra_headers = {}
+            extra_headers['Set-Cookie'] = "master_address=%s;path=/;max-age=2592000;" % user.master_address  # = 30 days
 
         loggedin = self.get.get("login") == "done"
 
@@ -57,40 +58,13 @@ class UiRequestPlugin(object):
         if not back_generator:  # Wrapper error or not string returned, injection not possible
             return False
 
-        if user_created:
-            back = back_generator.next()
-            master_seed = user.master_seed
-            # Inject the welcome message
-            inject_html = """
-                <!-- Multiser plugin -->
-                <style>
-                 .masterseed { font-size: 95%; background-color: #FFF0AD; padding: 5px 8px; margin: 9px 0px }
-                </style>
-                <script>
-                 hello_message = "<b>Hello, welcome to ZeroProxy!</b><div style='margin-top: 8px'>A new, unique account created for you:</div>"
-                 hello_message+= "<div class='masterseed'>{master_seed}</div> <div>This is your private key, <b>save it</b>, so you can login next time.</div><br>"
-                 hello_message+= "<a href='#' class='button' style='margin-left: 0px'>Ok, Saved it!</a> or <a href='#Login' onclick='wrapper.ws.cmd(\\"userLoginForm\\", []); return false'>Login</a><br><br>"
-                 hello_message+= "<small>This site allows you to browse ZeroNet content, but if you want to secure your account <br>"
-                 hello_message+= "and help to make a better network, then please run your own <a href='https://github.com/HelloZeroNet/ZeroNet' target='_blank'>ZeroNet client</a>.</small>"
-                 setTimeout(function() {
-                    wrapper.notifications.add("hello", "info", hello_message)
-                    delete(hello_message)
-                 }, 1000)
-                </script>
-                </body>
-                </html>
-            """.replace("\t", "")
-            inject_html = inject_html.replace("{master_seed}", master_seed)  # Set the master seed in the message
-
-            return iter([re.sub("</body>\s*</html>\s*$", inject_html, back)])  # Replace the </body></html> tags with the injection
-
         elif loggedin:
             back = back_generator.next()
             inject_html = """
                 <!-- Multiser plugin -->
                 <script>
                  setTimeout(function() {
-                    wrapper.notifications.add("login", "done", "{message}<br><small>You have been logged in successfully</small>", 5000)
+                    zeroframe.cmd("wrapperNotification", ["done", "{message}<br><small>You have been logged in successfully</small>", 5000])
                  }, 1000)
                 </script>
                 </body>
@@ -122,12 +96,13 @@ class UiWebsocketPlugin(object):
     def __init__(self, *args, **kwargs):
         self.multiuser_denied_cmds = (
             "siteDelete", "configSet", "serverShutdown", "serverUpdate", "siteClone",
-            "siteSetOwned", "optionalLimitSet", "siteSetAutodownloadoptional", "dbReload", "dbRebuild",
-            "mergerSiteDelete", "siteSetLimit",
-            "muteAdd", "muteRemove", "blacklistAdd", "blacklistRemove"
+            "siteSetOwned", "siteSetAutodownloadoptional", "dbReload", "dbRebuild",
+            "mergerSiteDelete", "siteSetLimit", "siteSetAutodownloadBigfileLimit",
+            "optionalLimitSet", "optionalHelp", "optionalHelpRemove", "optionalHelpAll", "optionalFilePin", "optionalFileUnpin", "optionalFileDelete",
+            "muteAdd", "muteRemove", "siteblockAdd", "siteblockRemove", "filterIncludeAdd", "filterIncludeRemove"
         )
         if config.multiuser_no_new_sites:
-            self.multiuser_denied_cmds += ("MergerSiteAdd", )
+            self.multiuser_denied_cmds += ("mergerSiteAdd", )
 
         super(UiWebsocketPlugin, self).__init__(*args, **kwargs)
 
@@ -152,8 +127,8 @@ class UiWebsocketPlugin(object):
     def actionUserLogout(self, to):
         if "ADMIN" not in self.site.settings["permissions"]:
             return self.response(to, "Logout not allowed")
-        message = "<b>You have been logged out.</b> <a href='#Login' class='button' onclick='wrapper.ws.cmd(\"userLoginForm\", []); return false'>Login to another account</a>"
-        message += "<script>document.cookie = 'master_address=; expires=Thu, 01 Jan 1970 00:00:00 UTC'</script>"
+        message = "<b>You have been logged out.</b> <a href='#Login' class='button' onclick='zeroframe.cmd(\"userLoginForm\", []); return false'>Login to another account</a>"
+        message += "<script>document.cookie = 'master_address=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'</script>"
         self.cmd("notification", ["done", message, 1000000])  # 1000000 = Show ~forever :)
         # Delete from user_manager
         user_manager = sys.modules["User.UserManager"].user_manager
@@ -177,18 +152,39 @@ class UiWebsocketPlugin(object):
         if user.master_address:
             message = "Successfull login, reloading page..."
             message += "<script>document.cookie = 'master_address=%s;path=/;max-age=2592000;'</script>" % user.master_address
-            message += "<script>wrapper.reload('login=done')</script>"
+            message += "<script>zeroframe.cmd('wrapperReload', ['login=done'])</script>"
             self.cmd("notification", ["done", message])
         else:
             self.cmd("notification", ["error", "Error: Invalid master seed"])
             self.actionUserLoginForm(0)
 
     def hasCmdPermission(self, cmd):
+        cmd = cmd[0].lower() + cmd[1:]
         if not config.multiuser_local and self.user.master_address not in local_master_addresses and cmd in self.multiuser_denied_cmds:
             self.cmd("notification", ["info", "This function is disabled on this proxy!"])
             return False
         else:
             return super(UiWebsocketPlugin, self).hasCmdPermission(cmd)
+
+    def actionCertAdd(self, *args, **kwargs):
+        super(UiWebsocketPlugin, self).actionCertAdd(*args, **kwargs)
+        master_seed = self.user.master_seed
+        message = "<style>.masterseed { font-size: 95%; background-color: #FFF0AD; padding: 5px 8px; margin: 9px 0px }</style>"
+        message += "<b>Hello, welcome to ZeroProxy!</b><div style='margin-top: 8px'>A new, unique account created for you:</div>"
+        message += "<div class='masterseed'>" + master_seed + "</div>"
+        message += "<div>This is your private key, <b>save it</b>, so you can login next time.<br>Without this key, your registered account will be lost forever!</div><br>"
+        message += "<a href='#' class='button' style='margin-left: 0px'>Ok, Saved it!</a><br><br>"
+        message += "<small>This site allows you to browse ZeroNet content, but if you want to secure your account <br>"
+        message += "and help to make a better network, then please run your own <a href='https://zeronet.io' target='_blank'>ZeroNet client</a>.</small>"
+        self.cmd("notification", ["info", message])
+
+    def actionPermissionAdd(self, to, permission):
+        if permission == "NOSANDBOX":
+            self.cmd("notification", ["info", "You can't disable sandbox on this proxy!"])
+            self.response(to, {"error": "Denied by proxy"})
+            return False
+        else:
+            return super(UiWebsocketPlugin, self).actionPermissionAdd(to, permission)
 
 
 @PluginManager.registerTo("ConfigPlugin")

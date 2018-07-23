@@ -39,7 +39,7 @@ class TestSiteDownload:
                     site_temp.needFile("data/img/direct_domains.png", priority=15, blocking=False)
             site_temp.onFileDone.append(boostRequest)
             site_temp.download(blind_includes=True).join(timeout=5)
-            file_requests = [request[2]["inner_path"] for request in requests if request[0] in ("getFile", "streamFile")]
+            file_requests = [request[3]["inner_path"] for request in requests if request[1] in ("getFile", "streamFile")]
             # Test priority
             assert file_requests[0:2] == ["content.json", "index.html"]  # Must-have files
             assert file_requests[2:4] == ["data/img/multiuser.png", "data/img/direct_domains.png"]  # Directly requested files
@@ -48,7 +48,7 @@ class TestSiteDownload:
             assert "-default" in file_requests[-1]  # Put default files for cloning to the end
 
         # Check files
-        bad_files = site_temp.storage.verifyFiles(quick_check=True)
+        bad_files = site_temp.storage.verifyFiles(quick_check=True)["bad_files"]
 
         # -1 because data/users/1J6... user has invalid cert
         assert len(site_temp.content_manager.contents) == len(site.content_manager.contents) - 1
@@ -72,7 +72,7 @@ class TestSiteDownload:
         # Download normally
         site_temp.addPeer("127.0.0.1", 1544)
         site_temp.download(blind_includes=True).join(timeout=5)
-        bad_files = site_temp.storage.verifyFiles(quick_check=True)
+        bad_files = site_temp.storage.verifyFiles(quick_check=True)["bad_files"]
 
         assert not bad_files
         assert "data/users/1C5sgvWaSgfaTpV5kjBCnCiKtENNMYo69q/content.json" in site_temp.content_manager.contents
@@ -94,6 +94,7 @@ class TestSiteDownload:
         # Push archived update
         assert not "archived" in site_temp.content_manager.contents["data/users/content.json"]["user_contents"]
         site.publish()
+        time.sleep(0.1)
         site_temp.download(blind_includes=True).join(timeout=5)  # Wait for download
 
         # The archived content should disappear from remote client
@@ -162,7 +163,12 @@ class TestSiteDownload:
         site_full = Site("1TeSTvb4w2PWE81S2rEELgmX2GCCExQGT")
         file_server_full = FileServer("127.0.0.1", 1546)
         site_full.connection_server = file_server_full
-        gevent.spawn(lambda: ConnectionServer.start(file_server_full))
+
+        def listen():
+            ConnectionServer.start(file_server_full)
+            ConnectionServer.listen(file_server_full)
+
+        gevent.spawn(listen)
         time.sleep(0.001)  # Port opening
         file_server_full.sites[site_full.address] = site_full  # Add site
         site_full.storage.verifyFiles(quick_check=True)  # Check optional files
@@ -206,7 +212,7 @@ class TestSiteDownload:
             threads.append(site_temp.needFile("data/users/1CjfbrbwtP8Y2QjPy12vpTATkUT7oSiPQ9/peanut-butter-jelly-time.gif", blocking=False))
             gevent.joinall(threads)
 
-            assert len([request for request in requests if request[0] == "findHashIds"]) == 1  # findHashids should call only once
+            assert len([request for request in requests if request[1] == "findHashIds"]) == 1  # findHashids should call only once
 
         assert site_temp.storage.isFile("data/optional.txt")
         assert site_temp.storage.isFile("data/users/1CjfbrbwtP8Y2QjPy12vpTATkUT7oSiPQ9/peanut-butter-jelly-time.gif")
@@ -257,7 +263,7 @@ class TestSiteDownload:
             site.publish()
             time.sleep(0.1)
             site_temp.download(blind_includes=True).join(timeout=5)
-            assert len([request for request in requests if request[0] in ("getFile", "streamFile")]) == 1
+            assert len([request for request in requests if request[1] in ("getFile", "streamFile")]) == 1
 
         assert site_temp.storage.open("data/data.json").read() == data_new
 

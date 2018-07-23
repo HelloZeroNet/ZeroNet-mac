@@ -9,6 +9,7 @@ import gevent
 from DbCursor import DbCursor
 from Config import config
 from util import SafeRe
+from util import helper
 
 opened_dbs = []
 
@@ -45,7 +46,7 @@ class Db(object):
         self.last_query_time = time.time()
 
     def __repr__(self):
-        return "<Db:%s>" % self.db_path
+        return "<Db#%s:%s>" % (id(self), self.db_path)
 
     def connect(self):
         if self not in opened_dbs:
@@ -75,20 +76,18 @@ class Db(object):
 
     # Execute query using dbcursor
     def execute(self, query, params=None):
-        self.last_query_time = time.time()
         if not self.conn:
             self.connect()
         return self.cur.execute(query, params)
 
     def insertOrUpdate(self, *args, **kwargs):
-        self.last_query_time = time.time()
         if not self.conn:
             self.connect()
         return self.cur.insertOrUpdate(*args, **kwargs)
 
     def executeDelayed(self, *args, **kwargs):
         if not self.delayed_queue_thread:
-            self.delayed_queue_thread = gevent.spawn_later(10, self.processDelayed)
+            self.delayed_queue_thread = gevent.spawn_later(1, self.processDelayed)
         self.delayed_queue.append(("execute", (args, kwargs)))
 
     def insertOrUpdateDelayed(self, *args, **kwargs):
@@ -100,7 +99,6 @@ class Db(object):
         if not self.delayed_queue:
             self.log.debug("processDelayed aborted")
             return
-        self.last_query_time = time.time()
         if not self.conn:
             self.connect()
 
@@ -206,10 +204,10 @@ class Db(object):
             changed_tables.append("json")
 
         # Check schema tables
-        for table_name, table_settings in self.schema["tables"].items():
+        for table_name, table_settings in self.schema.get("tables", {}).items():
             changed = cur.needTable(
                 table_name, table_settings["cols"],
-                table_settings["indexes"], version=table_settings["schema_changed"]
+                table_settings.get("indexes", []), version=table_settings.get("schema_changed", 0)
             )
             if changed:
                 changed_tables.append(table_name)
@@ -244,12 +242,15 @@ class Db(object):
         # Load the json file
         try:
             if file is None:  # Open file is not file object passed
-                file = open(file_path)
+                file = open(file_path, "rb")
 
             if file is False:  # File deleted
                 data = {}
             else:
-                data = json.load(file)
+                if file_path.endswith("json.gz"):
+                    data = json.load(helper.limitedGzipFile(fileobj=file))
+                else:
+                    data = json.load(file)
         except Exception, err:
             self.log.debug("Json file %s load error: %s" % (file_path, err))
             data = {}

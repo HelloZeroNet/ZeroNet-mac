@@ -1,19 +1,18 @@
 class Loading
-	constructor: ->
+	constructor: (@wrapper) ->
 		if window.show_loadingscreen then @showScreen()
 		@timer_hide = null
-
 
 	setProgress: (percent) ->
 		if @timer_hide
 			clearInterval @timer_hide
 		RateLimit 200, ->
-			$(".progressbar").css("width", percent*100+"%").css("opacity", "1").css("display", "block")
+			$(".progressbar").css("transform": "scaleX(#{parseInt(percent*100)/100})").css("opacity", "1").css("display", "block")
 
 	hideProgress: ->
 		console.log "hideProgress"
 		@timer_hide = setTimeout ( =>
-			$(".progressbar").css("width", "100%").css("opacity", "0").hideLater(1000)
+			$(".progressbar").css("transform": "scaleX(1)").css("opacity", "0").hideLater(1000)
 		), 300
 
 
@@ -27,13 +26,29 @@ class Loading
 		if $(".console .button-setlimit").length == 0 # Not displaying it yet
 			line = @printLine("Site size: <b>#{parseInt(site_info.settings.size/1024/1024)}MB</b> is larger than default allowed #{parseInt(site_info.size_limit)}MB", "warning")
 			button = $("<a href='#Set+limit' class='button button-setlimit'>" + "Open site and set size limit to #{site_info.next_size_limit}MB" + "</a>")
-			button.on "click", (-> return window.wrapper.setSizeLimit(site_info.next_size_limit) )
+			button.on "click", =>
+				button.addClass("loading")
+				return @wrapper.setSizeLimit(site_info.next_size_limit)
 			line.after(button)
 			setTimeout (=>
 				@printLine('Ready.')
 			), 100
 
-
+	showTrackerTorBridge: (server_info) ->
+		if $(".console .button-settrackerbridge").length == 0 and not server_info.tor_use_meek_bridges
+			line = @printLine("Tracker connection error detected.", "error")
+			button = $("<a href='#Enable+Tor+bridges' class='button button-settrackerbridge'>" + "Use Tor meek bridges for tracker connections" + "</a>")
+			button.on "click", =>
+				button.addClass("loading")
+				@wrapper.ws.cmd "configSet", ["tor_use_bridges", ""]
+				@wrapper.ws.cmd "configSet", ["trackers_proxy", "tor"]
+				@wrapper.ws.cmd "siteUpdate", {address: @wrapper.site_info.address, announce: true}
+				@wrapper.reloadIframe()
+				return false
+			line.after(button)
+			if not server_info.tor_has_meek_bridges
+				button.addClass("disabled")
+				@printLine("No meek bridge support in your client, please <a href='https://github.com/HelloZeroNet/ZeroNet#how-to-join'>download the latest bundle</a>.", "warning")
 
 	# We dont need loadingscreen anymore
 	hideScreen: ->

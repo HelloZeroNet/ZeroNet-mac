@@ -68,6 +68,7 @@ class UiRequestPlugin(object):
         try:
             yield "rev%s | " % config.rev
             yield "%s | " % config.ip_external
+            yield "Port: %s | " % main.file_server.port
             yield "Opened: %s | " % main.file_server.port_opened
             yield "Crypt: %s | " % CryptConnection.manager.crypt_supported
             yield "In: %.2fMB, Out: %.2fMB  | " % (
@@ -105,7 +106,7 @@ class UiRequestPlugin(object):
                 ("%s", connection.type),
                 ("%s:%s", (connection.ip, connection.port)),
                 ("%s", connection.handshake.get("port_opened")),
-                ("<span title='%s'>%s</span>", (connection.crypt, cipher)),
+                ("<span title='%s'>%s</span>", (cipher, connection.crypt)),
                 ("%6.3f", connection.last_ping_delay),
                 ("%s", connection.incomplete_buff_recv),
                 ("%s", connection.bad_actions),
@@ -115,7 +116,7 @@ class UiRequestPlugin(object):
                 ("%.3f", connection.cpu_time),
                 ("%.0fkB", connection.bytes_sent / 1024),
                 ("%.0fkB", connection.bytes_recv / 1024),
-                ("%s", connection.last_cmd),
+                ("<span title='Recv: %s'>%s</span>", (connection.last_cmd_recv, connection.last_cmd_sent)),
                 ("%s", connection.waiting_requests.keys()),
                 ("%s r%s", (connection.handshake.get("version"), connection.handshake.get("rev", "?"))),
                 ("%s", connection.sites)
@@ -165,12 +166,54 @@ class UiRequestPlugin(object):
                     connection_id = peer.connection.id
                 else:
                     connection_id = None
-                if site.content_manager.hashfield:
+                if site.content_manager.has_optional_files:
                     yield "Optional files: %4s " % len(peer.hashfield)
                 time_added = (time.time() - peer.time_added) / (60 * 60 * 24)
                 yield "(#%4s, err: %s, found: %3s min, add: %.1f day) %30s -<br>" % (connection_id, peer.connection_error, time_found, time_added, key)
             yield "<br></td></tr>"
         yield "</table>"
+
+        # Big files
+        yield "<br><br><b>Big files</b>:<br>"
+        for site in self.server.sites.values():
+            if not site.settings.get("has_bigfile"):
+                continue
+            bigfiles = {}
+            yield """<a href="#" onclick='document.getElementById("bigfiles_%s").style.display="initial"; return false'>%s</a><br>""" % (site.address, site.address)
+            for peer in site.peers.values():
+                if not peer.time_piecefields_updated:
+                    continue
+                for sha512, piecefield in peer.piecefields.iteritems():
+                    if sha512 not in bigfiles:
+                        bigfiles[sha512] = []
+                    bigfiles[sha512].append(peer)
+
+            yield "<div id='bigfiles_%s' style='display: none'>" % site.address
+            for sha512, peers in bigfiles.iteritems():
+                yield "<br> - " + sha512 + " (hash id: %s)<br>" % site.content_manager.hashfield.getHashId(sha512)
+                yield "<table>"
+                for peer in peers:
+                    yield "<tr><td>" + peer.key + "</td><td>" + peer.piecefields[sha512].tostring() + "</td></tr>"
+                yield "</table>"
+            yield "</div>"
+
+        # Cmd stats
+        yield "<div style='float: left'>"
+        yield "<br><br><b>Sent commands</b>:<br>"
+        yield "<table>"
+        for stat_key, stat in sorted(main.file_server.stat_sent.items(), lambda a, b: cmp(a[1]["bytes"], b[1]["bytes"]), reverse=True):
+            yield "<tr><td>%s</td><td style='white-space: nowrap'>x %s =</td><td>%.0fkB</td></tr>" % (stat_key, stat["num"], stat["bytes"] / 1024)
+        yield "</table>"
+        yield "</div>"
+
+        yield "<div style='float: left; margin-left: 20%; max-width: 50%'>"
+        yield "<br><br><b>Received commands</b>:<br>"
+        yield "<table>"
+        for stat_key, stat in sorted(main.file_server.stat_recv.items(), lambda a, b: cmp(a[1]["bytes"], b[1]["bytes"]), reverse=True):
+            yield "<tr><td>%s</td><td style='white-space: nowrap'>x %s =</td><td>%.0fkB</td></tr>" % (stat_key, stat["num"], stat["bytes"] / 1024)
+        yield "</table>"
+        yield "</div>"
+        yield "<div style='clear: both'></div>"
 
         # No more if not in debug mode
         if not config.debug:
@@ -526,7 +569,7 @@ class UiRequestPlugin(object):
                 for y in range(1000):
                     data_unpacked = msgpack.unpackb(data_packed)
                 yield "."
-            assert data == data_unpacked, "%s != %s" % (data_unpack, data)
+            assert data == data_unpacked, "%s != %s" % (data_unpacked, data)
 
         with benchmark("streaming unpack 5K x 10 000", 1.4):
             for i in range(10):
@@ -536,7 +579,7 @@ class UiRequestPlugin(object):
                     for data_unpacked in unpacker:
                         pass
                 yield "."
-            assert data == data_unpacked, "%s != %s" % (data_unpack, data)
+            assert data == data_unpacked, "%s != %s" % (data_unpacked, data)
 
         # Db
         from Db import Db

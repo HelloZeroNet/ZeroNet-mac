@@ -53,7 +53,7 @@ class SiteManagerPlugin(object):
 
     # Return or create site and start download site files
     # Return: Site or None if dns resolve failed
-    def need(self, address, all_file=True):
+    def need(self, address, *args, **kwargs):
         if self.isDomain(address):  # Its looks like a domain
             address_resolved = self.resolveDomain(address)
             if address_resolved:
@@ -61,11 +61,11 @@ class SiteManagerPlugin(object):
             else:
                 return None
 
-        return super(SiteManagerPlugin, self).need(address, all_file)
+        return super(SiteManagerPlugin, self).need(address, *args, **kwargs)
 
     # Return: Site object or None if not found
     def get(self, address):
-        if self.sites is None:  # Not loaded yet
+        if not self.loaded:  # Not loaded yet
             self.load()
         if self.isDomain(address):  # Its looks like a domain
             address_resolved = self.resolveDomain(address)

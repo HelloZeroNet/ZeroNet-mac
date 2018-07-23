@@ -1,12 +1,19 @@
+.menu {
+	font-family: Roboto, 'Segoe UI', 'Helvetica Neue';
+}
+
 .drag-bg { width: 100%; height: 100%; position: fixed; }
 .fixbutton.dragging { cursor: -webkit-grabbing; }
 .fixbutton-bg:active { cursor: -webkit-grabbing; }
 
 
 .body-sidebar { background-color: #666 !important;  }
-#inner-iframe { transition: 0.3s ease-in-out; transform-origin: left; outline: 1px solid transparent; }
-.body-sidebar iframe { transform: rotateY(5deg); opacity: 0.8; pointer-events: none } /* translateX(-200px) scale(0.95)*/
+#inner-iframe { transition: 0.3s ease-in-out; transform-origin: left; }
+.body-sidebar iframe { transform: rotateY(5deg); opacity: 0.8; pointer-events: none; outline: 1px solid transparent } /* translateX(-200px) scale(0.95)*/
 
+.sidebar .link-right { color: white; text-decoration: none; border-bottom: 1px solid #666; text-transform: uppercase; float: right; margin-right: 7px; margin-top: 1px; }
+.sidebar .link-right:hover { border-color: #CCC; }
+.sidebar .link-right:active { background-color: #444 }
 /* SIDEBAR */
 
 .sidebar-container { width: 100%; height: 100%; overflow: hidden; position: fixed; }
@@ -14,6 +21,7 @@
 .sidebar .content { margin: 30px; font-family: "Segoe UI Light", "Segoe UI", "Helvetica Neue"; color: white; width: 375px; height: 300px; font-weight: 200; transition: all 1s; opacity: 0 }
 .sidebar-container.loaded .content { opacity: 1; transform: none }
 .sidebar h1, .sidebar h2 { font-weight: lighter; }
+.sidebar .close { color: #999; float: right; text-decoration: none; margin-top: -5px; padding: 0px 5px; font-size: 33px; margin-right: 20px; display: none }
 .sidebar .button { margin: 0px; display: inline-block; transition: all 0.3s; box-sizing: border-box; max-width: 260px }
 .sidebar .button.hidden { padding: 0px; max-width: 0px; opacity: 0; pointer-events: none }
 .sidebar #button-delete { background-color: transparent; border: 1px solid #333; color: #AAA; margin-left: 10px }
@@ -111,7 +119,13 @@
 #checkbox-owned { margin-bottom: 25px; margin-top: 26px; margin-left: 11px; }
 .settings-owned { clear: both }
 #checkbox-owned ~ .settings-owned { opacity: 0; max-height: 0px; transition: all 0.3s linear; overflow: hidden }
-#checkbox-owned:checked ~ .settings-owned { opacity: 1; max-height: 400px }
+#checkbox-owned:checked ~ .settings-owned { opacity: 1; max-height: 420px }
+
+/* Settings autodownload */
+
+.settings-autodownloadoptional { clear: both; box-sizing: border-box; padding-top: 0px; }
+#checkbox-autodownloadoptional ~ .settings-autodownloadoptional { opacity: 0; max-height: 0px; transition: all 0.3s ease-in-out; overflow: hidden; }
+#checkbox-autodownloadoptional:checked ~ .settings-autodownloadoptional { opacity: 1; max-height: 120px; padding-top: 30px; }
 
 /* Globe */
 .globe { width: 360px; height: 360px }
@@ -119,6 +133,34 @@
 .globe.error { text-align: center; padding-top: 156px; box-sizing: border-box; opacity: 0.2; }
 
 /* Sign publish */
-.contents { background-color: #3B3B3B; color: white; padding: 7px 10px; font-family: Consolas; font-size: 11px; display: inline-block; margin-bottom: 6px; }
+.contents { background-color: #3B3B3B; color: white; padding: 7px 10px; font-family: Consolas; font-size: 11px; display: inline-block; margin-bottom: 6px; margin-top: 10px }
 .contents a { color: white }
 .contents a:active { background-color: #6B6B6B }
+
+.contents + .flex.active {
+	padding-bottom: 100px;
+}
+#wrapper-sign-publish {
+	padding: 0;
+}
+#button-sign-publish, #menu-sign-publish {
+	display: inline-block;
+	margin: 5px 10px;
+
+	text-decoration: none;
+}
+#button-sign-publish {
+	margin-right: 5px;
+}
+#menu-sign-publish {
+	margin-left: 5px;
+	color: #AAA;
+    padding: 7px;
+    margin: 0px;
+}
+#menu-sign-publish:hover { color: white }
+
+/* Small screen */
+@media screen and (max-width: 600px) {
+	.sidebar .close { display: block }
+}

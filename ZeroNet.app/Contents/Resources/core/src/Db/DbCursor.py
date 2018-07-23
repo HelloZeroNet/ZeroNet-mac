@@ -13,6 +13,7 @@ class DbCursor:
         self.logging = False
 
     def execute(self, query, params=None):
+        self.db.last_query_time = time.time()
         if isinstance(params, dict) and "?" in query:  # Make easier select and insert by allowing dict params
             if query.startswith("SELECT") or query.startswith("DELETE") or query.startswith("UPDATE"):
                 # Convert param dict to SELECT * FROM table WHERE key = ? AND key2 = ? format
@@ -28,11 +29,17 @@ class DbCursor:
                     else:
                         if key.startswith("not__"):
                             query_wheres.append(key.replace("not__", "") + " != ?")
+                        elif key.endswith(">"):
+                            query_wheres.append(key.replace(">", "") + " > ?")
+                        elif key.endswith("<"):
+                            query_wheres.append(key.replace("<", "") + " < ?")
                         else:
                             query_wheres.append(key + " = ?")
                         values.append(value)
                 wheres = " AND ".join(query_wheres)
-                query = re.sub("(.*)[?]", "\\1%s" % wheres, query)  # Replace the last ?
+                if wheres == "":
+                    wheres = "1"
+                query = re.sub("(.*)[?]", "\\1 %s" % wheres, query)  # Replace the last ?
                 params = values
             else:
                 # Convert param dict to INSERT INTO table (key, key2) VALUES (?, ?) format
@@ -41,6 +48,21 @@ class DbCursor:
                 keysvalues = "(%s) VALUES (%s)" % (keys, values)
                 query = re.sub("(.*)[?]", "\\1%s" % keysvalues, query)  # Replace the last ?
                 params = tuple(params.values())
+        elif isinstance(params, dict) and ":" in query:
+            new_params = dict()
+            values = []
+            for key, value in params.items():
+                if type(value) is list:
+                    for idx, val in enumerate(value):
+                        new_params[key + "__" + str(idx)] = val
+
+                    new_names = [":" + key + "__" + str(idx) for idx in range(len(value))]
+                    query = re.sub(r":" + re.escape(key) + r"([)\s]|$)", "(%s)%s" % (", ".join(new_names), r"\1"), query)
+                else:
+                    new_params[key] = value
+
+            params = new_params
+
 
         s = time.time()
         # if query == "COMMIT": self.logging = True # Turn logging back on transaction commit

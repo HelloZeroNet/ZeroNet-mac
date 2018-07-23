@@ -22,7 +22,7 @@ class TestFileRequest:
         response = connection.request("getFile", {"site": site.address, "inner_path": "content.json", "location": 0})
         assert "sign" in response["body"]
 
-        response = connection.request("getFile", {"site": site.address, "inner_path": "content.json", "location": 0, "file_size": 4460})
+        response = connection.request("getFile", {"site": site.address, "inner_path": "content.json", "location": 0, "file_size": site.storage.getSize("content.json")})
         assert "sign" in response["body"]
 
         # Invalid file
@@ -102,6 +102,17 @@ class TestFileRequest:
         assert "1.2.3.4:11337" not in site_temp.peers
         assert peer_file_server.pex()
         assert "1.2.3.4:11337" in site_temp.peers
+
+        # Should not exchange private peers from local network
+        fake_peer_private = site.addPeer("192.168.0.1", 11337, return_peer=True)
+        assert fake_peer_private not in site.getConnectablePeers(allow_private=False)
+        fake_peer_private.connection = Connection(file_server, "192.168.0.1", 11337)
+        fake_peer_private.connection.last_recv_time = time.time()
+
+        assert "192.168.0.1:11337" not in site_temp.peers
+        assert not peer_file_server.pex()
+        assert "192.168.0.1:11337" not in site_temp.peers
+
 
         connection.close()
         client.stop()

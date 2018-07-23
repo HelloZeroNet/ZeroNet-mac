@@ -8,6 +8,7 @@ import gevent
 from util import helper
 from Plugin import PluginManager
 from Config import config
+from Debug import Debug
 
 if "content_db" not in locals().keys():  # To keep between module reloads
     content_db = None
@@ -172,14 +173,13 @@ class ContentDbPlugin(object):
                 is_downloaded = 1
             else:
                 is_downloaded = 0
-            if site.address + "/" + file_inner_path in self.my_optional_files:
+            if site.address + "/" + content_inner_dir in self.my_optional_files:
                 is_pinned = 1
             else:
                 is_pinned = 0
             cur.insertOrUpdate("file_optional", {
                 "hash_id": hash_id,
-                "size": int(file["size"]),
-                "is_pinned": is_pinned
+                "size": int(file["size"])
             }, {
                 "site_id": site_id,
                 "inner_path": file_inner_path
@@ -187,7 +187,8 @@ class ContentDbPlugin(object):
                 "time_added": int(time.time()),
                 "time_downloaded": int(time.time()) if is_downloaded else 0,
                 "is_downloaded": is_downloaded,
-                "peer": is_downloaded
+                "peer": is_downloaded,
+                "is_pinned": is_pinned
             })
             self.optional_files[site_id][file_inner_path[-8:]] = 1
             num += 1
@@ -202,7 +203,7 @@ class ContentDbPlugin(object):
     def setContent(self, site, inner_path, content, size=0):
         super(ContentDbPlugin, self).setContent(site, inner_path, content, size=size)
         old_content = site.content_manager.contents.get(inner_path, {})
-        if (not self.need_filling or self.filled.get(site.address)) and "files_optional" in content or "files_optional" in old_content:
+        if (not self.need_filling or self.filled.get(site.address)) and ("files_optional" in content or "files_optional" in old_content):
             self.setContentFilesOptional(site, inner_path, content)
             # Check deleted files
             if old_content:
@@ -342,6 +343,12 @@ class ContentDbPlugin(object):
             limit_bytes = float(re.sub("[^0-9.]", "", config.optional_limit)) * 1024 * 1024 * 1024
         return limit_bytes
 
+    def getOptionalUsedBytes(self):
+        size = self.execute("SELECT SUM(size) FROM file_optional WHERE is_downloaded = 1 AND is_pinned = 0").fetchone()[0]
+        if not size:
+            size = 0
+        return size
+
     def getOptionalNeedDelete(self, size):
         if config.optional_limit.endswith("%"):
             limit_percent = float(re.sub("[^0-9.]", "", config.optional_limit))
@@ -358,9 +365,7 @@ class ContentDbPlugin(object):
             self.log.debug("Invalid limit for optional files: %s" % limit)
             return False
 
-        size = self.execute("SELECT SUM(size) FROM file_optional WHERE is_downloaded = 1 AND is_pinned = 0").fetchone()[0]
-        if not size:
-            size = 0
+        size = self.getOptionalUsedBytes()
 
         need_delete = self.getOptionalNeedDelete(size)
 
@@ -384,7 +389,7 @@ class ContentDbPlugin(object):
             site.log.debug("Deleting %s %.3f MB left" % (row["inner_path"], float(need_delete) / 1024 / 1024))
             deleted_file_ids.append(row["file_id"])
             try:
-                site.content_manager.optionalRemove(row["inner_path"], row["hash_id"], row["size"])
+                site.content_manager.optionalRemoved(row["inner_path"], row["hash_id"], row["size"])
                 site.storage.delete(row["inner_path"])
                 need_delete -= row["size"]
             except Exception as err:

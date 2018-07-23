@@ -6,6 +6,7 @@ import logging
 import json
 import shutil
 import gc
+import datetime
 
 import pytest
 import mock
@@ -27,8 +28,32 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/.."))  # Import
 from Config import config
 config.argv = ["none"]  # Dont pass any argv to config parser
 config.parse(silent=True)  # Plugins need to access the configuration
+config.action = "test"
+
 logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
 
+# Set custom formatter with realative time format (via: https://stackoverflow.com/questions/31521859/python-logging-module-time-since-last-log)
+class TimeFilter(logging.Filter):
+
+    def filter(self, record):
+        try:
+          last = self.last
+        except AttributeError:
+          last = record.relativeCreated
+
+        delta = datetime.datetime.fromtimestamp(record.relativeCreated/1000.0) - datetime.datetime.fromtimestamp(last/1000.0)
+
+        record.relative = '{0:.3f}'.format(delta.seconds + delta.microseconds/1000000.0)
+
+        self.last = record.relativeCreated
+        return True
+
+log = logging.getLogger()
+fmt = logging.Formatter(fmt='+%(relative)ss %(levelname)-8s %(name)s %(message)s')
+[hndl.addFilter(TimeFilter()) for hndl in log.handlers]
+[hndl.setFormatter(fmt) for hndl in log.handlers]
+
+# Load plugins
 from Plugin import PluginManager
 PluginManager.plugin_manager.loadPlugins()
 config.loadPlugins()
@@ -37,7 +62,7 @@ config.parse()  # Parse again to add plugin configuration options
 config.data_dir = "src/Test/testdata"  # Use test data for unittests
 config.debug_socket = True  # Use test data for unittests
 config.verbose = True  # Use test data for unittests
-config.tor = "disabled"  # Don't start Tor client
+config.tor = "disable"  # Don't start Tor client
 config.trackers = []
 
 os.chdir(os.path.abspath(os.path.dirname(__file__) + "/../.."))  # Set working dir
@@ -70,6 +95,7 @@ from Db import Db
 @pytest.fixture(scope="session")
 def resetSettings(request):
     open("%s/sites.json" % config.data_dir, "w").write("{}")
+    open("%s/filters.json" % config.data_dir, "w").write("{}")
     open("%s/users.json" % config.data_dir, "w").write("""
         {
             "15E5rhcAUD69WbiYsYARh4YHJ4sLm2JEyc": {
@@ -86,6 +112,7 @@ def resetTempSettings(request):
     if not os.path.isdir(data_dir_temp):
         os.mkdir(data_dir_temp)
     open("%s/sites.json" % data_dir_temp, "w").write("{}")
+    open("%s/filters.json" % data_dir_temp, "w").write("{}")
     open("%s/users.json" % data_dir_temp, "w").write("""
         {
             "15E5rhcAUD69WbiYsYARh4YHJ4sLm2JEyc": {
@@ -99,6 +126,7 @@ def resetTempSettings(request):
     def cleanup():
         os.unlink("%s/sites.json" % data_dir_temp)
         os.unlink("%s/users.json" % data_dir_temp)
+        os.unlink("%s/filters.json" % data_dir_temp)
     request.addfinalizer(cleanup)
 
 
@@ -110,17 +138,22 @@ def site(request):
     RateLimit.called_db = {}
 
     site = Site("1TeSTvb4w2PWE81S2rEELgmX2GCCExQGT")
-    site.announce = mock.MagicMock(return_value=True)  # Don't try to find peers from the net
 
     # Always use original data
     assert "1TeSTvb4w2PWE81S2rEELgmX2GCCExQGT" in site.storage.getPath("")  # Make sure we dont delete everything
     shutil.rmtree(site.storage.getPath(""), True)
     shutil.copytree(site.storage.getPath("") + "-original", site.storage.getPath(""))
+
+    # Add to site manager
+    SiteManager.site_manager.get("1TeSTvb4w2PWE81S2rEELgmX2GCCExQGT")
+    site.announce = mock.MagicMock(return_value=True)  # Don't try to find peers from the net
+
     def cleanup():
         site.storage.deleteFiles()
         site.content_manager.contents.db.deleteSite(site)
         del SiteManager.site_manager.sites["1TeSTvb4w2PWE81S2rEELgmX2GCCExQGT"]
         site.content_manager.contents.db.close()
+        SiteManager.site_manager.sites.clear()
         db_path = "%s/content.db" % config.data_dir
         os.unlink(db_path)
         del ContentDb.content_dbs[db_path]
@@ -186,7 +219,12 @@ def site_url():
 def file_server(request):
     request.addfinalizer(CryptConnection.manager.removeCerts)  # Remove cert files after end
     file_server = FileServer("127.0.0.1", 1544)
-    gevent.spawn(lambda: ConnectionServer.start(file_server))
+
+    def listen():
+        ConnectionServer.start(file_server)
+        ConnectionServer.listen(file_server)
+
+    gevent.spawn(listen)
     # Wait for port opening
     for retry in range(10):
         time.sleep(0.1)  # Port opening

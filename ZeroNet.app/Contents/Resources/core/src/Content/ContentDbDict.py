@@ -2,6 +2,9 @@ import time
 import os
 
 import ContentDb
+from Debug import Debug
+from Config import config
+
 
 class ContentDbDict(dict):
     def __init__(self, site, *args, **kwargs):
@@ -19,7 +22,10 @@ class ContentDbDict(dict):
         try:
             self.num_loaded += 1
             if self.num_loaded % 100 == 0:
-                self.log.debug("Loaded json: %s (latest: %s)" % (self.num_loaded, key))
+                if config.verbose:
+                    self.log.debug("Loaded json: %s (latest: %s) called by: %s" % (self.num_loaded, key, Debug.formatStack()))
+                else:
+                    self.log.debug("Loaded json: %s (latest: %s)" % (self.num_loaded, key))
             content = self.site.storage.loadJson(key)
             dict.__setitem__(self, key, content)
         except IOError:
@@ -73,7 +79,7 @@ class ContentDbDict(dict):
         for key in dict.keys(self):
             try:
                 val = self[key]
-            except Exception, err:
+            except Exception as err:
                 self.log.warning("Error loading %s: %s" % (key, err))
                 continue
             yield key, val
@@ -83,7 +89,7 @@ class ContentDbDict(dict):
         for key in dict.keys(self):
             try:
                 val = self[key]
-            except Exception, err:
+            except Exception as err:
                 self.log.warning("Error loading %s: %s" % (key, err))
                 continue
             back.append((key, val))
@@ -104,6 +110,11 @@ class ContentDbDict(dict):
         try:
             return self.__getitem__(key)
         except KeyError:
+            return default
+        except Exception as err:
+            self.site.bad_files[key] = self.site.bad_files.get(key, 1)
+            dict.__delitem__(self, key)
+            self.log.warning("Error loading %s: %s" % (key, err))
             return default
 
     def execute(self, query, params={}):

@@ -6,10 +6,14 @@ services:
 install:
  - pip install -U pip wheel
  - pip install -r requirements.txt
+ - pip list
 before_script:
   - openssl version -a
 script:
- - python -m pytest plugins/CryptMessage/Test
+ - python -m pytest -x plugins/CryptMessage/Test
+ - python -m pytest -x plugins/Bigfile/Test
+ - python -m pytest -x plugins/AnnounceLocal/Test
+ - python -m pytest -x plugins/OptionalManager/Test
  - python -m pytest src/Test --cov=src --cov-config src/Test/coverage.ini
 before_install:
   - pip install -U pytest mock pytest-cov selenium
@@ -23,3 +27,8 @@ after_success:
 cache:
   directories:
     - $HOME/.cache/pip
+notifications:
+  email:
+    recipients:
+      hello@zeronet.io
+    on_success: change

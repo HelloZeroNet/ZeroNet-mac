@@ -1,12 +1,12 @@
 import re
 import cgi
+import copy
 
 from Plugin import PluginManager
 from Translate import Translate
-from util import helper
-from Debug import Debug
 if "_" not in locals():
     _ = Translate("plugins/Cors/languages/")
+
 
 def getCorsPath(site, inner_path):
     match = re.match("^cors-([A-Za-z0-9]{26,35})/(.*)", inner_path)
@@ -23,24 +23,40 @@ def getCorsPath(site, inner_path):
 
 @PluginManager.registerTo("UiWebsocket")
 class UiWebsocketPlugin(object):
+    def hasSitePermission(self, address, cmd=None):
+        if super(UiWebsocketPlugin, self).hasSitePermission(address, cmd=cmd):
+            return True
+
+        if not "Cors:%s" % address in self.site.settings["permissions"] or cmd not in ["fileQuery", "dbQuery", "userGetSettings", "siteInfo"]:
+            return False
+        else:
+            return True
+
     # Add cors support for file commands
     def corsFuncWrapper(self, func_name, to, inner_path, *args, **kwargs):
-        func = getattr(super(UiWebsocketPlugin, self), func_name)
         if inner_path.startswith("cors-"):
             cors_address, cors_inner_path = getCorsPath(self.site, inner_path)
 
-            site_before = self.site  # Save to be able to change it back after we ran the command
-            self.site = self.server.sites.get(cors_address)  # Change the site to the merged one
-            try:
-                back = func(to, cors_inner_path, *args, **kwargs)
-            finally:
-                self.site = site_before  # Change back to original site
+            req_self = copy.copy(self)
+            req_self.site = self.server.sites.get(cors_address)  # Change the site to the merged one
+            if not req_self.site:
+                return {"error": "No site found"}
+
+            func = getattr(super(UiWebsocketPlugin, req_self), func_name)
+            back = func(to, cors_inner_path, *args, **kwargs)
             return back
         else:
+            func = getattr(super(UiWebsocketPlugin, self), func_name)
             return func(to, inner_path, *args, **kwargs)
 
     def actionFileGet(self, to, inner_path, *args, **kwargs):
         return self.corsFuncWrapper("actionFileGet", to, inner_path, *args, **kwargs)
+
+    def actionFileList(self, to, inner_path, *args, **kwargs):
+        return self.corsFuncWrapper("actionFileList", to, inner_path, *args, **kwargs)
+
+    def actionDirList(self, to, inner_path, *args, **kwargs):
+        return self.corsFuncWrapper("actionDirList", to, inner_path, *args, **kwargs)
 
     def actionFileRules(self, to, inner_path, *args, **kwargs):
         return self.corsFuncWrapper("actionFileRules", to, inner_path, *args, **kwargs)
@@ -57,6 +73,9 @@ class UiWebsocketPlugin(object):
             site_name = address
             button_title = _["Grant & Add"]
 
+        if site and "Cors:" + address in self.permissions:
+            return "ignored"
+
         self.cmd(
             "confirm",
             [_["This site requests <b>read</b> permission to: <b>%s</b>"] % cgi.escape(site_name), button_title],
@@ -64,10 +83,11 @@ class UiWebsocketPlugin(object):
         )
 
     def cbCorsPermission(self, to, address):
-        self.actionPermissionAdd(to, "Cors:"+address)
+        self.actionPermissionAdd(to, "Cors:" + address)
         site = self.server.sites.get(address)
         if not site:
             self.server.site_manager.need(address)
+
 
 @PluginManager.registerTo("UiRequest")
 class UiRequestPlugin(object):
