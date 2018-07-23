@@ -16,10 +16,6 @@
 		<data>
 		SCNA8qprGki0zpVlG9XCdajYXxs=
 		</data>
-		<key>Resources/core/.github/ISSUE_TEMPLATE.md</key>
-		<data>
-		x/16BRqjnOGK3Cn9xWfT3YUS8VA=
-		</data>
 		<key>Resources/core/.gitignore</key>
 		<data>
 		q4PNUdGoAI7goL7znOGrKl0coJI=
@@ -2242,17 +2238,6 @@
 			<key>hash2</key>
 			<data>
 			Rei6Y5ZStWwVr9UvtumCw/EDqNIT9FR7h7/cdJ4mLLQ=
-			</data>
-		</dict>
-		<key>Resources/core/.github/ISSUE_TEMPLATE.md</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			x/16BRqjnOGK3Cn9xWfT3YUS8VA=
-			</data>
-			<key>hash2</key>
-			<data>
-			/49//H3i8weDhkDWxGIZ9+EW+7lEekl8lWBy6sFtses=
 			</data>
 		</dict>
 		<key>Resources/core/.gitignore</key>
