@@ -371,6 +371,7 @@ class ContentManagerPlugin(object):
             for key in self.site.bad_files.keys():
                 if key.startswith(inner_path + "|"):
                     del self.site.bad_files[key]
+            self.site.worker_manager.removeSolvedFileTasks()
         return super(ContentManagerPlugin, self).optionalRemoved(inner_path, hash_id, size)
 
 
@@ -704,6 +705,14 @@ class PeerPlugin(object):
 class SitePlugin(object):
     def isFileDownloadAllowed(self, inner_path, file_info):
         if "piecemap" in file_info:
+            file_size_mb = file_info["size"] / 1024 / 1024
+            if config.bigfile_size_limit and file_size_mb > config.bigfile_size_limit:
+                self.log.debug(
+                    "Bigfile size %s too large: %sMB > %sMB, skipping..." %
+                    (inner_path, file_size_mb, config.bigfile_size_limit)
+                )
+                return False
+
             file_info = file_info.copy()
             file_info["size"] = file_info["piece_size"]
         return super(SitePlugin, self).isFileDownloadAllowed(inner_path, file_info)
@@ -717,8 +726,11 @@ class SitePlugin(object):
     def needFile(self, inner_path, *args, **kwargs):
         if inner_path.endswith("|all"):
             @util.Pooled(20)
-            def pooledNeedBigfile(*args, **kwargs):
-                return self.needFile(*args, **kwargs)
+            def pooledNeedBigfile(inner_path, *args, **kwargs):
+                if inner_path not in self.bad_files:
+                    self.log.debug("Cancelled piece, skipping %s" % inner_path)
+                    return False
+                return self.needFile(inner_path, *args, **kwargs)
 
             inner_path = inner_path.replace("|all", "")
             file_info = self.needFileInfo(inner_path)
@@ -735,7 +747,9 @@ class SitePlugin(object):
                 piece_from = piece_i * piece_size
                 piece_to = min(file_size, piece_from + piece_size)
                 if not piecefield or not piecefield[piece_i]:
-                    res = pooledNeedBigfile("%s|%s-%s" % (inner_path, piece_from, piece_to), blocking=False)
+                    inner_path_piece = "%s|%s-%s" % (inner_path, piece_from, piece_to)
+                    self.bad_files[inner_path_piece] = self.bad_files.get(inner_path_piece, 1)
+                    res = pooledNeedBigfile(inner_path_piece, blocking=False)
                     if res is not True and res is not False:
                         file_threads.append(res)
             gevent.joinall(file_threads)
@@ -748,5 +762,6 @@ class ConfigPlugin(object):
     def createArguments(self):
         group = self.parser.add_argument_group("Bigfile plugin")
         group.add_argument('--autodownload_bigfile_size_limit', help='Also download bigfiles smaller than this limit if help distribute option is checked', default=1, metavar="MB", type=int)
+        group.add_argument('--bigfile_size_limit', help='Maximum size of downloaded big files', default=False, metavar="MB", type=int)
 
         return super(ConfigPlugin, self).createArguments()

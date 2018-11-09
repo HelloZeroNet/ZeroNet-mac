@@ -6,6 +6,7 @@ import re
 import os
 import gevent
 
+from Debug import Debug
 from DbCursor import DbCursor
 from Config import config
 from util import SafeRe
@@ -20,7 +21,7 @@ def dbCleanup():
         time.sleep(60 * 5)
         for db in opened_dbs[:]:
             idle = time.time() - db.last_query_time
-            if idle > 60 * 5:
+            if idle > 60 * 5 and db.close_idle:
                 db.close()
 
 gevent.spawn(dbCleanup)
@@ -28,7 +29,7 @@ gevent.spawn(dbCleanup)
 
 class Db(object):
 
-    def __init__(self, schema, db_path):
+    def __init__(self, schema, db_path, close_idle=False):
         self.db_path = db_path
         self.db_dir = os.path.dirname(db_path) + "/"
         self.schema = schema
@@ -43,10 +44,11 @@ class Db(object):
         self.db_keyvalues = {}
         self.delayed_queue = []
         self.delayed_queue_thread = None
+        self.close_idle = close_idle
         self.last_query_time = time.time()
 
     def __repr__(self):
-        return "<Db#%s:%s>" % (id(self), self.db_path)
+        return "<Db#%s:%s close_idle:%s>" % (id(self), self.db_path, self.close_idle)
 
     def connect(self):
         if self not in opened_dbs:
@@ -61,14 +63,6 @@ class Db(object):
         self.conn.row_factory = sqlite3.Row
         self.conn.isolation_level = None
         self.cur = self.getCursor()
-        if config.db_mode == "security":
-            self.cur.execute("PRAGMA journal_mode = WAL")
-            self.cur.execute("PRAGMA synchronous = NORMAL")
-        else:
-            self.cur.execute("PRAGMA journal_mode = MEMORY")
-            self.cur.execute("PRAGMA synchronous = OFF")
-        if self.foreign_keys:
-            self.execute("PRAGMA foreign_keys = ON")
         self.log.debug(
             "Connected to %s in %.3fs (opened: %s, sqlite version: %s)..." %
             (self.db_path, time.time() - s, len(opened_dbs), sqlite3.version)
@@ -136,7 +130,18 @@ class Db(object):
     def getCursor(self):
         if not self.conn:
             self.connect()
-        return DbCursor(self.conn, self)
+
+        cur = DbCursor(self.conn, self)
+        if config.db_mode == "security":
+            cur.execute("PRAGMA journal_mode = WAL")
+            cur.execute("PRAGMA synchronous = NORMAL")
+        else:
+            cur.execute("PRAGMA journal_mode = MEMORY")
+            cur.execute("PRAGMA synchronous = OFF")
+        if self.foreign_keys:
+            cur.execute("PRAGMA foreign_keys = ON")
+
+        return cur
 
     # Get the table version
     # Return: Table version or None if not exist
@@ -205,12 +210,15 @@ class Db(object):
 
         # Check schema tables
         for table_name, table_settings in self.schema.get("tables", {}).items():
-            changed = cur.needTable(
-                table_name, table_settings["cols"],
-                table_settings.get("indexes", []), version=table_settings.get("schema_changed", 0)
-            )
-            if changed:
-                changed_tables.append(table_name)
+            try:
+                changed = cur.needTable(
+                    table_name, table_settings["cols"],
+                    table_settings.get("indexes", []), version=table_settings.get("schema_changed", 0)
+                )
+                if changed:
+                    changed_tables.append(table_name)
+            except Exception as err:
+                self.log.error("Error creating table %s: %s" % (table_name, Debug.formatException(err)))
 
         cur.execute("COMMIT")
         self.log.debug("Db check done in %.3fs, changed tables: %s" % (time.time() - s, changed_tables))
@@ -339,7 +347,7 @@ class Db(object):
                                 {key_col: key, val_col: val, "json_id": json_row["json_id"]}
                             )
                         else:  # Multi value
-                            if isinstance(val, dict):  # Single row
+                            if type(val) is dict:  # Single row
                                 row = val
                                 if import_cols:
                                     row = {key: row[key] for key in row if key in import_cols}  # Filter row by import_cols
@@ -353,7 +361,7 @@ class Db(object):
 
                                 row["json_id"] = json_row["json_id"]
                                 cur.execute("INSERT OR REPLACE INTO %s ?" % table_name, row)
-                            else:  # Multi row
+                            elif type(val) is list:  # Multi row
                                 for row in val:
                                     row[key_col] = key
                                     row["json_id"] = json_row["json_id"]

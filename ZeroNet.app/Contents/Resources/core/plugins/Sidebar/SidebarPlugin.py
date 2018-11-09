@@ -340,8 +340,10 @@ class UiWebsocketPlugin(object):
         i = 0
         for bad_file, tries in site.bad_files.iteritems():
             i += 1
-            body.append(_(u"""<li class='color-red' title="{bad_file} ({tries})">{bad_file}</li>""", {
-                "bad_file": cgi.escape(bad_file, True), "tries": _.pluralize(tries, "{} try", "{} tries")
+            body.append(_(u"""<li class='color-red' title="{bad_file_path} ({tries})">{bad_filename}</li>""", {
+                "bad_file_path": cgi.escape(bad_file, True),
+                "bad_filename": cgi.escape(helper.getFilename(bad_file), True),
+                "tries": _.pluralize(tries, "{} try", "{} tries")
             }))
             if i > 30:
                 break
@@ -711,6 +713,9 @@ class UiWebsocketPlugin(object):
         permissions = self.getPermissions(to)
         if "ADMIN" not in permissions:
             return self.response(to, "You don't have permission to run this command")
+
+        if self.site.address == config.updatesite:
+            return self.response(to, "You can't change the ownership of the updater site")
 
         self.site.settings["own"] = bool(owned)
         self.site.updateWebsocket(owned=owned)

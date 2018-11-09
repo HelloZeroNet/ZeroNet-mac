@@ -113,10 +113,10 @@ class ContentManager(object):
                         try:
                             old_hash_id = self.hashfield.getHashId(old_hash)
                             self.optionalRemoved(file_inner_path, old_hash_id, old_content["files_optional"][relative_path]["size"])
-                            self.site.storage.delete(file_inner_path)
+                            self.optionalDelete(file_inner_path)
                             self.log.debug("Deleted changed optional file: %s" % file_inner_path)
                         except Exception, err:
-                            self.log.debug("Error deleting file %s: %s" % (file_inner_path, err))
+                            self.log.debug("Error deleting file %s: %s" % (file_inner_path, Debug.formatException(err)))
                 else:  # The file is not in the old content
                     if self.site.isDownloadable(file_inner_path):
                         changed.append(file_inner_path)  # Download new file
@@ -139,18 +139,20 @@ class ContentManager(object):
                     for file_relative_path in deleted:
                         file_inner_path = content_inner_dir + file_relative_path
                         try:
-                            self.site.storage.delete(file_inner_path)
 
                             # Check if the deleted file is optional
                             if old_content.get("files_optional") and old_content["files_optional"].get(file_relative_path):
+                                self.optionalDelete(file_inner_path)
                                 old_hash = old_content["files_optional"][file_relative_path].get("sha512")
                                 if self.hashfield.hasHash(old_hash):
-                                    old_hash_id = self.hashField.getHashid(old_hash)
+                                    old_hash_id = self.hashfield.getHashId(old_hash)
                                     self.optionalRemoved(file_inner_path, old_hash_id, old_content["files_optional"][file_relative_path]["size"])
+                            else:
+                                self.site.storage.delete(file_inner_path)
 
                             self.log.debug("Deleted file: %s" % file_inner_path)
                         except Exception, err:
-                            self.log.debug("Error deleting file %s: %s" % (file_inner_path, err))
+                            self.log.debug("Error deleting file %s: %s" % (file_inner_path, Debug.formatException(err)))
 
                     # Cleanup empty dirs
                     tree = {root: [dirs, files] for root, dirs, files in os.walk(self.site.storage.getPath(content_inner_dir))}
@@ -380,8 +382,9 @@ class ContentManager(object):
                 back = content["user_contents"]
                 content_inner_path_dir = helper.getDirname(content_inner_path)
                 relative_content_path = inner_path[len(content_inner_path_dir):]
-                if "/" in relative_content_path:
-                    user_auth_address = re.match("([A-Za-z0-9]+)/.*", relative_content_path).group(1)
+                user_auth_address_match = re.match("([A-Za-z0-9]+)/.*", relative_content_path)
+                if user_auth_address_match:
+                    user_auth_address = user_auth_address_match.group(1)
                     back["content_inner_path"] = "%s%s/content.json" % (content_inner_path_dir, user_auth_address)
                 else:
                     back["content_inner_path"] = content_inner_path_dir + "content.json"
@@ -489,7 +492,10 @@ class ContentManager(object):
                 elif type(val) is list:  # List, append
                     rules[key] += val
 
-        rules["cert_signers"] = user_contents["cert_signers"]  # Add valid cert signers
+        # Accepted cert signers
+        rules["cert_signers"] = user_contents.get("cert_signers", {})
+        rules["cert_signers_pattern"] = user_contents.get("cert_signers_pattern")
+
         if "signers" not in rules:
             rules["signers"] = []
 
@@ -746,16 +752,25 @@ class ContentManager(object):
 
         rules = self.getRules(inner_path, content)
 
-        if not rules.get("cert_signers"):
+        if not rules:
+            raise VerifyError("No rules for this file")
+
+        if not rules.get("cert_signers") and not rules.get("cert_signers_pattern"):
             return True  # Does not need cert
 
         if "cert_user_id" not in content:
             raise VerifyError("Missing cert_user_id")
 
-        name, domain = content["cert_user_id"].split("@")
+        if content["cert_user_id"].count("@") != 1:
+            raise VerifyError("Invalid domain in cert_user_id")
+
+        name, domain = content["cert_user_id"].rsplit("@", 1)
         cert_address = rules["cert_signers"].get(domain)
-        if not cert_address:  # Cert signer not allowed
-            raise VerifyError("Invalid cert signer: %s" % domain)
+        if not cert_address:  # Unknown Cert signer
+            if rules.get("cert_signers_pattern") and SafeRe.match(rules["cert_signers_pattern"], domain):
+                cert_address = domain
+            else:
+                raise VerifyError("Invalid cert signer: %s" % domain)
 
         try:
             cert_subject = "%s#%s/%s" % (rules["user_address"], content["cert_auth_type"], name)
@@ -949,6 +964,9 @@ class ContentManager(object):
 
             else:  # File not in content.json
                 raise VerifyError("File not in content.json")
+
+    def optionalDelete(self, inner_path):
+        self.site.storage.delete(inner_path)
 
     def optionalDownloaded(self, inner_path, hash_id, size=None, own=False):
         if size is None:

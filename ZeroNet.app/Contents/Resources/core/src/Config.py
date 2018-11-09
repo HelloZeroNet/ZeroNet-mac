@@ -4,13 +4,16 @@ import os
 import locale
 import re
 import ConfigParser
+import logging
+import logging.handlers
+import stat
 
 
 class Config(object):
 
     def __init__(self, argv):
-        self.version = "0.6.3"
-        self.rev = 3612
+        self.version = "0.6.4"
+        self.rev = 3703
         self.argv = argv
         self.action = None
         self.pending_changes = {}
@@ -20,6 +23,7 @@ class Config(object):
         self.start_dir = self.getStartDir()
 
         self.config_file = "zeronet.conf"
+        self.trackers_file = False
         self.createParser()
         self.createArguments()
 
@@ -64,9 +68,6 @@ class Config(object):
             log_dir = start_dir + "/log"
         else:
             start_dir = "."
-            config_file = "zeronet.conf"
-            data_dir = "data"
-            log_dir = "log"
 
         return start_dir
 
@@ -76,7 +77,7 @@ class Config(object):
             "zero://boot3rdez4rzn36x.onion:15441",
             "zero://zero.booth.moe#f36ca555bee6ba216b14d10f38c16f7769ff064e0e37d887603548cc2e64191d:443",  # US/NY
             "udp://tracker.coppersurfer.tk:6969",  # DE
-            "udp://tracker.leechers-paradise.org:6969",  # NL
+            "udp://5.79.83.193:6969",  # NL
             "udp://104.238.198.186:8000",  # US/LA
             "http://tracker.swateam.org.uk:2710/announce",  # US/NY
             "http://open.acgnxtracker.com:80/announce",  # DE
@@ -90,13 +91,15 @@ class Config(object):
 
         try:
             language, enc = locale.getdefaultlocale()
-            language = language.split("_")[0]
+            language = language.lower().replace("_", "-")
+            if language not in ["pt-br", "zh-tw"]:
+                language = language.split("-")[0]
         except Exception:
             language = "en"
 
         use_openssl = True
 
-        if repr(1483108852.565) != "1483108852.565":
+        if repr(1483108852.565) != "1483108852.565":  # Fix for weird Android issue
             fix_float_decimals = True
         else:
             fix_float_decimals = False
@@ -210,8 +213,11 @@ class Config(object):
 
         self.parser.add_argument('--config_file', help='Path of config file', default=config_file, metavar="path")
         self.parser.add_argument('--data_dir', help='Path of data directory', default=data_dir, metavar="path")
+
         self.parser.add_argument('--log_dir', help='Path of logging directory', default=log_dir, metavar="path")
         self.parser.add_argument('--log_level', help='Level of logging to file', default="DEBUG", choices=["DEBUG", "INFO", "ERROR"])
+        self.parser.add_argument('--log_rotate', help='Log rotate interval', default="daily", choices=["hourly", "daily", "weekly", "off"])
+        self.parser.add_argument('--log_rotate_backup_count', help='Log rotate backup count', default=5, type=int)
 
         self.parser.add_argument('--language', help='Web interface language', default=language, metavar='language')
         self.parser.add_argument('--ui_ip', help='Web interface bind address', default="127.0.0.1", metavar='ip')
@@ -509,5 +515,59 @@ class Config(object):
             pass
 
         return info
+
+    def initConsoleLogger(self):
+        if self.action == "main":
+            format = '[%(asctime)s] %(name)s %(message)s'
+        else:
+            format = '%(name)s %(message)s'
+
+        if self.silent:
+            level = logging.ERROR
+        elif self.debug:
+            level = logging.DEBUG
+        else:
+            level = logging.INFO
+
+        console_logger = logging.StreamHandler()
+        console_logger.setFormatter(logging.Formatter(format, "%H:%M:%S"))
+        console_logger.setLevel(level)
+        logging.getLogger('').addHandler(console_logger)
+
+    def initFileLogger(self):
+        if self.action == "main":
+            log_file_path = "%s/debug.log" % self.log_dir
+        else:
+            log_file_path = "%s/cmd.log" % self.log_dir
+        if self.log_rotate == "off":
+            file_logger = logging.FileHandler(log_file_path)
+        else:
+            when_names = {"weekly": "w", "daily": "d", "hourly": "h"}
+            file_logger = logging.handlers.TimedRotatingFileHandler(
+                log_file_path, when=when_names[self.log_rotate], interval=1, backupCount=self.log_rotate_backup_count
+            )
+            file_logger.doRollover()  # Always start with empty log file
+        file_logger.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)-8s %(name)s %(message)s'))
+        file_logger.setLevel(logging.getLevelName(self.log_level))
+        logging.getLogger('').setLevel(logging.getLevelName(self.log_level))
+        logging.getLogger('').addHandler(file_logger)
+
+    def initLogging(self):
+        # Create necessary files and dirs
+        if not os.path.isdir(self.log_dir):
+            os.mkdir(self.log_dir)
+            try:
+                os.chmod(self.log_dir, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+            except Exception as err:
+                print "Can't change permission of %s: %s" % (self.log_dir, err)
+
+        # Make warning hidden from console
+        logging.WARNING = 15  # Don't display warnings if not in debug mode
+        logging.addLevelName(15, "WARNING")
+
+        logging.getLogger('').name = "-"  # Remove root prefix
+
+        self.initConsoleLogger()
+        self.initFileLogger()
 
 config = Config(sys.argv)
