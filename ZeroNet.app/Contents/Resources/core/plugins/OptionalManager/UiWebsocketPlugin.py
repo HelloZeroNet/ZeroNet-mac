@@ -75,7 +75,7 @@ class UiWebsocketPlugin(object):
             else:
                 row["bytes_downloaded"] = 0
 
-            row["is_downloading"] = bool(next((task for task in site.worker_manager.tasks if task["inner_path"].startswith(row["inner_path"])), False))
+            row["is_downloading"] = bool(next((inner_path for inner_path in site.bad_files if inner_path.startswith(row["inner_path"])), False))
 
         # Add leech / seed stats
         row["peer_seed"] = 0
@@ -212,7 +212,7 @@ class UiWebsocketPlugin(object):
         num_file = len(inner_path)
         if back == "ok":
             if num_file == 1:
-                self.cmd("notification", ["done", _["Pinned %s"] % helper.getFilename(inner_path[0]), 5000])
+                self.cmd("notification", ["done", _["Pinned %s"] % cgi.escape(helper.getFilename(inner_path[0])), 5000])
             else:
                 self.cmd("notification", ["done", _["Pinned %s files"] % num_file, 5000])
         self.response(to, back)
@@ -224,7 +224,7 @@ class UiWebsocketPlugin(object):
         num_file = len(inner_path)
         if back == "ok":
             if num_file == 1:
-                self.cmd("notification", ["done", _["Removed pin from %s"] % helper.getFilename(inner_path[0]), 5000])
+                self.cmd("notification", ["done", _["Removed pin from %s"] % cgi.escape(helper.getFilename(inner_path[0])), 5000])
             else:
                 self.cmd("notification", ["done", _["Removed pin from %s files"] % num_file, 5000])
         self.response(to, back)

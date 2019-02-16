@@ -31,7 +31,7 @@ import SiteManager
 class Site(object):
 
     def __init__(self, address, allow_create=True, settings=None):
-        self.address = re.sub("[^A-Za-z0-9]", "", address)  # Make sure its correct address
+        self.address = str(re.sub("[^A-Za-z0-9]", "", address))  # Make sure its correct address
         self.address_hash = hashlib.sha256(self.address).digest()
         self.address_short = "%s..%s" % (self.address[:6], self.address[-4:])  # Short address for logging
         self.log = logging.getLogger("Site:%s" % self.address_short)
@@ -56,8 +56,11 @@ class Site(object):
         if "main" in sys.modules and "file_server" in dir(sys.modules["main"]):  # Use global file server by default if possible
             self.connection_server = sys.modules["main"].file_server
         else:
-            self.log.debug("Creating connection server")   # remove
-            self.connection_server = FileServer()
+            if "main" in sys.modules:
+                sys.modules["main"].file_server = FileServer()
+                self.connection_server = sys.modules["main"].file_server
+            else:
+                self.connection_server = FileServer()
 
         self.announcer = SiteAnnouncer(self)  # Announce and get peer list from other nodes
 
@@ -91,6 +94,8 @@ class Site(object):
                 settings["size_optional"] = 0
             if "optional_downloaded" not in settings:
                 settings["optional_downloaded"] = 0
+            if "downloaded" not in settings:
+                settings["downloaded"] = settings.get("added")
             self.bad_files = settings["cache"].get("bad_files", {})
             settings["cache"]["bad_files"] = {}
             # Give it minimum 10 tries after restart
@@ -99,7 +104,7 @@ class Site(object):
         else:
             self.settings = {
                 "own": False, "serving": True, "permissions": [], "cache": {"bad_files": {}}, "size_files_optional": 0,
-                "added": int(time.time()), "optional_downloaded": 0, "size_optional": 0
+                "added": int(time.time()), "downloaded": None, "optional_downloaded": 0, "size_optional": 0
             }  # Default
             if config.download_optional == "auto":
                 self.settings["autodownloadoptional"] = True
@@ -1043,6 +1048,8 @@ class Site(object):
 
         # Update content.json last downlad time
         if inner_path == "content.json":
+            if not self.settings.get("downloaded"):
+                self.settings["downloaded"] = int(time.time())
             self.content_updated = time.time()
 
         self.updateWebsocket(file_done=inner_path)

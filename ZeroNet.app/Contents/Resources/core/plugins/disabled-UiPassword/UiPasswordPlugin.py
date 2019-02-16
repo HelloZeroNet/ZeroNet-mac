@@ -56,7 +56,7 @@ class UiRequestPlugin(object):
 
                 # Redirect to homepage or referer
                 url = self.env.get("HTTP_REFERER", "")
-                if not url or re.sub("\?.*", "", url).endswith("/Login"):
+                if not url or re.sub(r"\?.*", "", url).endswith("/Login"):
                     url = "/" + config.homepage
                 cookie_header = ('Set-Cookie', "session_id=%s;path=/;max-age=2592000;" % session_id)  # Max age = 30 days
                 self.start_response('301 Redirect', [('Location', url), cookie_header])
@@ -124,8 +124,7 @@ class UiWebsocketPlugin(object):
             return self.response(to, "You don't have permission to run this command")
 
         session_id = self.request.getCookies().get("session_id", "")
-        message = "<script>document.location.href = '/Logout?session_id=%s'</script>" % session_id
-        self.cmd("notification", ["done", message])
+        self.cmd("redirect", '/Logout?session_id=%s' % session_id)
 
     def addHomepageNotifications(self):
         error_msgs = showPasswordAdvice(config.ui_password)

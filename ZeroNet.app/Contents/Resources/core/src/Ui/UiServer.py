@@ -60,9 +60,10 @@ class UiServer:
             self.ip = "0.0.0.0"  # Bind all
         if config.ui_host:
             self.allowed_hosts = set(config.ui_host)
-            self.learn_allowed_host = False
         elif config.ui_ip == "127.0.0.1":
-            self.allowed_hosts = set(["zero", "localhost:%s" % config.ui_port, "127.0.0.1:%s" % config.ui_port])
+            # IP Addresses are inherently allowed as they are immune to DNS
+            # rebinding attacks.
+            self.allowed_hosts = set(["zero", "localhost:%s" % config.ui_port])
             # "URI producers and normalizers should omit the port component and
             # its ':' delimiter if port is empty or if its value would be the
             # same as that of the scheme's default."
@@ -70,11 +71,9 @@ class UiServer:
             # As a result, we need to support portless hosts if port 80 is in
             # use.
             if config.ui_port == 80:
-                self.allowed_hosts.update(["localhost", "127.0.0.1"])
-            self.learn_allowed_host = False
+                self.allowed_hosts.update(["localhost"])
         else:
             self.allowed_hosts = set([])
-            self.learn_allowed_host = True  # It will pin to the first http request's host
         self.allow_trans_proxy = config.ui_trans_proxy
 
         self.wrapper_nonces = []

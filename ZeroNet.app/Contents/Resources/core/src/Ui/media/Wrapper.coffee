@@ -4,6 +4,11 @@ class Wrapper
 
 		@loading = new Loading(@)
 		@notifications = new Notifications($(".notifications"))
+		@infopanel = new Infopanel($(".infopanel"))
+		@infopanel.onClosed = =>
+			@ws.cmd("siteSetSettingsValue", ["modified_files_notification", false])
+		@infopanel.onOpened = =>
+			@ws.cmd("siteSetSettingsValue", ["modified_files_notification", true])
 		@fixbutton = new Fixbutton()
 
 		window.addEventListener("message", @onMessageInner, false)
@@ -92,8 +97,15 @@ class Wrapper
 		else if cmd == "updating" # Close connection
 			@ws.ws.close()
 			@ws.onCloseWebsocket(null, 4000)
+		else if cmd == "redirect"
+			window.top.location = message.params
 		else if cmd == "injectHtml"
 			$("body").append(message.params)
+		else if cmd == "injectScript"
+			script_tag = $("<script>")
+			script_tag.attr("nonce", @script_nonce)
+			script_tag.html(message.params)
+			document.head.appendChild(script_tag[0])
 		else
 			@sendInner message # Pass message to inner frame
 
@@ -179,6 +191,8 @@ class Wrapper
 			@actionRequestFullscreen()
 		else # Send to websocket
 			if message.id < 1000000
+				if message.cmd == "fileWrite" and not @modified_panel_updater_timer and site_info?.settings?.own
+					@modified_panel_updater_timer = setTimeout ( => @updateModifiedPanel(); @modified_panel_updater_timer = null ), 1000
 				@ws.send(message) # Pass message to websocket
 			else
 				@log "Invalid inner message id"
@@ -380,8 +394,9 @@ class Wrapper
 
 
 	actionSetLocalStorage: (message) ->
-		back = localStorage.setItem "site.#{@site_info.address}.#{@site_info.auth_address}", JSON.stringify(message.params)
-		@sendInner {"cmd": "response", "to": message.id, "result": back}
+		$.when(@event_site_info).done =>
+			back = localStorage.setItem "site.#{@site_info.address}.#{@site_info.auth_address}", JSON.stringify(message.params)
+			@sendInner {"cmd": "response", "to": message.id, "result": back}
 
 
 	# EOF actions
@@ -440,9 +455,12 @@ class Wrapper
 			@log "Setting title to", window.document.title
 
 	onWrapperLoad: =>
+		@script_nonce = window.script_nonce
+		@wrapper_key = window.wrapper_key
 		# Cleanup secret variables
 		delete window.wrapper
 		delete window.wrapper_key
+		delete window.script_nonce
 		$("#script_init").remove()
 
 	# Send message to innerframe
@@ -522,8 +540,59 @@ class Wrapper
 		if @loading.screen_visible and @inner_loaded and site_info.settings.size < site_info.size_limit*1024*1024 and site_info.settings.size > 0 # Loading screen still visible, but inner loaded
 			@loading.hideScreen()
 
+		if site_info?.settings?.own and site_info?.settings?.modified != @site_info?.settings?.modified
+			@updateModifiedPanel()
+
 		@site_info = site_info
 		@event_site_info.resolve()
+
+	siteSign: (inner_path, cb) =>
+		if @site_info.privatekey
+			# Privatekey stored in users.json
+			@infopanel.elem.find(".button").addClass("loading")
+			@ws.cmd "siteSign", {privatekey: "stored", inner_path: inner_path, update_changed_files: true}, (res) =>
+				if res == "ok"
+					cb?(true)
+				else
+					cb?(false)
+				@infopanel.elem.find(".button").removeClass("loading")
+		else
+			# Ask the user for privatekey
+			@displayPrompt "Enter your private key:", "password", "Sign", "", (privatekey) => # Prompt the private key
+				@infopanel.elem.find(".button").addClass("loading")
+				@ws.cmd "siteSign", {privatekey: privatekey, inner_path: inner_path, update_changed_files: true}, (res) =>
+					if res == "ok"
+						cb?(true)
+					else
+						cb?(false)
+					@infopanel.elem.find(".button").removeClass("loading")
+
+	sitePublish: (inner_path) =>
+		@ws.cmd "sitePublish", {"inner_path": inner_path, "sign": false}
+
+	updateModifiedPanel: =>
+		@ws.cmd "siteListModifiedFiles", [], (res) =>
+			num = res.modified_files.length
+			if num > 0
+				closed = @site_info.settings.modified_files_notification == false
+				@infopanel.show(closed)
+			else
+				@infopanel.hide()
+
+			if num > 0
+				@infopanel.setTitle(
+					"#{res.modified_files.length} modified file#{if num > 1 then 's' else ''}",
+					res.modified_files.join(", ")
+				)
+				@infopanel.setClosedNum(num)
+				@infopanel.setAction "Sign & Publish", =>
+					@siteSign "content.json", (res) =>
+						if (res)
+							@notifications.add "sign", "done", "content.json Signed!", 5000
+							@sitePublish("content.json")
+					return false
+
+			@log "siteListModifiedFiles", res
 
 	setAnnouncerInfo: (announcer_info) ->
 		status_db = {announcing: [], error: [], announced: []}

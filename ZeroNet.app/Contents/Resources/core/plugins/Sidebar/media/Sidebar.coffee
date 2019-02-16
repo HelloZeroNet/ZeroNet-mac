@@ -464,6 +464,10 @@ class Sidebar extends Class
 			@tag?.find("#button-sign-publish-menu").removeClass("visible")
 			@tag?.find(".contents + .flex").removeClass("sign-publish-flex")
 
+		@tag.find(".contents-content").off("click touchend").on "click touchend", (e) =>
+			$("#input-contents").val(e.currentTarget.innerText);
+			return false;
+
 		menu = new Menu(@tag.find("#menu-sign-publish"))
 		menu.elem.css("margin-top", "-130px")  # Open upwards
 		menu.addItem "Sign", =>
@@ -564,7 +568,11 @@ class Sidebar extends Class
 		if @tag.find(".globe").hasClass("loading")
 			setTimeout (=>
 				if typeof(DAT) == "undefined"  # Globe script not loaded, do it first
-					$.getScript("/uimedia/globe/all.js", @displayGlobe)
+					script_tag = $("<script>")
+					script_tag.attr("nonce", @wrapper.script_nonce)
+					script_tag.attr("src", "/uimedia/globe/all.js")
+					script_tag.on("load", @displayGlobe)
+					document.head.appendChild(script_tag[0])
 				else
 					@displayGlobe()
 			), 600

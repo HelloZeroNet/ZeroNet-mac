@@ -913,6 +913,12 @@ window.initScrollable = function () {
           return (ref1 = _this.tag) != null ? ref1.find(".contents + .flex").removeClass("sign-publish-flex") : void 0;
         };
       })(this));
+      this.tag.find(".contents-content").off("click touchend").on("click touchend", (function(_this) {
+        return function(e) {
+          $("#input-contents").val(e.currentTarget.innerText);
+          return false;
+        };
+      })(this));
       menu = new Menu(this.tag.find("#menu-sign-publish"));
       menu.elem.css("margin-top", "-130px");
       menu.addItem("Sign", (function(_this) {
@@ -1075,8 +1081,13 @@ window.initScrollable = function () {
       if (this.tag.find(".globe").hasClass("loading")) {
         return setTimeout(((function(_this) {
           return function() {
+            var script_tag;
             if (typeof DAT === "undefined") {
-              return $.getScript("/uimedia/globe/all.js", _this.displayGlobe);
+              script_tag = $("<script>");
+              script_tag.attr("nonce", _this.wrapper.script_nonce);
+              script_tag.attr("src", "/uimedia/globe/all.js");
+              script_tag.on("load", _this.displayGlobe);
+              return document.head.appendChild(script_tag[0]);
             } else {
               return _this.displayGlobe();
             }

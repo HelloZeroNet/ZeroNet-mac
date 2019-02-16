@@ -5,6 +5,7 @@ import os
 import shutil
 import re
 import copy
+import logging
 
 import gevent
 
@@ -22,11 +23,11 @@ from Content.ContentManager import VerifyError, SignError
 @PluginManager.acceptPlugins
 class UiWebsocket(object):
     admin_commands = set([
-        "sitePause", "siteResume", "siteDelete", "siteList", "siteSetLimit", "siteAdd",
+        "sitePause", "siteResume", "siteDelete", "siteList", "siteSetLimit", "siteAdd", "siteListModifiedFiles", "siteSetSettingsValue",
         "channelJoinAllsite", "serverUpdate", "serverPortcheck", "serverShutdown", "serverShowdirectory", "serverGetWrapperNonce",
-        "certSet", "configSet", "permissionAdd", "permissionRemove", "announcerStats", "userSetGlobalSettings"
+        "certSet", "certList", "configSet", "permissionAdd", "permissionRemove", "announcerStats", "userSetGlobalSettings"
     ])
-    async_commands = set(["fileGet", "fileList", "dirList", "fileNeed"])
+    async_commands = set(["fileGet", "fileList", "dirList", "fileNeed", "serverPortcheck", "siteListModifiedFiles"])
 
     def __init__(self, ws, site, server, user, request):
         self.ws = ws
@@ -49,7 +50,7 @@ class UiWebsocket(object):
             # Add open fileserver port message or closed port error to homepage at first request after start
             self.site.page_requested = True  # Dont add connection notification anymore
             file_server = sys.modules["main"].file_server
-            if file_server.port_opened is None or file_server.tor_manager.start_onions is None:
+            if not file_server.port_opened or file_server.tor_manager.start_onions is None:
                 self.site.page_requested = False  # Not ready yet, check next time
             else:
                 try:
@@ -104,7 +105,7 @@ class UiWebsocket(object):
                 ])
 
         file_server = sys.modules["main"].file_server
-        if file_server.port_opened is True:
+        if any(file_server.port_opened.values()):
             self.site.notifications.append([
                 "done",
                 _["Congratulations, your port <b>{0}</b> is opened.<br>You are a full member of the ZeroNet network!"].format(config.fileserver_port),
@@ -128,7 +129,7 @@ class UiWebsocket(object):
                 """),
                 0
             ])
-        elif file_server.port_opened is False and file_server.tor_manager.start_onions:
+        elif file_server.tor_manager.start_onions:
             self.site.notifications.append([
                 "done",
                 _(u"""
@@ -317,8 +318,13 @@ class UiWebsocket(object):
 
     def formatServerInfo(self):
         file_server = sys.modules["main"].file_server
+        if file_server.port_opened == {}:
+            ip_external = None
+        else:
+            ip_external = any(file_server.port_opened.values())
         return {
-            "ip_external": file_server.port_opened,
+            "ip_external": ip_external,
+            "port_opened": file_server.port_opened,
             "platform": sys.platform,
             "fileserver_ip": config.fileserver_ip,
             "fileserver_port": config.fileserver_port,
@@ -533,7 +539,7 @@ class UiWebsocket(object):
                 self.response(to, "ok")
         else:
             if len(site.peers) == 0:
-                if sys.modules["main"].file_server.port_opened or sys.modules["main"].file_server.tor_manager.start_onions:
+                if any(sys.modules["main"].file_server.port_opened.values()) or sys.modules["main"].file_server.tor_manager.start_onions:
                     if notification:
                         self.cmd("notification", ["info", _["No peers found, but your content is ready to access."]])
                     if callback:
@@ -669,8 +675,6 @@ class UiWebsocket(object):
             s = time.time()
         rows = []
         try:
-            if not query.strip().upper().startswith("SELECT"):
-                raise Exception("Only SELECT query supported")
             res = self.site.storage.query(query, params)
         except Exception, err:  # Response the error to client
             self.log.error("DbQuery error: %s" % err)
@@ -750,7 +754,7 @@ class UiWebsocket(object):
             else:
                 self.response(to, "Not changed")
         except Exception, err:
-            self.log.error("CertAdd error: Exception - %s" % err.message)
+            self.log.error("CertAdd error: Exception - %s (%s)" % (err.message, Debug.formatException(err)))
             self.response(to, {"error": err.message})
 
     def cbCertAddConfirm(self, to, domain, auth_type, auth_user_name, cert):
@@ -804,24 +808,22 @@ class UiWebsocket(object):
             body += "<div style='background-color: #F7F7F7; margin-right: -30px'>"
             for domain in more_domains:
                 body += _(u"""
-                 <a href='/{domain}' onclick='zeroframe.certSelectGotoSite(this)' class='select'>
+                 <a href='/{domain}' target='_top' class='select'>
                   <small style='float: right; margin-right: 40px; margin-top: -1px'>{_[Register]} &raquo;</small>{domain}
                  </a>
                 """)
             body += "</div>"
 
-        body += """
-            <script>
+        script = """
              $(".notification .select.cert").on("click", function() {
                 $(".notification .select").removeClass('active')
                 zeroframe.response(%s, this.title)
                 return false
              })
-            </script>
         """ % self.next_message_id
 
-        # Send the notification
         self.cmd("notification", ["ask", body], lambda domain: self.actionCertSet(to, domain))
+        self.cmd("injectScript", script)
 
     # - Admin actions -
 
@@ -851,6 +853,20 @@ class UiWebsocket(object):
         self.user.setCert(self.site.address, domain)
         self.site.updateWebsocket(cert_changed=domain)
         self.response(to, "ok")
+
+    # List user's certificates
+    def actionCertList(self, to):
+        back = []
+        auth_address = self.user.getAuthAddress(self.site.address)
+        for domain, cert in self.user.certs.items():
+            back.append({
+                "auth_address": cert["auth_address"],
+                "auth_type": cert["auth_type"],
+                "auth_user_name": cert["auth_user_name"],
+                "domain": domain,
+                "selected": cert["auth_address"] == auth_address
+            })
+        return back
 
     # List all site info
     def actionSiteList(self, to, connecting_sites=False):
@@ -938,7 +954,8 @@ class UiWebsocket(object):
             new_site = site.clone(new_address, new_site_data["privatekey"], address_index=new_address_index, root_inner_path=root_inner_path)
             new_site.settings["own"] = True
             new_site.saveSettings()
-            self.cmd("notification", ["done", _["Site cloned"] + "<script>window.top.location = '/%s'</script>" % new_address])
+            self.cmd("notification", ["done", _["Site cloned"]])
+            self.cmd("redirect", "/%s" % new_address)
             gevent.spawn(new_site.announce)
         return "ok"
 
@@ -950,6 +967,14 @@ class UiWebsocket(object):
         if not self.server.sites.get(address):
             # Don't expose site existence
             return
+
+        site = self.server.sites.get(address)
+        if site.bad_files:
+            for bad_inner_path in site.bad_files.keys():
+                is_user_file = "cert_signers" in site.content_manager.getRules(bad_inner_path)
+                if not is_user_file:
+                    self.cmd("notification", ["error", _["Clone error: Site still in sync"]])
+                    return {"error": "Site still in sync"}
 
         if "ADMIN" in self.getPermissions(to):
             self.cbSiteClone(to, address, root_inner_path, target_address)
@@ -977,8 +1002,67 @@ class UiWebsocket(object):
             else:
                 return {"error": "Invalid address"}
 
+    def actionSiteListModifiedFiles(self, to, content_inner_path="content.json"):
+        content = self.site.content_manager.contents[content_inner_path]
+        min_mtime = content.get("modified", 0)
+        site_path = self.site.storage.directory
+        modified_files = []
+
+        # Load cache if not signed since last modified check
+        if content.get("modified", 0) < self.site.settings["cache"].get("time_modified_files_check"):
+            min_mtime = self.site.settings["cache"].get("time_modified_files_check")
+            modified_files = self.site.settings["cache"].get("modified_files", [])
+
+        inner_paths = [content_inner_path] + content.get("includes", {}).keys() + content.get("files", {}).keys()
+
+        for relative_inner_path in inner_paths:
+            inner_path = helper.getDirname(content_inner_path) + relative_inner_path
+            try:
+                is_mtime_newer = os.path.getmtime(self.site.storage.getPath(inner_path)) > min_mtime + 1
+                if is_mtime_newer:
+                    if inner_path.endswith("content.json"):
+                        is_modified = self.site.content_manager.isModified(inner_path)
+                    else:
+                        previous_size = content["files"][inner_path]["size"]
+                        is_same_size = self.site.storage.getSize(inner_path) == previous_size
+                        ext = inner_path.rsplit(".", 1)[-1]
+                        is_text_file = ext in ["json", "txt", "html", "js", "css"]
+                        if is_same_size:
+                            if is_text_file:
+                                is_modified = self.site.content_manager.isModified(inner_path)  # Check sha512 hash
+                            else:
+                                is_modified = False
+                        else:
+                            is_modified = True
+
+                    # Check ran, modified back to original value, but in the cache
+                    if not is_modified and inner_path in modified_files:
+                        modified_files.remove(inner_path)
+                else:
+                    is_modified = False
+            except Exception as err:
+                if not self.site.storage.isFile(inner_path):  # File deleted
+                    is_modified = True
+                else:
+                    raise err
+            if is_modified and inner_path not in modified_files:
+                modified_files.append(inner_path)
+
+        self.site.settings["cache"]["time_modified_files_check"] = time.time()
+        self.site.settings["cache"]["modified_files"] = modified_files
+        return {"modified_files": modified_files}
+
+
+    def actionSiteSetSettingsValue(self, to, key, value):
+        if key not in ["modified_files_notification"]:
+            return {"error": "Can't change this key"}
+
+        self.site.settings[key] = value
+
+        return "ok"
+
     def actionUserGetSettings(self, to):
-        settings = self.user.sites[self.site.address].get("settings", {})
+        settings = self.user.sites.get(self.site.address, {}).get("settings", {})
         self.response(to, settings)
 
     def actionUserSetSettings(self, to, settings):
@@ -1002,9 +1086,9 @@ class UiWebsocket(object):
         sys.modules["main"].ui_server.stop()
 
     def actionServerPortcheck(self, to):
-        sys.modules["main"].file_server.port_opened = None
-        res = sys.modules["main"].file_server.openport()
-        self.response(to, res)
+        file_server = sys.modules["main"].file_server
+        file_server.portCheck()
+        self.response(to, file_server.port_opened)
 
     def actionServerShutdown(self, to, restart=False):
         if restart:
@@ -1035,6 +1119,10 @@ class UiWebsocket(object):
         if key not in config.keys_api_change_allowed:
             self.response(to, {"error": "Forbidden you cannot set this config key"})
             return
+
+        # Remove empty lines from lists
+        if type(value) is list:
+            value = [line for line in value if line]
 
         config.saveValue(key, value)
 
@@ -1067,5 +1155,11 @@ class UiWebsocket(object):
 
         if key == "trackers_file":
             config.loadTrackersFile()
+
+        if key == "log_level":
+            logging.getLogger('').setLevel(logging.getLevelName(config.log_level))
+
+        if key == "ip_external":
+            gevent.spawn(sys.modules["main"].file_server.portCheck)
 
         self.response(to, "ok")

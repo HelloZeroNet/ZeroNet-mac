@@ -11,15 +11,27 @@ import datetime
 import pytest
 import mock
 
+import gevent
+from gevent import monkey
+monkey.patch_all(thread=False, subprocess=False)
 
 def pytest_addoption(parser):
     parser.addoption("--slow", action='store_true', default=False, help="Also run slow tests")
 
+def pytest_collection_modifyitems(config, items):
+    if config.getoption("--slow"):
+        # --runslow given in cli: do not skip slow tests
+        return
+    skip_slow = pytest.mark.skip(reason="need --slow option to run")
+    for item in items:
+        if "slow" in item.keywords:
+            item.add_marker(skip_slow)
+
 # Config
 if sys.platform == "win32":
-    PHANTOMJS_PATH = "tools/phantomjs/bin/phantomjs.exe"
+    CHROMEDRIVER_PATH = "tools/chrome/chromedriver.exe"
 else:
-    PHANTOMJS_PATH = "phantomjs"
+    CHROMEDRIVER_PATH = "chromedriver"
 SITE_URL = "http://127.0.0.1:43110"
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../lib"))  # External modules directory
@@ -55,15 +67,8 @@ fmt = logging.Formatter(fmt='+%(relative)ss %(levelname)-8s %(name)s %(message)s
 
 # Load plugins
 from Plugin import PluginManager
-PluginManager.plugin_manager.loadPlugins()
-config.loadPlugins()
-config.parse()  # Parse again to add plugin configuration options
 
 config.data_dir = "src/Test/testdata"  # Use test data for unittests
-config.debug_socket = True  # Use test data for unittests
-config.verbose = True  # Use test data for unittests
-config.tor = "disable"  # Don't start Tor client
-config.trackers = []
 
 os.chdir(os.path.abspath(os.path.dirname(__file__) + "/../.."))  # Set working dir
 # Cleanup content.db caches
@@ -72,9 +77,15 @@ if os.path.isfile("%s/content.db" % config.data_dir):
 if os.path.isfile("%s-temp/content.db" % config.data_dir):
     os.unlink("%s-temp/content.db" % config.data_dir)
 
-import gevent
-from gevent import monkey
-monkey.patch_all(thread=False, subprocess=False)
+PluginManager.plugin_manager.loadPlugins()
+config.loadPlugins()
+config.parse()  # Parse again to add plugin configuration options
+
+config.debug_socket = True  # Use test data for unittests
+config.verbose = True  # Use test data for unittests
+config.tor = "disable"  # Don't start Tor client
+config.trackers = []
+config.data_dir = "src/Test/testdata"  # Use test data for unittests
 
 from Site import Site
 from Site import SiteManager
@@ -87,10 +98,6 @@ from Tor import TorManager
 from Content import ContentDb
 from util import RateLimit
 from Db import Db
-
-# SiteManager.site_manager.load = mock.MagicMock(return_value=True)  # Don't try to load from sites.json
-# SiteManager.site_manager.save = mock.MagicMock(return_value=True)  # Don't try to load from sites.json
-
 
 @pytest.fixture(scope="session")
 def resetSettings(request):
@@ -194,15 +201,21 @@ def user():
 
 
 @pytest.fixture(scope="session")
-def browser():
+def browser(request):
     try:
         from selenium import webdriver
-        print "Starting phantomjs..."
-        browser = webdriver.PhantomJS(executable_path=PHANTOMJS_PATH, service_log_path=os.path.devnull)
-        print "Set window size..."
-        browser.set_window_size(1400, 1000)
+        print "Starting chromedriver..."
+        options = webdriver.chrome.options.Options()
+        options.add_argument("--headless")
+        options.add_argument("--window-size=1920x1080")
+        options.add_argument("--log-level=1")
+        browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, service_log_path=os.path.devnull, options=options)
+
+        def quit():
+            browser.quit()
+        request.addfinalizer(quit)
     except Exception, err:
-        raise pytest.skip("Test requires selenium + phantomjs: %s" % err)
+        raise pytest.skip("Test requires selenium + chromedriver: %s" % err)
     return browser
 
 
@@ -215,10 +228,18 @@ def site_url():
     return SITE_URL
 
 
-@pytest.fixture
+@pytest.fixture(params=['ipv4', 'ipv6'])
 def file_server(request):
-    request.addfinalizer(CryptConnection.manager.removeCerts)  # Remove cert files after end
+    if request.param == "ipv4":
+        return request.getfixturevalue("file_server4")
+    else:
+        return request.getfixturevalue("file_server6")
+
+
+@pytest.fixture
+def file_server4(request):
     file_server = FileServer("127.0.0.1", 1544)
+    file_server.ip_external = "1.2.3.4"  # Fake external ip
 
     def listen():
         ConnectionServer.start(file_server)
@@ -235,12 +256,39 @@ def file_server(request):
         except Exception, err:
             print err
     assert file_server.running
+    file_server.ip_incoming = {}  # Reset flood protection
 
     def stop():
         file_server.stop()
     request.addfinalizer(stop)
     return file_server
 
+@pytest.fixture
+def file_server6(request):
+    file_server6 = FileServer("::1", 1544)
+    file_server6.ip_external = 'fca5:95d6:bfde:d902:8951:276e:1111:a22c'  # Fake external ip
+
+    def listen():
+        ConnectionServer.start(file_server6)
+        ConnectionServer.listen(file_server6)
+
+    gevent.spawn(listen)
+    # Wait for port opening
+    for retry in range(10):
+        time.sleep(0.1)  # Port opening
+        try:
+            conn = file_server6.getConnection("::1", 1544)
+            conn.close()
+            break
+        except Exception, err:
+            print err
+    assert file_server6.running
+    file_server6.ip_incoming = {}  # Reset flood protection
+
+    def stop():
+        file_server6.stop()
+    request.addfinalizer(stop)
+    return file_server6
 
 @pytest.fixture()
 def ui_websocket(site, file_server, user):
@@ -267,7 +315,8 @@ def ui_websocket(site, file_server, user):
 def tor_manager():
     try:
         tor_manager = TorManager()
-        assert tor_manager.connect()
+        tor_manager.start()
+        assert tor_manager.conn
         tor_manager.startOnions()
     except Exception, err:
         raise pytest.skip("Test requires Tor with ControlPort: %s, %s" % (config.tor_controller, err))

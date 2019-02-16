@@ -22,9 +22,33 @@ def processNameOp(domain, value, test=False):
     except Exception, err:
         print "Json load error: %s" % err
         return False
-    if "zeronet" not in data:
-        print "No zeronet in ", data.keys()
+    if "zeronet" not in data and "map" not in data:
+    # Namecoin standard use {"map": { "blog": {"zeronet": "1D..."} }}
+        print "No zeronet and no map in ", data.keys()
         return False
+    if "map" in data:
+    # If subdomains using the Namecoin standard is present, just re-write in the Zeronet way
+    # and call the function again
+        data_map = data["map"]
+        new_value = {}
+        for subdomain in data_map:
+            if "zeronet" in data_map[subdomain]:
+                new_value[subdomain] = data_map[subdomain]["zeronet"]
+        if "zeronet" in data and isinstance(data["zeronet"], basestring):
+        # {
+        #    "zeronet":"19rXKeKptSdQ9qt7omwN82smehzTuuq6S9",
+        #    ....
+        # }
+            new_value[""] = data["zeronet"]
+        if len(new_value) > 0:
+            return processNameOp(domain, json.dumps({"zeronet": new_value}), test)
+        else:
+            return False
+    if "zeronet" in data and isinstance(data["zeronet"], basestring):
+    # {
+    #    "zeronet":"19rXKeKptSdQ9qt7omwN82smehzTuuq6S9"
+    # } is valid
+        return processNameOp(domain, json.dumps({"zeronet": { "": data["zeronet"]}}), test)
     if not isinstance(data["zeronet"], dict):
         print "Not dict: ", data["zeronet"]
         return False
@@ -145,10 +169,15 @@ if sys.platform == 'win32':
 rpc_auth, rpc_timeout = initRpc(namecoin_location + "namecoin.conf")
 rpc = AuthServiceProxy(rpc_auth, timeout=rpc_timeout)
 
+node_version = rpc.getnetworkinfo()['version']
+
 while 1:
     try:
         time.sleep(1)
-        last_block = int(rpc.getinfo()["blocks"])
+        if node_version < 160000 :
+            last_block = int(rpc.getinfo()["blocks"])
+        else:
+            last_block = int(rpc.getblockchaininfo()["blocks"])
         break # Connection succeeded
     except socket.timeout:  # Timeout
         print ".",
@@ -168,6 +197,7 @@ assert processBlock(227052, test=True) # Testing brainwallets.bit
 assert not processBlock(236824, test=True) # Utf8 domain name (invalid should skip)
 assert not processBlock(236752, test=True) # Uppercase domain (invalid should skip)
 assert processBlock(236870, test=True) # Encoded domain (should pass)
+assert processBlock(438317, test=True) # Testing namecoin standard artifaxradio.bit (should pass)
 # sys.exit(0)
 
 print "- Parsing skipped blocks..."
