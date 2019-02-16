@@ -810,7 +810,7 @@
 		</data>
 		<key>Resources/core/src/Config.py</key>
 		<data>
-		JZRDC7ClyI+ciBMOtCIuWGCFBog=
+		kEIDvgpBJ2UY5hkm7fC9+K0kfco=
 		</data>
 		<key>Resources/core/src/Connection/Connection.py</key>
 		<data>
@@ -1158,7 +1158,7 @@
 		</data>
 		<key>Resources/core/src/Ui/UiRequest.py</key>
 		<data>
-		VCISO9lOsbcKMgyBBAzVVyLU0+8=
+		r2YyZ+yI6PEwI+bjb0LvF3MQfig=
 		</data>
 		<key>Resources/core/src/Ui/UiServer.py</key>
 		<data>
@@ -1966,7 +1966,7 @@
 		</data>
 		<key>Resources/core/zeronet.py</key>
 		<data>
-		CYR5YNg+0huvFJwCY9lNjQlxhY8=
+		hQwEKrU2wuO0xq0qfYq6WfXdoNw=
 		</data>
 		<key>Resources/lib/python2.7/lib-dynload/MacOS.so</key>
 		<data>
@@ -4490,11 +4490,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			JZRDC7ClyI+ciBMOtCIuWGCFBog=
+			kEIDvgpBJ2UY5hkm7fC9+K0kfco=
 			</data>
 			<key>hash2</key>
 			<data>
-			5zCVM3YUIXRBEPPz1lPfrxmhgmf7PVruVs4OUTsurLc=
+			dvFq0vruDMjwaICnzG/wvtZhMIVsLJX2aC/5XhccqEQ=
 			</data>
 		</dict>
 		<key>Resources/core/src/Connection/Connection.py</key>
@@ -5447,11 +5447,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			VCISO9lOsbcKMgyBBAzVVyLU0+8=
+			r2YyZ+yI6PEwI+bjb0LvF3MQfig=
 			</data>
 			<key>hash2</key>
 			<data>
-			VWWHI6gJRZ2LNn+HhGKh3AgOGCPqaN3USXq8olktEXY=
+			75WfRSHWlZ32set1376J9/9dLun2lplQ3UmCJizgQU4=
 			</data>
 		</dict>
 		<key>Resources/core/src/Ui/UiServer.py</key>
@@ -7669,11 +7669,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			CYR5YNg+0huvFJwCY9lNjQlxhY8=
+			hQwEKrU2wuO0xq0qfYq6WfXdoNw=
 			</data>
 			<key>hash2</key>
 			<data>
-			AR3xXGZsUZhIRHWldc0X+vqdt0Jbz6UeAuyj05uT8SU=
+			I/WcDaD5KR/X4yKG5UHM3P0dxIj6oLFGanTYN7TH6Zw=
 			</data>
 		</dict>
 		<key>Resources/lib/python2.7/lib-dynload/MacOS.so</key>
